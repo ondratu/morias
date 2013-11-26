@@ -5,6 +5,14 @@ from falias.sql import Sql
 
 import core.login
 
+from admin import *
+
+from core.render import generate_page
+
+from lib.menu import Item
+from lib.pager import Pager
+from lib.page_file import Page
+
 _check_conf = (
     # morias common block
     ('morias', 'db', Sql, None),
@@ -15,6 +23,8 @@ _check_conf = (
 )
 
 core.login.rights += ['text_create', 'text_edit', 'text_delete']
+
+admin_menu.append(Item('/admin/page', label="Pages"))
 
 @app.route("/page/test/db")
 def test_db(req):
@@ -36,6 +46,36 @@ def test_db(req):
 @app.route('/')
 def root(req):
     redirect(req, '/index.html', text="static index");
+
+@app.route('/admin/page')
+def admin_page(req):
+    check_login(req, '/login?referer=/admin/page')
+    check_right(req, 'admin')
+
+    form = FieldStorage(req)
+
+    pager = Pager()
+    pager.bind(form)
+
+    rows = Page.list(req, pager)
+    return generate_page(req, "admin/page.html", menu = admin_menu,
+                         pager = pager, rows = rows)
+#enddef
+
+@app.route('/admin/page/new')
+def admin_page_new(req):
+    check_login(req, '/login?referer=/admin/page/new')
+    check_right(req, 'admin')
+
+    form = FieldStorage(req)
+
+    pager = Pager()
+    pager.bind(form)
+
+    rows = Page.list(req, pager)
+    return generate_page(req, "admin/page_new.html", menu = admin_menu,
+                         pager = pager, rows = rows)
+#enddef
 
 @app.route('/admin/page/edit', state.METHOD_GET_POST)
 def admin_edit_page(req):

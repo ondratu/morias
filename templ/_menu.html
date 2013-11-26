@@ -1,0 +1,12 @@
+      <div class="container">
+        <div class="navbar navbar-inverse">
+          <div class="navbar-inner">
+            <ul class="nav nav-pills pull-right">
+              {% for item in r.menu %}              {# TODO: tooltip (title) #}
+              <li {{ 'class="active"' if _template_ == item.template else '' }}>
+                <a href="{{ item.link }}">{{ item.label }}</a></li>{% endfor %}
+            </ul>
+            <a href="/"><h3 class="muted">{{ r.site.name }}</h3></a>
+          </div>
+        </div>
+      </div><!-- container -->

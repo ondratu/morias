@@ -1,5 +1,9 @@
 from poorwsgi import *
 from ConfigParser import ConfigParser, NoSectionError, NoOptionError
+from time import strftime
+
+
+import gettext
 
 config = None
 
@@ -22,8 +26,8 @@ def smart_get(value, cls = str, delimiter = ','):
 
 class SuperParser(ConfigParser):
     def get(self, section, option, default = None, cls = str, delimiter = ','):
+        #cls = cls if default is None else default.__class__
         default = None if default is None else str(default)
-        cls = cls if default is None else default.__class__
 
         try:
             value = ConfigParser.get(self, section, option).strip()
@@ -41,8 +45,8 @@ class SuperOptions:
         self.o = options;
 
     def get(self, sec, key, default = None, cls = str, delimiter = ','):
+        #cls = cls if default is None else default.__class__
         default = None if default is None else str(default)
-        cls = cls if default is None else default.__class__
 
         key = "%s_%s" % (sec, key)
         if default is None and key not in self.o:
@@ -72,30 +76,31 @@ class Config:
         #rpcAddress      = cfg.get('rpc', 'address', 'localhost')
         #rpcPort       = cfg.getint('rpc', 'port', 3030)
 
-        self.debug      = p.get('morias', 'debug', False)
+        self.debug      = p.get('morias', 'debug', False, cls = bool)
+
         self.templates  = p.get('morias', 'templates')
-        self.title      = p.get('morias','title', "Morias")
         self.modules    = p.get('morias', 'modules', cls = tuple)
+        self.langs      = p.get('morias', 'langs', 'en', cls = tuple)
+        self.locales    = p.get('morias', 'locales', 'locales/')
+
+        self.site_name          = p.get('site','name', "Morias")
+        self.site_description   = p.get('site','description', "cms")
+        self.site_keywords      = p.get('site','keywords', '', cls = tuple)
+        self.site_author        = p.get('site','author', '')
+        self.site_copyright     = p.get('site','copyright',
+                                            strftime ("%%Y %s" % self.site_author))
+        self.site_styles        = p.get('site','styles', '', cls = tuple)
 
         for module in self.modules:
             req.log_error('Loading module %s' % module, state.LOG_INFO)
             self.load_module(p, req, module)
 
         """
-        self.secretkey  = cfg.get('main','secretkey','poorpublisher')
         self.tmpPath    = cfg.get('main','tmp', '/tmp')
         self.origPath   = cfg.get('main','orig')
         self.pubPath    = cfg.get('main','pub')
         self.maintanancePath = cfg.get('maintanance','path')
         
-        # mysql
-        self.dbconn  = Connection(
-                    host = cfg.get('sql','server', "localhost"),
-                    port = cfg.getint('sql','port', 3306),
-                    db = cfg.get('sql','database'),
-                    user = cfg.get('sql','user'),
-                    passwd = cfg.get('sql','password')
-                    )
         # memcache
         mc_servers = cfg.get('memcache', 'servers')
         mc_servers = map(lambda x: x.strip(), mc_servers.split(','))
@@ -151,8 +156,9 @@ def load_config(req):
     if 'morias_db' in config.__dict__:      # fast alias to db
         req.db = config.morias_db
 
-        def logger(msg):
-            req.log_error(msg, state.LOG_INFO)
-        req.logger = logger
-    #enddef
+    #req.templates = req.cfg.templates
+
+    def logger(msg):
+        req.log_error(msg, state.LOG_INFO)
+    req.logger = logger
 #enddef

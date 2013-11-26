@@ -1,0 +1,32 @@
+      <div id="push"></div>
+    </div><!-- wrap -->
+
+    <div class="container">
+      <p class="credit"><small>&copy; {{ site.copyright }}.
+        <a href="http://mcbig.cz">Ondřej Tůma</a>
+        <a href="http://falias.zeropage.cz/morias.html">Morias</a>
+      </small></p>
+      {% if debug %}
+      {% from '_dbgitem.html' import subdict %}
+        <pre class="debug">
+    <b>Locales:</b>
+    {{ _ctx_().get_exported() }}
+   
+    <b>Template:</b>
+      {{ _template_ }}
+    
+    <b>_data_:</b>
+       {{ subdict(_data_,2) }}
+
+    <b>_ctx_:</b>
+      {% for key, val in _ctx_().get_all().items() %}{{key}}: {{ val|e }}
+      {% endfor %}
+
+    <b>Missing:</b>
+      {{ _miss_ }}
+
+        </pre>
+        {% endif %}
+    </div>
+  </body>
+</html>

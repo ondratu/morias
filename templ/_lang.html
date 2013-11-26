@@ -1,0 +1,6 @@
+{% include "locale/"+ lang + ".html" %}
+{% include "locale/"+ lang + "-errors.html" %}
+
+{% macro _(string) %}
+{{ l[string] if string in l else string }}
+{% endmacro %}

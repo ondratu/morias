@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from poorwsgi import state
+from poorwsgi import state, redirect
 from poorwsgi.session import PoorSession
 
 from time import time
 from hashlib import sha1
 
-rights = ['right_admin','right_user', 'right_guest']
+rights = ['admin', 'user', 'guest']
 
-def do_login(req, data, ip = None):
+def do_login(req, obj, ip = False):
     cookie = PoorSession(req)
-    cookie.data["data"] = data
+    # so cookie is not so long, just less then 500 chars 
+    cookie.data["data"] = (obj.__class__, obj.__dict__)
     cookie.data["timestamp"] = int(time())
     if ip:
         cookie.data["ip"] = req.get_remote_host()
@@ -47,7 +48,10 @@ def check_login(req, redirect_uri = None):
             redirect(req, redirect_uri)
         return None
 
-    req.login = cookie.data["data"]
+    __class__, __dict__ = cookie.data["data"]
+    req.login = __class__()
+    req.login.__dict__ = __dict__
+    # TODO: req.login.__check__() check cross to DB ??
     cookie.header(req, req.headers_out)     # refresh cookie
 
     return req.login

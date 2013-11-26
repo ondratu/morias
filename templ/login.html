@@ -1,0 +1,19 @@
+{% set title = 'Login' %}{% include "_header.html" -%}
+{% include lang + "/errors.html" with context %}
+
+    <div class="container">
+      <form class="form-signin" method="post">
+      {% if data.error is defined %}
+        <div class="alert alert-danger">{{ e[data.error] }}</div>
+      {% endif %}
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <input name="email" type="text" class="form-control" placeholder="Email address" value="{{ data.email }}" autofocus>
+        <input name="passwd" type="password" class="form-control" placeholder="Password">
+        <label class="checkbox">
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+    </div>  
+
+{% include "_footer.html" %}

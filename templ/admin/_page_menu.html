@@ -1,0 +1,13 @@
+    <nav class="container navbar navbar-inverse" role="navigation">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Morias</a>
+        <a class="navbar-brand" href="/admin">Admin menu &raquo;</a>
+      </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li {{ 'class="active"' if _template_ == 'admin/page.html' else '' }}><a href="/admin/page">{{ _("Pages") }}</a></li>
+          <li {{ 'class="active"' if _template_ == 'admin/page_new.html' else '' }}><a href="/admin/page/new">{{ _("New page") }}</a></li>
+        </ul>
+      </div>
+    </nav>
