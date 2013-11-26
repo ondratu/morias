@@ -34,7 +34,7 @@ Login.find = Login_find
 def login(req):
     form = FieldStorage(req)
     referer = form.getfirst('referer', '', str)
-    
+
     data = Object()
     data.referer = referer
     data.email = ''
