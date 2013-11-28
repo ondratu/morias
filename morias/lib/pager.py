@@ -1,6 +1,6 @@
 
 class Pager(object):
-    def __init__(self, offset = 0, limit = 20, order = 'id', sort = 'asc'):
+    def __init__(self, offset = 0, limit = 10, order = '', sort = 'asc'):
         self.offset = offset
         self.limit = limit
         self.order = order
@@ -19,4 +19,8 @@ class Pager(object):
         
         sort = form.getfirst("sort", self.sort, str)
         self.sort = sort if sort in ('asc', 'desc') else self.sort
+
+    def calculate(self):
+        self.pages = (self.total -1) / self.limit
+        self.page = self.offset / self.limit
 #endclass

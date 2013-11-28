@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from jinja2 import Environment, FileSystemLoader, DebugUndefined, \
         contextfunction
 from gettext import NullTranslations, translation
@@ -12,6 +14,23 @@ class sdict(dict):
     def set(self, key, item):
         self.__setitem__(key, item)
         return ''
+
+def to_unicode(obj):
+    if isinstance(obj, str):
+        obj = obj.decode('utf-8')
+    elif isinstance(obj, dict):
+        for k in obj.keys():
+            obj[k] = to_unicode(obj[k])
+    elif isinstance(obj, list) or isinstance(obj, tuple) or isinstance(obj, set):
+        obj = list(to_unicode(it) for it in obj )
+    elif hasattr(obj, '__dict__'):
+        for k in obj.__dict__.keys():
+            obj.__dict__[k] = to_unicode(obj.__dict__[k])
+    #else:
+    #    print '>> ', obj, ' <<'
+
+    return obj
+#enddef
 
 @contextfunction
 def ctx(context):
@@ -88,8 +107,11 @@ def generate_page(req, template, **kwargs):
     kwargs['site'].author        = req.cfg.site_author
     kwargs['site'].copyright     = req.cfg.site_copyright
     kwargs['site'].styles        = req.cfg.site_styles
+    kwargs['site'].this          = req.uri
 
     kwargs['e'] = sdict()
+
+    #kwargs = to_unicode(kwargs)
 
     translations = translation('morias',
                                 localedir = req.cfg.locales,

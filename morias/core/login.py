@@ -62,5 +62,11 @@ def check_right(req, right, redirect_uri = '/'):
         redirect(req, redirect_uri)
 #enddef
 
+def check_admin(req, right, redirect_uri = '/'):
+    if 'admin' in req.login.rights or right in req.login.rights:
+        return
+    redirect(req, redirect_uri)
+#enddef
+
 def sha1_sdigest(text, salt):
     return sha1(salt + text + "0nb\xc5\x99e!\xc5\xa4\xc5\xafm@").hexdigest()

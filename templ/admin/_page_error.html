@@ -1,0 +1,13 @@
+{%- if error is defined -%}
+{%- if error == 1 -%}
+    {{ _('Empty file name') }}
+{%- elif error == 2 -%}
+    {{ _('Bad file name') }}
+{%- elif error == 3 -%}
+    {{ _('Page does exist yet') }}
+{%- elif error == 4 -%}
+    {{ _('Page does not exist') }}
+{%- endif -%}
+{%- else -%}
+    &nbsp;
+{%- endif -%}

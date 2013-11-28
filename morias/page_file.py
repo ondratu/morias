@@ -3,11 +3,13 @@
 from poorwsgi import *
 from falias.sql import Sql
 
+from core.login import check_login, check_admin
 import core.login
 
 from admin import *
 
 from core.render import generate_page
+from core.errors import ACCESS_DENIED
 
 from lib.menu import Item
 from lib.pager import Pager
@@ -22,7 +24,7 @@ _check_conf = (
     ('pages', 'out',   str,  None),
 )
 
-core.login.rights += ['text_create', 'text_edit', 'text_delete']
+core.login.rights += ['page_list', 'page_create', 'page_edit', 'page_delete']
 
 admin_menu.append(Item('/admin/page', label="Pages"))
 
@@ -50,7 +52,7 @@ def root(req):
 @app.route('/admin/page')
 def admin_page(req):
     check_login(req, '/login?referer=/admin/page')
-    check_right(req, 'admin')
+    check_admin(req, 'page_list')
 
     form = FieldStorage(req)
 
@@ -65,39 +67,50 @@ def admin_page(req):
 @app.route('/admin/page/add', method = state.METHOD_GET_POST)
 def admin_page_add(req):
     check_login(req, '/login?referer=/admin/page/add')
-    check_right(req, 'admin')
+    check_admin(req, 'page_create')
 
-    if req.method = 'POST':
+    if req.method == 'POST':
         form = FieldStorage(req)
         page = Page()
-        page.bind(req)
+        page.bind(form)
         error = page.add(req)
 
         if error:
-            return generate_page(req, "admin/page_add.html", menu = admin_menu,
+            return generate_page(req, "admin/page_mod.html", menu = admin_menu,
                          page = page, error = error)
 
         redirect(req, '/admin/page/mod?page_id=%d' % page.id)
     #end
 
-    return generate_page(req, "admin/page_add.html", menu = admin_menu)
+    return generate_page(req, "admin/page_mod.html", menu = admin_menu)
 #enddef
 
 @app.route('/admin/page/mod', state.METHOD_GET_POST)
 def admin_page_mod(req):
-    check_login(req, '/login?referer=/admin/page/add')
-    check_right(req, 'admin')
+    check_login(req, '/login?referer=/admin/page/mod')
+    check_admin(req, 'page_edit')
 
     form = FieldStorage(req)
     page = Page(form.getfirst('page_id', 0, int))
-    if req.method = 'POST':
-        page.bind(req)
+    if req.method == 'POST':
+        page.bind(form)
+        if 'admin' not in req.login.rights:
+            if not page.check_right(req):
+                return generate_page(req, "admin/page_mod.html",
+                                    menu = admin_menu,
+                                    page = page,
+                                    error = ACCESS_DENIED)
+        #endif
         error = page.mod(req)
 
         if error:
-            return generate_page(req, "admin/page_mod.html", menu = admin_menu,
-                         page = page, error = error)
+            return generate_page(req, "admin/page_mod.html",
+                                    menu = admin_menu,
+                                    page = page,
+                                    error = error)
+        #endif
     #end
     page.get(req)
     return generate_page(req, "admin/page_mod.html", menu = admin_menu,
                          page = page)
+#enddef

@@ -1,3 +1,27 @@
-{% set title = 'Admin - pages' %}{% include "_header.html" -%}
-{% include "admin/_page_menu.html" %}
+{% set title = 'Admin - pages' -%}
+{% include "_header.html" -%}
+{% include "admin/_menu.html" %}
+
+    <div class="container">
+      <h2 class="form-signin-heading">
+        <span class="pul-l-left">{{ _('Pages list') }}</span>
+        <span class="btn btn-default pull-right"><a href="/admin/page/add">{{ _('New page') }}</a></span></h2>
+      
+      <table class="table table-hover">
+        <tr><th>{{ _('Name') }}</th>
+            <th>{{ _('Title') }}</th>
+            <th>{{ _('Locale') }}</th>
+            <th>{{ _('Last modify') }}</th>
+            <th>{{ _('Action' )}}</th></tr>
+        {% for page in rows %}
+        <tr><td><a href="/{{page.name}}">{{ page.name }}</a></td>
+            <td>{{ page.title }}</td>
+            <td>{{ page.locale }}</td>
+            <td>{{ page.modify.strftime("%H:%M %d.%m.%Y") }}</td>
+            <td><a href="/admin/page/mod?page_id={{ page.id }}">{{ _('Edit') }}</a></td></tr>
+        {% endfor %}
+      </table>
+{% include "_pager.html" %}
+
+    </div>
 {% include "_footer.html" %}

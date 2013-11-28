@@ -1,0 +1,9 @@
+{% set title = page.title -%}
+{% include "_header.html" -%}
+{% include "_menu.html" -%} {#- could be "_menu_" + page.lang + ".html" -#}
+
+    <div class="container">
+     {{ page.text }}
+    </div>
+
+{% include "_footer.html" %}
