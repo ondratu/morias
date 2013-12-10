@@ -1,33 +1,27 @@
 from poorwsgi import *
 from falias.sql import Sql
 
-import json
-
 from core.render import Object, generate_page
-from lib.login import Login
+from core.login import rights, do_login, do_logout, check_login, check_referer
 
-import core.login, core.errors
+from lib.menu import Item, correct_menu
+from lib.pager import Pager
+from lib.login_sqlite import Login
+
+from admin import *
+from user import *
+from core.errors import *
 
 _check_conf = (
-    ('morias', 'salt', str, None),
-    ('morias', 'db', Sql, None)
+    ('morias', 'salt', unicode, None),              # salt for passwords
+    ('morias', 'db', Sql, None),                    # database configuration
+    ('morias', 'register', bool, False),            # if users can regiser
 )
 
+rights += ['login_list', 'login_create', 'login_edit', 'login_ban']
 
-def Login_find(self, req):
-    tran = req.db.transaction(req.logger)
-    c = tran.cursor()
-    c.execute("SELECT login_id, rights FROM login "
-                "WHERE email = %s AND passwd = %s AND enabled = 1",
-                (self.email, self.passwd))
-    row = c.fetchone()
-    tran.commit()
-
-    if not row: return False
-    self.id = row[0]
-    self.rights = json.loads(row[1])
-    return True
-Login.find = Login_find
+admin_menu.append(Item('/admin/login', label="Logins", rights = ['login_list']))
+user_menu.append(Item('/user/profile', label="Profile"))
 
 
 @app.route('/login', method = state.METHOD_GET_POST)
@@ -44,10 +38,10 @@ def login(req):
         ip = 'ip' in form
         login.bind(form, req.cfg.morias_salt)
         if login.find(req):
-            core.login.do_login(req, login, ip)
+            do_login(req, login.simple(), ip)
             if referer:
                 redirect(req, referer)
-            if 'admin' in login.rights:
+            if 'admin' in login.rights or 'super' in login.rights:
                 redirect(req, '/admin')
             if 'user' in login.rights:
                 redirect(req, '/user')
@@ -55,13 +49,130 @@ def login(req):
 
         data.ip = ip
         data.email = login.email
-        data.error = core.errors.BAD_LOGIN
+        data.error = BAD_LOGIN
 
     return generate_page(req, "login.html", data = data)
 #enddef
 
 @app.route('/logout')
 def logout(req):
-    core.login.do_logout(req)
+    do_logout(req)
     redirect(req, req.referer or '/')
+#enddef
+
+@app.route('/admin/login')
+def admin_login(req):
+    check_login(req, '/login?referer=/admin/login')
+    check_right(req, 'login_list')
+
+    form = FieldStorage(req)
+    error = form.getfirst('error', 0, int)
+
+    pager = Pager()
+    pager.bind(form)
+
+    rows = Login.list(req, pager)
+    return generate_page(req, "admin/login.html",
+                        menu = correct_menu(req, admin_menu),
+                        pager = pager, rows = rows, error = error)
+#enddef
+
+@app.route('/admin/login/add', method = state.METHOD_GET_POST)
+def admin_login_add(req):
+    check_login(req, '/login?referer=/admin/login/add')
+    check_right(req, 'login_create', '/admin/login?error=%d' % ACCESS_DENIED)
+
+    if req.method == 'POST':
+        form = FieldStorage(req)
+        login = Login()
+        login.bind(form, req.cfg.morias_salt)
+        error = login.add(req)
+
+        if error:
+            return generate_page(req, "admin/login_mod.html",
+                            menu = correct_menu(req, admin_menu),
+                            rights = rights,
+                            item = login, error = error)
+
+        #redirect(req, '/admin/login/mod?login_id=%d' % login.id)
+        redirect(req, '/admin/login')
+    #end
+
+    return generate_page(req, "admin/login_mod.html",
+                            menu = correct_menu(req, admin_menu),
+                            rights = rights)
+#enddef
+
+@app.route('/admin/login/mod', state.METHOD_GET_POST)
+def admin_login_mod(req):
+    check_login(req, '/login?referer=/admin/login/mod')
+    check_right(req, 'login_edit', '/admin/login?error=%d' % ACCESS_DENIED)
+
+    form = FieldStorage(req)
+    login = Login(form.getfirst('login_id', 0, int))
+    if req.login.id == login.id:
+        redirect(req, '/admin/login?error=%d' % ACCESS_DENIED)
+
+    state = None
+    if req.method == 'POST':
+        login.bind(form, req.cfg.morias_salt)
+        state = login.mod(req)
+
+        if state < 100:
+            return generate_page(req, "admin/login_mod.html",
+                                 menu = correct_menu(req, admin_menu),
+                                 rights = rights,
+                                 item = login, error = state)
+        #endif
+    #endif
+
+    if not login.get(req):
+        redirect(req, '/admin/login?error=%d' % NOT_FOUND)
+    return generate_page(req, "admin/login_mod.html",
+                            menu = correct_menu(req, admin_menu),
+                            rights = rights,
+                            item = login, state = state)
+#enddef
+
+@app.route('/admin/login/disable')
+@app.route('/admin/login/enable')
+def admin_login_enable(req):
+    check_login(req, '/login?referer=/admin/login')
+    check_right(req, 'login_ban', '/admin/login?error=%d' % ACCESS_DENIED)
+    check_referer(req, '/admin/login')
+    
+    form = FieldStorage(req)
+    login = Login(form.getfirst('login_id', 0, int))
+    if req.login.id == login.id:
+        redirect(req, '/admin/login?error=%d' % ACCESS_DENIED)
+
+    login.enabled = int(req.uri == '/admin/login/enable')
+    login.enable(req)
+    redirect(req, '/admin/login')
+#enddef
+
+@app.route('/user/profile', state.METHOD_GET_POST)
+def user_login_pref(req):
+    check_login(req, '/login?referer=/user/profile')
+
+    form = FieldStorage(req)
+    login = Login(req.login.id)
+
+    state = None
+    if req.method == 'POST':
+        login.bind(form, req.cfg.morias_salt)
+        state = login.pref(req)
+
+        if state < 100:
+            return generate_page(req, "user/login_pref.html",
+                                 menu = correct_menu(req, user_menu),
+                                 error = state)
+        #endif
+    #endif
+
+    login.get(req)
+    req.login = login
+    return generate_page(req, "user/login_pref.html",
+                        menu = correct_menu(req, user_menu),
+                        state = state)
 #enddef

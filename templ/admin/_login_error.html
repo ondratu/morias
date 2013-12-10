@@ -1,0 +1,15 @@
+{%- if error is defined -%}
+{%- if error == 1 -%}
+    {{ _('Bad email') }}
+{%- elif error == 2 -%}
+    {{ _('Password must be more the 6 chars long, and must contain upper case and nubmers') }}
+{%- elif error == 3 -%}
+    {{ _('Passwords not same') }}
+{%- elif error == 4 -%}
+    {{ _('Login exist yet') }}
+{%- elif error == 5 -%}
+    {{ _('Login does not exist') }}
+{%- endif -%}
+{%- else -%}
+    &nbsp;
+{%- endif -%}

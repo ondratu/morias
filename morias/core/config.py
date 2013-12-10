@@ -1,4 +1,5 @@
 from poorwsgi import *
+from falias.unicode import uni
 from ConfigParser import ConfigParser, NoSectionError, NoOptionError
 from time import strftime
 
@@ -7,7 +8,9 @@ import gettext
 
 config = None
 
-def smart_get(value, cls = str, delimiter = ','):
+def smart_get(value, cls = unicode, delimiter = ','):
+    if issubclass(cls, unicode):
+        return uni(value)
     if issubclass(cls, str):
         return value
     if issubclass(cls, bool):
@@ -18,14 +21,16 @@ def smart_get(value, cls = str, delimiter = ','):
         else:
             raise ValueError("%s is not boolean value" % value)
     if issubclass(cls, list) or issubclass(cls, tuple):
-        return cls(map(lambda s: s.strip(), value.split(delimiter)))
+        if value:
+            return cls(map(lambda s: s.strip(), value.split(delimiter)))
+        return cls()
     else:
         return cls(value)
 #enddef
 
 
 class SuperParser(ConfigParser):
-    def get(self, section, option, default = None, cls = str, delimiter = ','):
+    def get(self, section, option, default = None, cls = unicode, delimiter = ','):
         #cls = cls if default is None else default.__class__
         default = None if default is None else str(default)
 

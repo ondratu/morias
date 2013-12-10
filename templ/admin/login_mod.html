@@ -1,0 +1,91 @@
+{% if site.this == '/admin/login/add' -%}
+    {% set title = 'Admin - edit login ' + item.email -%}
+{% else -%}
+    {% set title = 'Admin - new login' -%}
+{% endif -%}
+{% include "_header.html" -%}
+{% include "admin/_menu.html" %}
+
+    <script src="/js/rights.js"></script>
+
+    <div class="container">
+    {% if site.this == '/admin/login/add' -%}
+      <h2 class="form-signin-heading">{{ _('New login') }}
+    {% else -%}
+      <h2 class="form-signin-heading">{{ _('Edit login') }}
+      {% if check_right('login_create') -%}
+        <span class="btn btn-default pull-right"><a href="/admin/login/add">{{ _('New login') }}</a></span>
+      {% endif -%}
+    {% endif -%}
+      {% if check_right('login_list') -%}
+        <span class="btn btn-default pull-right"><a href="/admin/login">{{ _('Login list') }}</a></span>
+      {% endif -%}
+      </h2>
+
+    {% if state is defined and state == 200 -%}
+      <div class="alert alert-info">{{ _('Password was set!') }}</div>
+    {% endif -%}
+
+      <form class="form-horizontal" role="form" method="post">
+        <div class="form-group {{ 'has-error' if error is defined and error in (1, 5) else '' }}">
+          <label for="input_email" class="col-sm-3 control-label">{{ _('Email') }}</label>
+          <div class="col-sm-4">
+            <input type="email" id="input_email" name="email" class="form-control" placeholder="{{ _('Email') }}" value="{{ item.email or '' }}"></div>
+        {% if error is defined and error in (1, 5) %}
+          <div class="col-sm-4 help-inline" >{% include "admin/_login_error.html" %}</div>
+        {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">{{ _('Rights') }}</label>
+            <label style="text-align: center;" class="col-sm-4 control-label">{{ _('Possilbe rights') }}</label>
+            <label style="text-align: center;" class="col-sm-4 control-label">{{ _('Attache rights') }}</label>
+        </div>
+        <div class="form-group">
+          <div id="possible_rights" class="col-sm-4 col-sm-offset-3">
+          {% for right in rights if right not in item.rights -%}
+            <a class="col-sm-5 btn btn-default btn-add" value="{{ right }}">
+              <span class="pull-left">{{ right }}</span>
+              <span class="pull-right glyphicon"></span></a>
+            <div class="col-sm-1"></div>
+          {% endfor %}
+          </div>
+          <div id="attache_rights" class="col-sm-4">    
+          {% for right in item.rights -%}
+            <a class="col-sm-5 btn btn-default btn-remove" value="{{ right }}">
+              <span class="pull-left">{{ right }}</span>
+              <span class="pull-right glyphicon"></span></a>
+            <div class="col-sm-1"></div>
+            <input type="hidden" value="{{right}}" name="rights">
+          {% endfor %}
+          </div>
+        </div>
+
+        <div class="form-group {{ 'has-error' if error is defined and error == 2 else '' }}">
+          <label for="input_passwd" class="col-sm-3 control-label">{{ _('Password') }}</label>
+          <div class="col-sm-4">
+            <input type="password" id="input_passwd" name="passwd" class="form-control" placeholder="{{ _('Password') }}"></div>
+        {% if error is defined and error == 2 %}
+          <div class="col-sm-4 help-inline" >{% include "admin/_login_error.html" %}</div>
+        {% elif site.this == '/admin/login/mod' %}
+          <div class="col-sm-4 help-inline">{{ _('Fill it only, if you want to change.') }}</div>
+        {% endif %}
+        </div>
+
+        <div class="form-group {{ 'has-error' if error is defined and error == 3 else '' }}">
+          <label for="input_again" class="col-sm-3 control-label">{{ _('Password again') }}</label>
+          <div class="col-sm-4">
+            <input type="password" id="input_again" name="again" class="form-control" placeholder="{{ _('Password again') }}"></div>
+        {% if error is defined and error == 3 %}
+          <div class="col-sm-4 help-inline" >{% include "admin/_login_error.html" %}</div>
+        {% endif %}
+        </div>
+        
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-4">
+            <button class="btn btn-default" type="submit">{{ _('Save') }}</button></div>
+        </div>
+      </form>
+    </div>
+
+{% include "_footer.html" %}

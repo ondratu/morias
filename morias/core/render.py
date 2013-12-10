@@ -36,6 +36,24 @@ def to_unicode(obj):
 def ctx(context):
     return context
 
+@contextfunction
+def check_right(ctx, right):
+    if right in ctx['login'].rights or 'super' in ctx['login'].rights:
+        return True
+    return False
+#enddef
+
+@contextfunction
+def match_right(ctx, rights):
+    if not rights or 'super' in ctx['login'].rights:
+        return True                 # not rights means means login have right
+
+    if not set(ctx['login'].rights).intersection(rights):
+        return False                # no rights match
+
+    return True                     # some rights match
+#enddef
+
 def _truncate(string, length = 255, killwords = True, end='...'):
     """ Only True yet """
     if len(string) > length:
@@ -67,12 +85,15 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
 
         def __unicode__(self):
             missing.append(self._undefined_name)
+            if kwargs['debug']:
+                return '[Undefined] %s' % self._undefined_name
             return DebugUndefined.__unicode__(self)
     #endclass
 
     env = Environment(loader=FileSystemLoader(path),
                       undefined = MissingUndefined,
                       extensions=['jinja2.ext.i18n'])
+    # debug functionality
     env.globals['_ctx_'] = ctx
     env.globals['_data_'] = kwargs.copy()
     env.globals['_miss_'] = missing
@@ -81,6 +102,10 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     # jinja2 compatibility with old versions
     env.globals['length']    = len
     env.globals['truncate']  = _truncate
+
+    # morias functionality
+    env.globals['check_right'] = check_right
+    env.globals['match_right'] = match_right
 
     # gettext support
     env.install_gettext_translations(translations)
@@ -99,7 +124,10 @@ def generate_page(req, template, **kwargs):
 
     kwargs['lang'] = get_lang(req)
     kwargs['debug'] = req.cfg.debug
-    
+
+    if hasattr(req, 'login'):
+        kwargs['login'] = req.login
+
     kwargs['site'] = Object()
     kwargs['site'].name          = req.cfg.site_name
     kwargs['site'].description   = req.cfg.site_description
