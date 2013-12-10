@@ -10,6 +10,7 @@ from shutil import copyfile
 from falias.unicode import uni
 
 from core.render import generate_page
+from core.login import match_right
 
 #errors
 EMPTY_FILENAME  = 1
@@ -44,7 +45,7 @@ class Page():
         tran = req.db.transaction(req.logger)
         c = tran.cursor()
 
-        try:        # page name is uniq
+        try:        # page must be uniq
             c.execute("INSERT INTO page (name, title, locale, editor_rights) "
                     "VALUES ( %s, %s, %s, %s )",
                     (self.name, self.title, self.locale, json.dumps(self.rights)))
@@ -65,9 +66,9 @@ class Page():
         tran = req.db.transaction(req.logger)
         c = tran.cursor()
 
-        try:        # page name is uniq
+        try:        # page name must be uniq
             c.execute("UPDATE page SET "
-                    "name = %s, title = %s, locale = %s, editor_rights = %s "
+                        "name = %s, title = %s, locale = %s, editor_rights = %s "
                     "WHERE page_id = %s",
                     (self.name, self.title, self.locale, json.dumps(self.rights), self.id))
         except IntegrityError as e:
@@ -110,16 +111,10 @@ class Page():
         
         tran = req.db.transaction(req.logger)
         c = tran.cursor()
-        c.execute("SELECT rights FROM page WHERE page_id = %s", self.id)
+        c.execute("SELECT editor_rights FROM page WHERE page_id = %s", self.id)
 
         rights = json.loads(c.fetchone()[0])
-        if not rights:
-            return True                     # text have no rights
-
-        if not set(req.login.rights).intersection(rights):
-            return False
-
-        return True
+        return match_right(req, rights)
     #enddef
             
     def check_filename(self):
