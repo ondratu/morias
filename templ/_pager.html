@@ -1,9 +1,9 @@
 {% set rv = pager.calculate() -%}
 
 {%- set ordering = "" %}
-{%- if pager.order %}
+{%- if pager.order != pager.d_order %}
     {% set ordering = "order="+pager.order+"&" %}
-{%- if pager.sort %}
+{%- if pager.sort != pager.d_sort %}
     {% set ordering = ordering + "sort="+pager.sort+"&" %}
 {%- endif %}
 {%- endif %}

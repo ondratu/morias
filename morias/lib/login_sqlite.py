@@ -3,7 +3,7 @@ import json, re
 
 from sqlite3 import IntegrityError
 
-from falias.unicode import uni
+from falias.util import uni
 
 from core.login import sha1_sdigest
 

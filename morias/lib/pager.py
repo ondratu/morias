@@ -1,6 +1,11 @@
 
 class Pager(object):
     def __init__(self, offset = 0, limit = 10, order = '', sort = 'asc'):
+        self.d_offset = offset
+        self.d_limit = limit
+        self.d_order = order
+        self.d_sort = sort
+
         self.offset = offset
         self.limit = limit
         self.order = order

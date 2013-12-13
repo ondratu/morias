@@ -23,6 +23,22 @@ rights += ['login_list', 'login_create', 'login_edit', 'login_ban']
 admin_menu.append(Item('/admin/login', label="Logins", rights = ['login_list']))
 user_menu.append(Item('/user/profile', label="Profile"))
 
+@app.route("/test/login/db")
+def test_db(req):
+    data = (None, 123, 3.14, "user@domain.xy", "'; SELECT 1; SELECT")
+    tran = req.db.transaction(req.logger)
+    c = tran.cursor()
+    c.execute("SELECT %s, %s, %s, %s, %s", data)
+    copy = tuple(it.encode('utf-8') if isinstance(it, unicode) else it \
+                        for it in c.fetchone())
+    tran.commit()
+
+    req.content_type = "text/plain; charset=utf-8"
+    if copy == data:
+        return "Test Ok\n" + str(data) + '\n' + str(copy)
+    else:
+        return "Test failed\n" + str(data) + '\n' + str(copy)
+#enddef
 
 @app.route('/login', method = state.METHOD_GET_POST)
 def login(req):

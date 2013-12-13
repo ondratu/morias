@@ -1,0 +1,58 @@
+{% if site.this == '/admin/new/add' -%}
+    {% set title = 'Admin - edit new ' + new.title -%}
+{% else -%}
+    {% set title = 'Admin - new new' -%}
+{% endif -%}
+{% include "_header.html" -%}
+{% include "admin/_menu.html" %}
+
+    <div class="container">
+    {% if site.this == '/admin/new/add' -%}
+      <h2 class="form-signin-heading">{{ _('New new') }}
+    {% else -%}
+      <h2 class="form-signin-heading">{{ _('Edit new') }}
+      {% if check_right('new_create') -%}
+        <span class="btn btn-default pull-right"><a href="/admin/new/add">{{ _('New new') }}</a></span>
+      {% endif -%}
+    {% endif -%}
+      {% if check_right('new_list') -%}
+        <span class="btn btn-default pull-right"><a href="/admin/new">{{ _('New list') }}</a></span>
+      {% endif -%}
+      </h2>
+      <form class="form-horizontal" role="form" method="post">
+        <div class="form-group">
+          <label for="input_title" class="col-sm-1 control-label">{{ _('Title') }}</label>
+          <div class="col-sm-11 {{ 'has-error' if error is defined and error == 1 else '' }}">
+            <input type="text" id="input_title" name="title" class="form-control" placeholder="{{ _('Title') }}" value="{{ new.title or '' }}">
+            {% if error is defined and error == 1 %}<div class="help-inline" >{{ _('Empty title') }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input_locale" class="col-sm-1 control-label">{{ _('Locale') }}</label>
+          <div class="col-sm-5">
+            <input type="text" id="input_locale" name="locale" class="form-control" placeholder="{{ _('Locale') }}" value="{{ new.locale or '' }}">
+          </div>
+          <div class="col-sm-2 col-sm-offset-4"><button class="btn btn-default btn-block" type="submit">{{ _('Save') }}</button></div>
+        </div>
+
+        <div class="form-group {{ 'has-error' if error is defined and error == 2 else '' }}">
+          <div class="col-sm-12">
+            <textarea id="input_body" name="body" class="form-control" rows="10">{{ new.body or '' }}</textarea>
+            {% if error is defined and error == 2 %}<div class="help-inline" >{{ _('Empty body') }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-2 col-sm-offset-10"><button class="btn btn-default btn-block" type="submit">{{ _('Save') }}</button></div>
+        </div>
+      </form>
+    </div>
+  {% if site.this == '/admin/page/mod' -%}
+    <script>
+        var btn = $('.swittcher');
+        M.hiddener.close(btn, 0); 
+    </script>
+  {% endif -%}
+
+{% include "_footer.html" %}

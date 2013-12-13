@@ -1,0 +1,22 @@
+{% set title = _('News') -%}
+{% include "_header.html" -%}
+{% include "_menu.html" -%}
+
+    <div class="container">
+      <h2 class="form-signin-heading"><span class="pul-l-left">{{ _('News list') }}</span></h2>
+      
+   {%- if error is defined and error == 1002 -%}
+     <div class="alert alert-danger">{{ _('Not found') }}</div>
+   {%- endif -%}
+        
+      {% for new in rows -%}
+      <div>
+        <h3><a href="/new/detail?new_id={{new.id}}">{{ new.title }}</a></h3>
+        <div class="pull-right"><small>{{ new.create_date.strftime("%H:%M %d.%m.%Y") }}</small></div>
+        <div>{{ new.body }}</div>
+      </div>
+      {% endfor -%}
+{% include "_pager.html" %}
+
+    </div>
+{% include "_footer.html" %}

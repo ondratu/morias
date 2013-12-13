@@ -1,0 +1,53 @@
+{% set title = 'Admin - news' -%}
+{% include "_header.html" -%}
+{% include "admin/_menu.html" %}
+
+    <div class="container">
+      <h2 class="form-signin-heading">
+        <span class="pul-l-left">{{ _('News list') }}</span>
+      {% if check_right('new_create') -%}
+        <span class="btn btn-default pull-right"><a href="/admin/new/add">{{ _('New new') }}</a></span>
+      {% endif -%}
+      </h2>
+      
+   {%- if error is defined and error == 1001 -%}
+     <div class="alert alert-danger">{{ _('Access denied') }}</div>
+   {%- endif -%}
+   {%- if error is defined and error == 1002 -%}
+     <div class="alert alert-danger">{{ _('Not found') }}</div>
+   {%- endif -%}
+
+      <table class="table table-hover">
+        <tr><th>#</th>
+            <th>{{ _('Title') }}</th>
+            <th>{{ _('Locale') }}</th>
+            <th>{{ _('Create time') }}</th>
+            <th>{{ _('Action' )}}</th></tr>
+        {% for new in rows %}
+        <tr><td>{{ new.id }}</td>
+            <td>{% if new.enabled -%}
+                <a href="/new/detail?new_id={{new.id}}">{{ new.title }}</a>
+                {% else -%}
+                <span class="disabled">{{ new.title }}</span>
+                {% endif -%}
+            </td>
+            <td>{{ new.locale }}</td>
+            <td>{{ new.create_date.strftime("%H:%M %d.%m.%Y") }}</td>
+            <td>
+            {% if check_right('new_edit') -%}
+              <a href="/admin/new/mod?new_id={{ new.id }}">{{ _('Edit') }}</a>
+            {% endif -%}
+            {% if check_right('new_delete') -%}
+             {%- if new.enabled %}
+              / <a href="/admin/new/disable?new_id={{ new.id }}">{{ _('Disable') }}</a>
+             {%- elif not new.enabled %}
+              / <a href="/admin/new/enable?new_id={{ new.id }}">{{ _('Enabled') }}</a>
+             {% endif -%}
+            {% endif -%}
+            </td></tr>
+        {% endfor %}
+      </table>
+{% include "_pager.html" %}
+
+    </div>
+{% include "_footer.html" %}

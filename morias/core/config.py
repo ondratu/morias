@@ -1,5 +1,5 @@
 from poorwsgi import *
-from falias.unicode import uni
+from falias.util import uni
 from ConfigParser import ConfigParser, NoSectionError, NoOptionError
 from time import strftime
 

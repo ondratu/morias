@@ -7,7 +7,7 @@ from os.path import getmtime, exists
 from datetime import datetime
 from shutil import copyfile
 
-from falias.unicode import uni
+from falias.util import uni
 
 from core.render import generate_page
 from core.login import match_right
@@ -96,7 +96,8 @@ class Page():
         with open (source + '.tmp', 'w+') as tmp:
             tmp.write(self.text.encode('utf-8'))
         if exists(source):      # backup old file
-            copyfile(source, source + '.' + datetime.now().isoformat())
+            backup = req.cfg.pages_history + '/' + self.name
+            copyfile(source, backup + '.' + datetime.now().isoformat())
         rename(source + '.tmp', source)
 
         target = req.cfg.pages_out + '/' + self.name
