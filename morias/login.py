@@ -6,7 +6,7 @@ from core.login import rights, do_login, do_logout, check_login, check_referer
 
 from lib.menu import Item, correct_menu
 from lib.pager import Pager
-from lib.login_sqlite import Login
+from lib.login import Login
 
 from admin import *
 from user import *
@@ -156,7 +156,7 @@ def admin_login_enable(req):
     check_login(req, '/login?referer=/admin/login')
     check_right(req, 'login_ban', '/admin/login?error=%d' % ACCESS_DENIED)
     check_referer(req, '/admin/login')
-    
+
     form = FieldStorage(req)
     login = Login(form.getfirst('login_id', 0, int))
     if req.login.id == login.id:
