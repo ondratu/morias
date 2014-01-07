@@ -129,7 +129,7 @@ def new_list(req):
 
     rows = New.list(req, pager, body = True, enabled = 1, locale = (locale, ''))
     return generate_page(req, "new_list.html",
-                        pager = pager, rows = rows, error = error)
+                        pager = pager, rows = rows, error = error, lang = locale)
 #enddef
 
 @app.route('/new/detail')
