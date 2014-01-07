@@ -3,8 +3,7 @@ from falias.util import uni
 from ConfigParser import ConfigParser, NoSectionError, NoOptionError
 from time import strftime
 
-
-import gettext
+import os
 
 config = None
 
@@ -22,7 +21,7 @@ def smart_get(value, cls = unicode, delimiter = ','):
             raise ValueError("%s is not boolean value" % value)
     if issubclass(cls, list) or issubclass(cls, tuple):
         if value:
-            return cls(map(lambda s: s.strip(), value.split(delimiter)))
+            return cls(map(lambda s: uni(s.strip()), value.split(delimiter)))
         return cls()
     else:
         return cls(value)
@@ -49,7 +48,7 @@ class SuperOptions:
     def __init__(self, options):
         self.o = options;
 
-    def get(self, sec, key, default = None, cls = str, delimiter = ','):
+    def get(self, sec, key, default = None, cls = unicode, delimiter = ','):
         #cls = cls if default is None else default.__class__
         default = None if default is None else str(default)
 
@@ -85,7 +84,7 @@ class Config:
 
         self.templates  = p.get('morias', 'templates')
         self.modules    = p.get('morias', 'modules', cls = tuple)
-        self.langs      = p.get('morias', 'langs', 'en', cls = tuple)
+        self.langs      = p.get('morias', 'langs', 'en,cs', cls = list)
         self.locales    = p.get('morias', 'locales', 'locales/')
 
         self.site_name          = p.get('site','name', "Morias")
@@ -93,7 +92,7 @@ class Config:
         self.site_keywords      = p.get('site','keywords', '', cls = tuple)
         self.site_author        = p.get('site','author', '')
         self.site_copyright     = p.get('site','copyright',
-                                            strftime ("%%Y %s" % self.site_author))
+                                        strftime ("%%Y %s" % self.site_author.encode('utf-8')))
         self.site_styles        = p.get('site','styles', '', cls = tuple)
 
         for module in self.modules:
