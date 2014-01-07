@@ -12,7 +12,7 @@ M.hiddener = {
         chl.addClass('glyphicon-chevron-up');
     },
 
-    close: function() {
+    close: function(btn) {
         var duration = (duration == null) ? 100 : duration;
         var chl = btn.children();
         var elm = $('#'+btn.attr('elm'));
