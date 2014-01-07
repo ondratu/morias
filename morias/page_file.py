@@ -6,9 +6,9 @@ from falias.sql import Sql
 from os.path import exists, isdir
 from os import access, R_OK, W_OK
 
-from core.login import check_login, rights
+from core.login import check_login, rights, check_referer
 from core.render import generate_page
-from core.errors import ACCESS_DENIED
+from core.errors import ACCESS_DENIED, SUCCESS
 
 from lib.menu import Item
 from lib.pager import Pager
@@ -128,7 +128,7 @@ def admin_page_mod(req):
     page = Page(form.getfirst('page_id', 0, int))
     if not page.check_right(req):
         redirect(req, '/admin/page?error=%d' % ACCESS_DENIED)
-    
+
     if req.method == 'POST':
         page.bind(form)
         error = page.mod(req)
@@ -145,4 +145,29 @@ def admin_page_mod(req):
                         menu = correct_menu(req, admin_menu),
                         rights = rights,
                         page = page)
+#enddef
+
+@app.route('/admin/page/del', state.METHOD_POST)
+def admin_page_del(req):
+    check_login(req, '/login?referer=/admin/page/mod')
+    check_right(req, 'page_delete', '/admin/page?error=%d' % ACCESS_DENIED)
+    check_referer(req, '/admin/page')
+
+    form = FieldStorage(req)
+    page = Page(form.getfirst('page_id', 0, int))
+    if not page.check_right(req):
+        redirect(req, '/admin/page?error=%d' % ACCESS_DENIED)
+
+    page.delete(req)
+    redirect(req, '/admin/page?error=%d' % SUCCESS)
+#enddef
+
+@app.route('/admin/page/regenerate/all')
+def admin_page_regenerate_all(req):
+    check_login(req, '/login?referer=/admin/page/regenerate')
+    check_right(req, 'super', '/admin/page?error=%d' % ACCESS_DENIED)
+
+    Page.regenerate_all(req)
+
+    redirect(req, '/admin/page?error=%d' % SUCCESS)
 #enddef

@@ -2,7 +2,7 @@
 import json, re
 
 from sqlite3 import IntegrityError
-from os import rename
+from os import rename, remove
 from os.path import getmtime, exists
 from datetime import datetime
 from shutil import copyfile
@@ -18,7 +18,7 @@ BAD_FILENAME    = 2
 PAGE_EXIST      = 3
 PAGE_NOT_EXIST  = 4
 
-re_filename = re.compile(r"^[\w\.]+\.html$")
+re_filename = re.compile(r"^[\w\.-]+\.html$")
 
 class Page():
     def __init__(self, id = None):
@@ -52,9 +52,9 @@ class Page():
             self.id = c.lastrowid
         except IntegrityError as e:
             return PAGE_EXIST
-        
+
         self.save(req)
-        
+
         tran.commit()
     #enddef
 
@@ -76,9 +76,41 @@ class Page():
 
         if not c.rowcount:
             return PAGE_NOT_EXIST
-        
+
         self.save(req)
-        
+
+        tran.commit()
+    #enddef
+
+    def delete(self, req):
+        tran = req.db.transaction(req.logger)
+        c = tran.cursor()
+        c.execute("SELECT name, title, locale, editor_rights "
+                    "FROM page WHERE page_id = %s", self.id)
+        self.name, self.title, self.locale, rights = c.fetchone()
+
+        # meta file about deleted page
+        backup = req.cfg.pages_history + '/' + self.name
+        with open (backup + '.' + datetime.now().isoformat() + '.deleted' , 'w+') as tmp:
+            tmp.write("title: %s\n" % self.title)
+            tmp.write("locale: %s\n" % self.locale)
+            tmp.write("editor_rights: %s\n" % rights)
+
+        c.execute("DELETE FROM page WHERE page_id = %s", self.id)
+
+        if not c.rowcount:
+            return PAGE_NOT_EXIST
+
+        # simple backup deleted file to history
+        source = req.cfg.pages_source + '/' + self.name
+        if exists(source):      # backup old file
+            backup = req.cfg.pages_history + '/' + self.name
+            rename(source, backup + '.' + datetime.now().isoformat())
+
+        target = req.cfg.pages_out + '/' + self.name
+        if exists(target):      # delete output file
+            remove(target)
+
         tran.commit()
     #enddef
 
@@ -109,7 +141,7 @@ class Page():
 
     def check_right(self, req):
         """ check if any of login.rights metch any of page.rights """
-        
+
         tran = req.db.transaction(req.logger)
         c = tran.cursor()
         c.execute("SELECT editor_rights FROM page WHERE page_id = %s", self.id)
@@ -117,9 +149,34 @@ class Page():
         rights = json.loads(c.fetchone()[0])
         return match_right(req, rights)
     #enddef
-            
+
     def check_filename(self):
         return True if re_filename.match(self.name) else False
+    #enddef
+
+    @staticmethod
+    def regenerate_all(req):
+        tran = req.db.transaction(req.logger)
+        c = tran.cursor()
+        c.execute("SELECT page_id, name, title, locale FROM page")
+        items = []
+        row = c.fetchone()
+        while row is not None:
+            page = Page(row[0])
+            page.name = row[1]
+            page.title = row[2]
+            page.locale = row[3]
+
+            with open (req.cfg.pages_source + '/' + page.name, 'r') as f:
+                page.text = f.read().decode('utf-8')
+
+            target = req.cfg.pages_out + '/' + page.name
+            with open (target + '.tmp', 'w+') as tmp:
+                tmp.write(generate_page(req,
+                                "page.html", page = page).encode('utf-8'))
+            rename(target + '.tmp', target)
+            row = c.fetchone()
+        #endwhile
     #enddef
 
     @staticmethod

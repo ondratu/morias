@@ -8,10 +8,16 @@
       {% if check_right('page_create') -%}
         <span class="btn btn-default pull-right"><a href="/admin/page/add">{{ _('New page') }}</a></span>
       {% endif -%}
+      {% if check_right('super') -%}
+        <span class="btn btn-default pull-right"><a href="/admin/page/regenerate/all">{{ _('Regenerate all') }}</a></span>
+      {% endif -%}
       </h2>
       
    {%- if error is defined and error == 1001 -%}
      <div class="alert alert-danger">{{ _('Access denied') }}</div>
+   {%- endif %}
+   {%- if error is defined and error == 2000 -%}
+     <div class="alert alert-info">{{ _('Operation success') }}</div>
    {%- endif %}
 
       <table class="table table-hover">
