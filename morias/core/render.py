@@ -100,8 +100,8 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     env.globals['_template_'] = filename
 
     # jinja2 compatibility with old versions
-    env.globals['length']    = len
-    env.globals['truncate']  = _truncate
+    env.globals['length']   = len
+    env.globals['truncate'] = _truncate
 
     # morias functionality
     env.globals['check_right'] = check_right
@@ -122,7 +122,8 @@ def generate_page(req, template, **kwargs):
         req.content_type = 'text/html'
     #endif
 
-    kwargs['lang'] = get_lang(req)
+    if 'lang' not in kwargs:    # lang could be set explicit
+        kwargs['lang'] = get_lang(req)
     kwargs['debug'] = req.cfg.debug
 
     if hasattr(req, 'login'):
@@ -143,7 +144,7 @@ def generate_page(req, template, **kwargs):
 
     translations = translation('morias',
                                 localedir = req.cfg.locales,
-                                languages = get_langs(req),
+                                languages = list(set([kwargs['lang']] + get_langs(req))),
                                 fallback = True)
 
     return jinja_template(template, req.cfg.templates, translations, **kwargs)
