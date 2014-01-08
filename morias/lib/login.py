@@ -20,7 +20,7 @@ re_email    = re.compile(r"^[\w\.]+@[\w\.]{3,}$")
 re_upcase   = re.compile(r"[A-Z]+")
 re_number   = re.compile(r"[0-9]+")
 
-_drivers = ("sqlite", "mysql")
+_drivers = ("sqlite",)
 
 def driver(req):
     if req.db.driver not in _drivers:
@@ -50,9 +50,9 @@ class Login(object):
         return m.add(self, req)
     #enddef
 
-    def _mod(self, req):
+    def _mod(self, req, keys, vals):
         m = driver(req)
-        return m._mod(self, req)
+        return m._mod(self, req, keys, vals)
 
     def mod(self, req):
         keys = ['email', 'rights']
@@ -141,6 +141,6 @@ class Login(object):
     @staticmethod
     def list(req, pager):
         m = driver(req)
-        return m.list(req, pager)
+        return m.item_list(req, pager)
 
 #endclass

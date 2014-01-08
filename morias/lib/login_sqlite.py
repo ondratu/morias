@@ -79,7 +79,7 @@ def find(self, req):
     return True
 #enddef
 
-def list(req, pager):
+def item_list(req, pager):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
     c.execute("SELECT login_id, email, rights, enabled "
