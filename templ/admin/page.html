@@ -13,12 +13,34 @@
       {% endif -%}
       </h2>
       
-   {%- if error is defined and error == 1001 -%}
-     <div class="alert alert-danger">{{ _('Access denied') }}</div>
-   {%- endif %}
-   {%- if error is defined and error == 2000 -%}
-     <div class="alert alert-info">{{ _('Operation success') }}</div>
-   {%- endif %}
+    {%- if error is defined and error == 1001 -%}
+      <div class="alert alert-danger">{{ _('Access denied') }}</div>
+    {%- endif %}
+    {%- if error is defined and error == 2000 -%}
+      <div class="alert alert-info">{{ _('Operation success') }}</div>
+    {%- endif %}
+
+      <div id="sure_delete" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h3 id="sure_delete_label"></h3>
+            </div>
+            <form class="modal-footer" method="post" action="/admin/page/del">
+              <input type="hidden" name="page_id" id="page_id">
+              <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Close") }}</button>
+              <button type="submit" class="btn btn-danger">{{ _("Delete") }}</button>
+            </form>
+          </div> <!-- /.modal-content -->
+        </div> <!-- /.modal-dialog -->
+      </div> <!-- /.modal -->
+      <script>
+        function page_delete(page_id, page_name){
+          $('#page_id')[0].value = page_id;
+          $('#sure_delete_label').text("{{ _('Are you sure to delete %s page ?') }}".replace("%s", page_name));
+          $('#sure_delete').modal('toggle');
+        }
+      </script>      
 
       <table class="table table-hover">
         <tr><th>{{ _('Name') }}</th>
@@ -34,6 +56,9 @@
             <td>
             {% if check_right('page_edit') and match_right(page.rights) -%}
               <a href="/admin/page/mod?page_id={{ page.id }}">{{ _('Edit') }}</a>
+            {% endif -%}
+            {% if check_right('page_delete') and match_right(page.rights) -%}
+              / <a href="javascript:page_delete({{ page.id }}, '{{ page.name }}')">{{ _('Delete') }}</a>
             {% endif -%}
             </td></tr>
         {% endfor %}

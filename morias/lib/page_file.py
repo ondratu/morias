@@ -1,9 +1,8 @@
 
 import json, re
 
-from sqlite3 import IntegrityError
 from os import rename, remove
-from os.path import getmtime, exists
+from os.path import exists
 from datetime import datetime
 from shutil import copyfile
 
@@ -20,18 +19,22 @@ PAGE_NOT_EXIST  = 4
 
 re_filename = re.compile(r"^[\w\.-]+\.html$")
 
+_drivers = ("sqlite",)
+
+def driver(req):
+    if req.db.driver not in _drivers:
+        raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
+    m = "page_file_" + req.db.driver
+    return __import__("lib." + m).__getattribute__(m)
+#enddef
+
 class Page():
     def __init__(self, id = None):
         self.id = id
 
     def get(self, req):
-        tran = req.db.transaction(req.logger)
-        c = tran.cursor()
-        c.execute("SELECT name, title, locale, editor_rights "
-                    "FROM page WHERE page_id = %s", self.id)
-        self.name, self.title, self.locale, rights = c.fetchone()
-        self.rights = json.loads(rights)
-        tran.commit()
+        m = driver(req)
+        m.get(self, req)
 
         with open (req.cfg.pages_source + '/' + self.name, 'r') as f:
             self.text = f.read().decode('utf-8')
@@ -42,20 +45,8 @@ class Page():
 
         if not self.check_filename(): return BAD_FILENAME
 
-        tran = req.db.transaction(req.logger)
-        c = tran.cursor()
-
-        try:        # page must be uniq
-            c.execute("INSERT INTO page (name, title, locale, editor_rights) "
-                    "VALUES ( %s, %s, %s, %s )",
-                    (self.name, self.title, self.locale, json.dumps(self.rights)))
-            self.id = c.lastrowid
-        except IntegrityError as e:
-            return PAGE_EXIST
-
-        self.save(req)
-
-        tran.commit()
+        m = driver(req)
+        return m.add(self, req)
     #enddef
 
     def mod(self, req):
@@ -63,56 +54,13 @@ class Page():
 
         if not self.check_filename(): return BAD_FILENAME
 
-        tran = req.db.transaction(req.logger)
-        c = tran.cursor()
-
-        try:        # page name must be uniq
-            c.execute("UPDATE page SET "
-                        "name = %s, title = %s, locale = %s, editor_rights = %s "
-                    "WHERE page_id = %s",
-                    (self.name, self.title, self.locale, json.dumps(self.rights), self.id))
-        except IntegrityError as e:
-            return PAGE_EXIST
-
-        if not c.rowcount:
-            return PAGE_NOT_EXIST
-
-        self.save(req)
-
-        tran.commit()
+        m = driver(req)
+        return m.mod(self, req)
     #enddef
 
     def delete(self, req):
-        tran = req.db.transaction(req.logger)
-        c = tran.cursor()
-        c.execute("SELECT name, title, locale, editor_rights "
-                    "FROM page WHERE page_id = %s", self.id)
-        self.name, self.title, self.locale, rights = c.fetchone()
-
-        # meta file about deleted page
-        backup = req.cfg.pages_history + '/' + self.name
-        with open (backup + '.' + datetime.now().isoformat() + '.deleted' , 'w+') as tmp:
-            tmp.write("title: %s\n" % self.title)
-            tmp.write("locale: %s\n" % self.locale)
-            tmp.write("editor_rights: %s\n" % rights)
-
-        c.execute("DELETE FROM page WHERE page_id = %s", self.id)
-
-        if not c.rowcount:
-            return PAGE_NOT_EXIST
-
-        # simple backup deleted file to history
-        source = req.cfg.pages_source + '/' + self.name
-        if exists(source):      # backup old file
-            backup = req.cfg.pages_history + '/' + self.name
-            rename(source, backup + '.' + datetime.now().isoformat())
-
-        target = req.cfg.pages_out + '/' + self.name
-        if exists(target):      # delete output file
-            remove(target)
-
-        tran.commit()
-    #enddef
+        m = driver(req)
+        return m.delete(self, req)
 
     def bind(self, form):
         self.id = form.getfirst('page_id', fce = int) if 'page_id' in form else None
@@ -139,71 +87,53 @@ class Page():
         rename(target + '.tmp', target)
     #enddef
 
+    def remove(self, req, rights):
+        # meta file about deleted page
+        backup = req.cfg.pages_history + '/' + self.name
+        with open (backup + '.' + datetime.now().isoformat() + '.deleted' , 'w+') as tmp:
+            tmp.write("title: %s\n" % self.title)
+            tmp.write("locale: %s\n" % self.locale)
+            tmp.write("editor_rights: %s\n" % rights)
+
+        source = req.cfg.pages_source + '/' + self.name
+        if exists(source):      # backup old file
+            backup = req.cfg.pages_history + '/' + self.name
+            rename(source, backup + '.' + datetime.now().isoformat())
+
+        target = req.cfg.pages_out + '/' + self.name
+        if exists(target):      # delete output file
+            remove(target)
+    #enddef
+
+    def regenerate(self, req):
+        with open (req.cfg.pages_source + '/' + self.name, 'r') as f:
+            self.text = f.read().decode('utf-8')
+
+        target = req.cfg.pages_out + '/' + self.name
+        with open (target + '.tmp', 'w+') as tmp:
+            tmp.write(generate_page(req,
+                                "page.html", page = self).encode('utf-8'))
+        rename(target + '.tmp', target)
+    #enddef
+
+
     def check_right(self, req):
         """ check if any of login.rights metch any of page.rights """
-
-        tran = req.db.transaction(req.logger)
-        c = tran.cursor()
-        c.execute("SELECT editor_rights FROM page WHERE page_id = %s", self.id)
-
-        rights = json.loads(c.fetchone()[0])
-        return match_right(req, rights)
+        m = driver(req)
+        return match_right(req, m.load_rights(self, req))
     #enddef
 
     def check_filename(self):
         return True if re_filename.match(self.name) else False
-    #enddef
 
     @staticmethod
     def regenerate_all(req):
-        tran = req.db.transaction(req.logger)
-        c = tran.cursor()
-        c.execute("SELECT page_id, name, title, locale FROM page")
-        items = []
-        row = c.fetchone()
-        while row is not None:
-            page = Page(row[0])
-            page.name = row[1]
-            page.title = row[2]
-            page.locale = row[3]
-
-            with open (req.cfg.pages_source + '/' + page.name, 'r') as f:
-                page.text = f.read().decode('utf-8')
-
-            target = req.cfg.pages_out + '/' + page.name
-            with open (target + '.tmp', 'w+') as tmp:
-                tmp.write(generate_page(req,
-                                "page.html", page = page).encode('utf-8'))
-            rename(target + '.tmp', target)
-            row = c.fetchone()
-        #endwhile
-    #enddef
+        m = driver(req)
+        m.regenerate_all(req)
 
     @staticmethod
     def list(req, pager):
-        tran = req.db.transaction(req.logger)
-        c = tran.cursor()
-        c.execute("SELECT page_id, name, title, locale, editor_rights "
-                    "FROM page ORDER BY name LIMIT %s, %s",
-                    (pager.offset, pager.limit))
-        items = []
-        row = c.fetchone()
-        while row is not None:
-            page = Page(row[0])
-            page.name = row[1]
-            page.title = row[2]
-            page.locale = row[3]
-            page.rights = json.loads(row[4])
-            page.modify = datetime.fromtimestamp(   # timestamp of last modify
-                            getmtime(req.cfg.pages_source + '/' + page.name))
-            items.append(page)
-            row = c.fetchone()
-        #endwhile
+        m = driver(req)
+        return m.item_list(req, pager)
 
-        c.execute("SELECT count(*) FROM page")
-        pager.total = c.fetchone()[0]
-        tran.commit()
-
-        return items
-    #enddef
 #endclass
