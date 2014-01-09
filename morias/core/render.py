@@ -122,8 +122,12 @@ def generate_page(req, template, **kwargs):
         req.content_type = 'text/html'
     #endif
 
-    if 'lang' not in kwargs:    # lang could be set explicit
+    if 'lang' not in kwargs:                # lang could be set explicit
         kwargs['lang'] = get_lang(req)
+        languages = get_langs(req)
+    else:
+        languages = (kwargs['lang'],)       # then use languages
+
     kwargs['debug'] = req.cfg.debug
 
     if hasattr(req, 'login'):
@@ -140,11 +144,9 @@ def generate_page(req, template, **kwargs):
 
     kwargs['e'] = sdict()
 
-    #kwargs = to_unicode(kwargs)
-
     translations = translation('morias',
                                 localedir = req.cfg.locales,
-                                languages = list(set([kwargs['lang']] + get_langs(req))),
+                                languages = languages,
                                 fallback = True)
 
     return jinja_template(template, req.cfg.templates, translations, **kwargs)
