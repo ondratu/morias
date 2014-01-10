@@ -19,14 +19,14 @@
       {% endif -%}
     {% endif -%}
       {% if check_right('page_list') -%}
-        <span class="btn btn-default pull-right"><a href="/admin/page">{{ _('Page list') }}</a></span>
+        <span class="btn btn-default pull-right"><a href="/admin/page">{{ _('Pages list') }}</a></span>
       {% endif -%}
       </h2>
       <form class="form-horizontal" role="form" method="post">
        <div id="page_panel">
         <div class="form-group">
-          <label for="input_filename" class="col-sm-1 control-label">{{ _('File name') }}</label>
-          <div class="col-sm-4 {{ 'has-error' if error is defined else '' }}">
+          <label for="input_filename" class="col-sm-2 control-label">{{ _('File name') }}</label>
+          <div class="col-sm-5 {{ 'has-error' if error is defined else '' }}">
             <input type="text" id="input_filename" name="name" class="form-control" placeholder="{{ _('File name on server') }}" value="{{ page.name or '' }}">
             <div class="help-inline" >{% include "admin/_page_error.html" %}</div>
           </div>

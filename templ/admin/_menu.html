@@ -7,10 +7,10 @@
 
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-        {% for item in menu -%}              {# TODO: tooltip (title) #}
+        {%- for item in menu -%}              {#- TODO: tooltip (title) #}
           <li {{ 'class="active"' if site.this == item.uri else '' }}>
-                <a href="{{ item.uri }}">{{ item.label }}</a></li>
-        {%- endfor -%}
+                <a href="{{ item.uri }}">{{ _(item.label) }}</a></li>
+        {%- endfor %}
         </ul>
 
         <a class="pull-right navbar-text" href="/logout">{{ _('Logout') }} {{ login.email.split('@')[0] }}</a>
