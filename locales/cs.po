@@ -1,0 +1,342 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: MORIAS GATODE 1.0\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2014-01-10 16:47+0100\n"
+"PO-Revision-Date: 2014-01-10 07:32+0100\n"
+"Last-Translator: Ondřej Tůma <mcbig@zeropage.cz>\n"
+"Language-Team: Blackmouse\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Czech\n"
+"X-Poedit-Country: CZECH REPUBLIC\n"
+
+#: ../templ/_pager.html:13 ../templ/_pager.html:16
+msgid "First"
+msgstr "První"
+
+#: ../templ/_pager.html:14 ../templ/_pager.html:17
+msgid "Previous"
+msgstr "Předchozí"
+
+#: ../templ/_pager.html:19
+msgid "Page"
+msgstr "Strana"
+
+#: ../templ/_pager.html:19
+msgid "from"
+msgstr "z"
+
+#: ../templ/_pager.html:21 ../templ/_pager.html:24
+msgid "Next"
+msgstr "Další"
+
+#: ../templ/_pager.html:22 ../templ/_pager.html:25
+msgid "Last"
+msgstr "Poslední"
+
+#: ../templ/login.html:1
+msgid "Login"
+msgstr ""
+
+#: ../templ/login.html:7
+msgid "Bad login email or password"
+msgstr "Špatný email nebo heslo"
+
+#: ../templ/login.html:9
+msgid "Your login is banned"
+msgstr ""
+
+#: ../templ/login.html:12
+msgid "Email address"
+msgstr ""
+
+#: ../templ/login.html:13 ../templ/admin/login_mod.html:65
+#: ../templ/admin/login_mod.html:67 ../templ/user/login_pref.html:32
+#: ../templ/user/login_pref.html:34
+msgid "Password"
+msgstr "Heslo"
+
+#: ../templ/login.html:15
+msgid "Remember me"
+msgstr ""
+
+#: ../templ/login.html:17
+msgid "Sign in"
+msgstr "Přihlásit se"
+
+#: ../templ/new_detail.html:1 ../templ/new_list.html:1
+msgid "News"
+msgstr "Aktuality"
+
+#: ../templ/new_detail.html:7 ../templ/new_list.html:6
+#: ../templ/admin/new.html:7 ../templ/admin/new_mod.html:19
+msgid "News list"
+msgstr "Seznam aktualit"
+
+#: ../templ/new_list.html:9 ../templ/admin/new.html:17
+msgid "Not found"
+msgstr "Nebylo nalezeno"
+
+#: ../templ/admin/_login_error.html:3
+msgid "Bad email"
+msgstr "Špatný email"
+
+#: ../templ/admin/_login_error.html:5
+msgid ""
+"Password must be more the 6 chars long, and must contain upper case and "
+"nubmers"
+msgstr ""
+"Heslo musí obsahovat více jak 6 znaku a musí obsahovat velké znaky a čísla"
+
+#: ../templ/admin/_login_error.html:7
+msgid "Passwords not same"
+msgstr "Hesla nejsou stejná"
+
+#: ../templ/admin/_login_error.html:9
+#, fuzzy
+msgid "Login exist yet"
+msgstr "Stránka ještě neexistuje"
+
+#: ../templ/admin/_login_error.html:11
+#, fuzzy
+msgid "Login does not exist"
+msgstr "Stránka již existuje"
+
+#: ../templ/admin/_menu.html:5 ../templ/admin/admin.html:1
+#: ../templ/user/_menu.html:19
+msgid "Admin"
+msgstr "Administrátor"
+
+#: ../templ/admin/_menu.html:16 ../templ/user/_menu.html:17
+msgid "Logout"
+msgstr "Odhlásit"
+
+#: ../templ/admin/_menu.html:17 ../templ/user/_menu.html:5
+msgid "User"
+msgstr "Uživatel"
+
+#: ../templ/admin/_page_error.html:3
+msgid "Empty file name"
+msgstr "Prázdné jmné souboru"
+
+#: ../templ/admin/_page_error.html:5
+msgid "Bad file name"
+msgstr "Špatné jméno souboru"
+
+#: ../templ/admin/_page_error.html:7
+msgid "Page does exist yet"
+msgstr "Stránka ještě neexistuje"
+
+#: ../templ/admin/_page_error.html:9
+msgid "Page does not exist"
+msgstr "Stránka již existuje"
+
+#: ../templ/admin/login.html:7
+#, fuzzy
+msgid "Logins list"
+msgstr "Seznam stránek"
+
+#: ../templ/admin/login.html:9 ../templ/admin/login_mod.html:13
+#: ../templ/admin/login_mod.html:17
+#, fuzzy
+msgid "New login"
+msgstr "Nová aktualita"
+
+#: ../templ/admin/login.html:14 ../templ/admin/new.html:14
+#: ../templ/admin/page.html:17
+msgid "Access denied"
+msgstr "Přístup odepřen"
+
+#: ../templ/admin/login.html:19 ../templ/admin/login_mod.html:31
+#: ../templ/admin/login_mod.html:33 ../templ/user/login_pref.html:23
+#: ../templ/user/login_pref.html:25
+msgid "Email"
+msgstr "Email"
+
+#: ../templ/admin/login.html:20 ../templ/admin/new.html:25
+#: ../templ/admin/page.html:50
+msgid "Action"
+msgstr "Akce"
+
+#: ../templ/admin/login.html:27 ../templ/admin/new.html:38
+#: ../templ/admin/page.html:58
+msgid "Edit"
+msgstr "Upravit"
+
+#: ../templ/admin/login.html:31 ../templ/admin/new.html:42
+msgid "Disable"
+msgstr ""
+
+#: ../templ/admin/login.html:33 ../templ/admin/new.html:44
+msgid "Enabled"
+msgstr ""
+
+#: ../templ/admin/login_mod.html:15
+#, fuzzy
+msgid "Edit login"
+msgstr "Editace aktuality"
+
+#: ../templ/admin/login_mod.html:21
+#, fuzzy
+msgid "Login list"
+msgstr "Seznam stránek"
+
+#: ../templ/admin/login_mod.html:26 ../templ/user/login_pref.html:18
+msgid "Password was set!"
+msgstr "Heslo bylo nastaveno!"
+
+#: ../templ/admin/login_mod.html:40 ../templ/admin/page_mod.html:41
+msgid "Rights"
+msgstr "Práva"
+
+#: ../templ/admin/login_mod.html:41 ../templ/admin/page_mod.html:42
+msgid "Possilbe rights"
+msgstr "Možná práva"
+
+#: ../templ/admin/login_mod.html:42 ../templ/admin/page_mod.html:43
+msgid "Attache rights"
+msgstr "Přiřazená práva"
+
+#: ../templ/admin/login_mod.html:71 ../templ/user/login_pref.html:38
+msgid "Fill it only, if you want to change."
+msgstr "Vyplň, pouze pokud chceš měnit."
+
+#: ../templ/admin/login_mod.html:76 ../templ/admin/login_mod.html:78
+#: ../templ/user/login_pref.html:43 ../templ/user/login_pref.html:45
+msgid "Password again"
+msgstr "Znovu heslo"
+
+#: ../templ/admin/login_mod.html:86 ../templ/admin/new_mod.html:36
+#: ../templ/admin/new_mod.html:47 ../templ/admin/page_mod.html:73
+#: ../templ/admin/page_mod.html:82 ../templ/user/login_pref.html:53
+msgid "Save"
+msgstr "Uložit"
+
+#: ../templ/admin/new.html:9 ../templ/admin/new_mod.html:11
+#: ../templ/admin/new_mod.html:15
+msgid "New new"
+msgstr "Nová aktualita"
+
+#: ../templ/admin/new.html:22 ../templ/admin/new_mod.html:24
+#: ../templ/admin/new_mod.html:26 ../templ/admin/page.html:47
+#: ../templ/admin/page_mod.html:67 ../templ/admin/page_mod.html:69
+msgid "Title"
+msgstr "Titulek"
+
+#: ../templ/admin/new.html:23 ../templ/admin/new_mod.html:32
+#: ../templ/admin/new_mod.html:34 ../templ/admin/page.html:48
+#: ../templ/admin/page_mod.html:34 ../templ/admin/page_mod.html:36
+msgid "Locale"
+msgstr "Lokalizace"
+
+#: ../templ/admin/new.html:24
+msgid "Create time"
+msgstr "Čas vytvoření"
+
+#: ../templ/admin/new_mod.html:13
+msgid "Edit new"
+msgstr "Editace aktuality"
+
+#: ../templ/admin/new_mod.html:27
+msgid "Empty title"
+msgstr "Prázdný titulek"
+
+#: ../templ/admin/new_mod.html:42
+msgid "Empty body"
+msgstr "Prázdné jméno"
+
+#: ../templ/admin/page.html:7 ../templ/admin/page_mod.html:22
+msgid "Pages list"
+msgstr "Seznam stránek"
+
+#: ../templ/admin/page.html:9 ../templ/admin/page_mod.html:14
+#: ../templ/admin/page_mod.html:18
+msgid "New page"
+msgstr "Nová stránka"
+
+#: ../templ/admin/page.html:12
+msgid "Regenerate all"
+msgstr "Přegenerovat vše"
+
+#: ../templ/admin/page.html:20
+msgid "Operation success"
+msgstr "Operace byla úspěšná"
+
+#: ../templ/admin/page.html:31
+msgid "Close"
+msgstr "Zavřít"
+
+#: ../templ/admin/page.html:32 ../templ/admin/page.html:61
+msgid "Delete"
+msgstr "Smazat"
+
+#: ../templ/admin/page.html:40
+#, python-format
+msgid "Are you sure to delete %s page ?"
+msgstr "Opravdu chceš smazat stránku %s ?"
+
+#: ../templ/admin/page.html:46 ../templ/admin/page_mod.html:28
+msgid "File name"
+msgstr "Jméno souboru"
+
+#: ../templ/admin/page.html:49
+msgid "Last modify"
+msgstr "Poslední změna"
+
+#: ../templ/admin/page_mod.html:16
+msgid "Edit page"
+msgstr "Upravit stránku"
+
+#: ../templ/admin/page_mod.html:30
+msgid "File name on server"
+msgstr "Jméno souboru na sereveru"
+
+#: ../templ/error/not_found.html:1
+msgid "Page Not Found"
+msgstr "Stránka nenalezena"
+
+#: ../templ/error/not_found.html:7
+#, python-format
+msgid ""
+"\n"
+"          <b>We're sorry, but we can't locate the page %(request_uri)s you\n"
+"            requested.</b>\n"
+"          <br><br>Please check the spelling on the Web address you entered.\n"
+"        "
+msgstr ""
+"\n"
+"          <b>Je nám líto ale vámi požadovaná stránka %(request_uri)s nebyla "
+"nalezena.</b>\n"
+"          <br><br>Zkontrolujte prosím písmena v zadané adrese.\n"
+"        "
+
+#: ../templ/error/precondition_failed.html:1
+msgid "Precondition Failed"
+msgstr "Podmínka nebyla splněna"
+
+#: ../templ/error/precondition_failed.html:7
+msgid "Your request can't be call direct or from another page then"
+msgstr "Váš požadavek nemohl být volán přímo nebo z jiné adresy než"
+
+#: ../templ/user/login_pref.html:2 ../templ/user/login_pref.html:13
+msgid "Login profile"
+msgstr ""
+
+#: ../templ/user/login_pref.html:4 ../templ/user/login_pref.html:11
+msgid "Register login"
+msgstr ""
+
+#: ../templ/user/login_pref.html:53
+msgid "Register"
+msgstr ""
+
+#~ msgid "Articles of IP"
+#~ msgstr "Zajímavosti"
