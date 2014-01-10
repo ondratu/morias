@@ -11,6 +11,8 @@ class Pager(object):
         self.order = order
         self.sort = sort
         self.total = 0
+
+        self.params = ''
         super(Pager, self).__init__()
     #enddef
 
@@ -24,6 +26,9 @@ class Pager(object):
         
         sort = form.getfirst("sort", self.sort, str)
         self.sort = sort if sort in ('asc', 'desc') else self.sort
+
+    def set_params(self, **kwargs):
+        self.params = '&'.join('%s=%s' % (key, val) for key, val in kwargs.items())
 
     def calculate(self):
         self.pages = (self.total -1) / self.limit

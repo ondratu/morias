@@ -92,7 +92,7 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
 
     env = Environment(loader=FileSystemLoader(path),
                       undefined = MissingUndefined,
-                      extensions=['jinja2.ext.i18n'])
+                      extensions=['jinja2.ext.i18n', 'jinja2.ext.do'])
     # debug functionality
     env.globals['_ctx_'] = ctx
     env.globals['_data_'] = kwargs.copy()

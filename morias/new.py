@@ -10,7 +10,7 @@ from core.lang import get_lang
 
 from lib.menu import Item
 from lib.pager import Pager
-from lib.new_sqlite import New
+from lib.new import New
 
 from admin import *
 
@@ -126,6 +126,9 @@ def new_list(req):
 
     pager = Pager(limit = 5, sort = 'desc', order = 'create_date')
     pager.bind(form)
+
+    if 'locale' in form:                        # if locale is explicit set
+        pager.set_params(locale = locale)
 
     rows = New.list(req, pager, body = True, enabled = 1, locale = (locale, ''))
     return generate_page(req, "new_list.html",
