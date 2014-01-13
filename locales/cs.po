@@ -5,46 +5,47 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: MORIAS GATODE 1.0\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-01-10 16:47+0100\n"
+"Project-Id-Version: Morias 0.0.1\n"
+"Report-Msgid-Bugs-To: mcbig@zeropage.cz\n"
+"POT-Creation-Date: 2014-01-13 09:17+0100\n"
 "PO-Revision-Date: 2014-01-10 07:32+0100\n"
 "Last-Translator: Ondřej Tůma <mcbig@zeropage.cz>\n"
 "Language-Team: Blackmouse\n"
-"Language: \n"
+"Language: Czech\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Czech\n"
 "X-Poedit-Country: CZECH REPUBLIC\n"
 
-#: ../templ/_pager.html:13 ../templ/_pager.html:16
+#: ../templ/_pager.html:14 ../templ/_pager.html:17
 msgid "First"
 msgstr "První"
 
-#: ../templ/_pager.html:14 ../templ/_pager.html:17
+#: ../templ/_pager.html:15 ../templ/_pager.html:18
 msgid "Previous"
 msgstr "Předchozí"
 
-#: ../templ/_pager.html:19
+#: ../templ/_pager.html:20
 msgid "Page"
 msgstr "Strana"
 
-#: ../templ/_pager.html:19
+#: ../templ/_pager.html:20
 msgid "from"
 msgstr "z"
 
-#: ../templ/_pager.html:21 ../templ/_pager.html:24
+#: ../templ/_pager.html:22 ../templ/_pager.html:25
 msgid "Next"
 msgstr "Další"
 
-#: ../templ/_pager.html:22 ../templ/_pager.html:25
+#: ../templ/_pager.html:23 ../templ/_pager.html:26
 msgid "Last"
 msgstr "Poslední"
 
 #: ../templ/login.html:1
+#, fuzzy
 msgid "Login"
-msgstr ""
+msgstr "Seznam stránek"
 
 #: ../templ/login.html:7
 msgid "Bad login email or password"
@@ -327,16 +328,15 @@ msgid "Your request can't be call direct or from another page then"
 msgstr "Váš požadavek nemohl být volán přímo nebo z jiné adresy než"
 
 #: ../templ/user/login_pref.html:2 ../templ/user/login_pref.html:13
+#, fuzzy
 msgid "Login profile"
-msgstr ""
+msgstr "Seznam stránek"
 
 #: ../templ/user/login_pref.html:4 ../templ/user/login_pref.html:11
+#, fuzzy
 msgid "Register login"
-msgstr ""
+msgstr "Editace aktuality"
 
 #: ../templ/user/login_pref.html:53
 msgid "Register"
 msgstr ""
-
-#~ msgid "Articles of IP"
-#~ msgstr "Zajímavosti"

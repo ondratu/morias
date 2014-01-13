@@ -8,7 +8,7 @@ program=morias
 #xgettext -o ${program}.pot -j --language=python --keyword=_ --from-code utf-8 --escape ../templ/*/*.html
 
 printf " pybabel extract \t"
-pybabel extract -F babel.cfg -k lazy_gettext -o ${program}.pot .. 2>&1 | while read x; do printf "."; done
+pybabel extract -F babel.cfg -k lazy_gettext --msgid-bugs-address=mcbig@zeropage.cz --project=Morias --version=0.0.1 -o ${program}.pot .. 2>&1 | while read x; do printf "."; done
 printf " Done\n"
 
 for lang in $langs; do
