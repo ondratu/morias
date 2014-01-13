@@ -3,9 +3,9 @@
 {%- set params = pager.params + '&amp;' if length(pager.params) else '' %}
 {%- set ordering = "" %}
 {%- if pager.order != pager.d_order %}
-    {% set ordering = "order="+pager.order+"&" %}
+    {% set ordering = "order="+pager.order+"&amp;" %}
 {%- if pager.sort != pager.d_sort %}
-    {% set ordering = ordering + "sort="+pager.sort+"&" %}
+    {% set ordering = ordering + "sort="+pager.sort+"&amp;" %}
 {%- endif %}
 {%- endif %}
       <ul class="pager">
