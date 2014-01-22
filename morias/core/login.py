@@ -74,13 +74,18 @@ def check_right(req, right, redirect_uri = '/'):
 #enddef
 
 def match_right(req, rights):
-    if not rights or 'super' in req.login.rights:
-        return True                 # not rights means means login have right
+    if not 'login' in req.__dict__ or not 'rights' in req.login.__dict__:
+        req_login_rights = ('guest',)   # guest is default user right
+    else:
+        req_login_rights = req.login.rights
 
-    if not set(req.login.rights).intersection(rights):
-        return False                # no rights match
+    if not rights or 'super' in req_login_rights:
+        return True                     # not rights means means login have right
 
-    return True                     # some rights match
+    if not set(req_login_rights).intersection(rights):
+        return False                    # no rights match
+
+    return True                         # some rights match
 #enddef
 
 def check_referer(req, referer, redirect = None):

@@ -134,16 +134,21 @@ class Config:
 
         if not '_check_conf' in m.__dict__:
             req.log_error('No config need for module %s...' % module, state.LOG_INFO)
-            return
 
         # check and set config values need for module
-        for (sec, key, cls, dfl) in m._check_conf:
-            var = "%s_%s" % (sec, key)
-            if var in self.__dict__ and not isinstance(self.__dict__[var], cls):
-                raise TypeError("Option `%s` is not class instance `%s`",
-                                var, str(cls))
-            if not var in self.__dict__:
-                self.__dict__[var] = p.get(sec, key, dfl, cls)
+        else:
+            for (sec, key, cls, dfl) in m._check_conf:
+                var = "%s_%s" % (sec, key)
+                if var in self.__dict__ and not isinstance(self.__dict__[var], cls):
+                    raise TypeError("Option `%s` is not class instance `%s`",
+                                    var, str(cls))
+                if not var in self.__dict__:
+                    self.__dict__[var] = p.get(sec, key, dfl, cls)
+        #endif
+
+        if '_call_conf' in m.__dict__:
+            req.log_error('Config fn for module %s exist ...' % module, state.LOG_INFO)
+            m._call_conf(self, p)
     #enddef
 
 #endclass
@@ -159,6 +164,10 @@ def load_config(req):
     req.cfg = config
     if 'morias_db' in config.__dict__:      # fast alias to db
         req.db = config.morias_db
+
+    if 'morias_smtp' in config.__dict__:    # fast alias to smtp
+        req.smtp = config.morias_smtp
+        req.smtp.xmailer = 'Morias CMS (http://morias.zeropage.cz)'
 
     #req.templates = req.cfg.templates
 

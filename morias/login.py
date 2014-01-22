@@ -21,7 +21,7 @@ _check_conf = (
 rights += ['login_list', 'login_create', 'login_edit', 'login_ban']
 
 admin_menu.append(Item('/admin/login', label="Logins", rights = ['login_list']))
-user_menu.append(Item('/user/profile', label="Profile"))
+user_menu.append(Item('/user/profile', label="Profile", rights = ['user']))
 
 @app.route("/test/login/db")
 def test_db(req):

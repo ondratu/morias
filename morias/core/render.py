@@ -4,11 +4,9 @@ from jinja2 import Environment, FileSystemLoader, DebugUndefined, \
         contextfunction
 from gettext import NullTranslations, translation
 
-from lang import get_lang, get_langs
+from falias.util import Object
 
-class Object(object):
-    def __contains__(self, key):
-        return self.__dict__.__contains__(key)
+from lang import get_lang, get_langs
 
 class sdict(dict):
     def set(self, key, item):
@@ -103,6 +101,9 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     env.globals['length']   = len
     env.globals['truncate'] = _truncate
 
+    # some addons
+    env.globals['ord'] = ord
+
     # morias functionality
     env.globals['check_right'] = check_right
     env.globals['match_right'] = match_right
@@ -114,14 +115,7 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     return template.render(kwargs)
 #enddef
 
-def generate_page(req, template, **kwargs):
-    if 'content_type' in kwargs:
-        req.content_type = kwargs['content_type']
-        kwargs.pop('content_type')
-    else:
-        req.content_type = 'text/html'
-    #endif
-
+def morias_template(req, template, **kwargs):
     if 'lang' not in kwargs:                # lang could be set explicit
         kwargs['lang'] = get_lang(req)
         languages = get_langs(req)
@@ -150,4 +144,15 @@ def generate_page(req, template, **kwargs):
                                 fallback = True)
 
     return jinja_template(template, req.cfg.templates, translations, **kwargs)
+#enddef
+
+def generate_page(req, template, **kwargs):
+    if 'content_type' in kwargs:
+        req.content_type = kwargs['content_type']
+        kwargs.pop('content_type')
+    else:
+        req.content_type = 'text/html'
+    #endif
+
+    return morias_template(req, template, **kwargs)
 #enddef

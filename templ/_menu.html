@@ -7,8 +7,12 @@
         <ul class="nav navbar-nav">
         {% for item in menu -%}              {# TODO: tooltip (title) #}
           <li {{ 'class="active"' if page.name == '/'+item.uri else '' }}>
-                <a href="{{ item.link }}">{{ item.label }}</a></li>
+                <a href="{{ item.uri }}">{{ item.label }}</a></li>
         {%- endfor -%}
         </ul>
+
+        <a class="pull-right navbar-text" href="/login">{{ _('Sign in') }}</a>
       </div>
+
+      
     </nav>

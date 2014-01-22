@@ -9,4 +9,3 @@ class Item(object):
 
 def correct_menu(req, menu):
     return list ( item for item in menu if match_right(req, item.rights) )
-
