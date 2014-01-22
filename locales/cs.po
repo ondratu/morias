@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Morias 0.0.1\n"
 "Report-Msgid-Bugs-To: mcbig@zeropage.cz\n"
-"POT-Creation-Date: 2014-01-13 09:17+0100\n"
-"PO-Revision-Date: 2014-01-10 07:32+0100\n"
+"POT-Creation-Date: 2014-01-22 06:56+0100\n"
+"PO-Revision-Date: 2014-01-22 06:56+0100\n"
 "Last-Translator: Ondřej Tůma <mcbig@zeropage.cz>\n"
 "Language-Team: Blackmouse\n"
 "Language: Czech\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Czech\n"
 "X-Poedit-Country: CZECH REPUBLIC\n"
+
+#: ../templ/_menu.html:14 ../templ/login.html:1 ../templ/login.html:17
+msgid "Sign in"
+msgstr "Přihlásit se"
 
 #: ../templ/_pager.html:14 ../templ/_pager.html:17
 msgid "First"
@@ -42,11 +46,6 @@ msgstr "Další"
 msgid "Last"
 msgstr "Poslední"
 
-#: ../templ/login.html:1
-#, fuzzy
-msgid "Login"
-msgstr "Seznam stránek"
-
 #: ../templ/login.html:7
 msgid "Bad login email or password"
 msgstr "Špatný email nebo heslo"
@@ -55,9 +54,13 @@ msgstr "Špatný email nebo heslo"
 msgid "Your login is banned"
 msgstr ""
 
+#: ../templ/login.html:11
+msgid "Please sign in"
+msgstr "Prosím přihlaste se"
+
 #: ../templ/login.html:12
 msgid "Email address"
-msgstr ""
+msgstr "Emailová adresa"
 
 #: ../templ/login.html:13 ../templ/admin/login_mod.html:65
 #: ../templ/admin/login_mod.html:67 ../templ/user/login_pref.html:32
@@ -66,12 +69,8 @@ msgid "Password"
 msgstr "Heslo"
 
 #: ../templ/login.html:15
-msgid "Remember me"
+msgid "Check IP"
 msgstr ""
-
-#: ../templ/login.html:17
-msgid "Sign in"
-msgstr "Přihlásit se"
 
 #: ../templ/new_detail.html:1 ../templ/new_list.html:1
 msgid "News"
@@ -327,10 +326,57 @@ msgstr "Podmínka nebyla splněna"
 msgid "Your request can't be call direct or from another page then"
 msgstr "Váš požadavek nemohl být volán přímo nebo z jiné adresy než"
 
+#: ../templ/forms/contact-form.html:1 ../templ/forms/contact-form.html:25
+msgid "Contact form"
+msgstr "Kontaktní formulář"
+
+#: ../templ/forms/contact-form.html:9
+msgid "Some valid values are require."
+msgstr "Některé hodnoty jsou vyžadovány validní."
+
+#: ../templ/forms/contact-form.html:12
+msgid "Robots can't send the form."
+msgstr "Roboti nemohou odesílat formulář."
+
+#: ../templ/forms/contact-form.html:15
+msgid "Your anser is not correct."
+msgstr "Vaše odpověď není správná."
+
+#: ../templ/forms/contact-form.html:19
+msgid "Your form was send successful"
+msgstr "Váš formulář byl odeslán úspěšně."
+
+#: ../templ/forms/contact-form.html:21
+msgid "Sorry, there was error when sendig."
+msgstr "Omlouváme se, při odesílání formuláře došlo k chybě."
+
+#: ../templ/forms/contact-form.html:29
+msgid "Your name"
+msgstr "Vaše jméno"
+
+#: ../templ/forms/contact-form.html:34
+msgid "Your email"
+msgstr "Váš email"
+
+#: ../templ/forms/contact-form.html:39
+msgid "Your message"
+msgstr "Vaše zpráva"
+
+#: ../templ/forms/contact-form.html:46
+msgid "Yes, I'm robot."
+msgstr "Ano, jsem robot."
+
+#: ../templ/forms/contact-form.html:58
+msgid "Valid value is require."
+msgstr "Hodnota musí být správně vyplněná."
+
+#: ../templ/forms/contact-form.html:63
+msgid "Send"
+msgstr "Odeslat"
+
 #: ../templ/user/login_pref.html:2 ../templ/user/login_pref.html:13
-#, fuzzy
 msgid "Login profile"
-msgstr "Seznam stránek"
+msgstr "Profil"
 
 #: ../templ/user/login_pref.html:4 ../templ/user/login_pref.html:11
 #, fuzzy
@@ -340,3 +386,6 @@ msgstr "Editace aktuality"
 #: ../templ/user/login_pref.html:53
 msgid "Register"
 msgstr ""
+
+#~ msgid "Login"
+#~ msgstr "Přihlášení"

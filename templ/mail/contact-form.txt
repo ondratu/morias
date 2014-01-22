@@ -1,0 +1,3 @@
+{{ form['text'] }}
+
+{{ form['name']+' ' if 'name' in form else '' }}{{ form['email'] }}

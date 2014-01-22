@@ -1,0 +1,79 @@
+{% set title = _('Contact form') -%}
+{% include "_header.html" -%}
+{% include "_menu.html" -%}
+
+    <div class="container">
+        <form class="form-horizontal col-sm-8 col-md-offset-2" role="form" method="post">
+        {% if required is defined -%}
+          {% if required -%}
+          <div class="alert alert-danger">{{ _('Some valid values are require.') }}</div>
+          {% endif %}
+          {% if robot -%}
+          <div class="alert alert-danger">{{ _("Robots can't send the form.") }}</div>
+          {% endif %}
+          {% if not check -%}
+          <div class="alert alert-danger">{{ _('Your anser is not correct.') }}</div>
+          {% endif %}
+        {% elif status != None -%}
+          {% if status -%}
+          <div class="alert alert-info">{{ _('Your form was send successful') }}</div>
+          {% else %}
+          <div class="alert alert-danger">{{ _('Sorry, there was error when sendig.') }}</div>
+          {%- endif %}
+        {% endif %}
+
+          <h1>{{ _('Contact form') }}</h1>
+        
+          <div class="form-group">
+            <div class="col-sm-12">
+              <input name="name" type="text" class="form-control" placeholder="{{ _('Your name') }}" value="{{ form['name'] if 'name' in form else '' }}">
+            </div>
+          </div>
+          <div class="form-group {{ 'has-error' if required is defined and 'email' in required else '' }}">
+            <div class="col-sm-12">
+              <input name="email" type="email" class="form-control" placeholder="{{ _('Your email') }}*" value="{{ form['email'] if 'email' in form else '' }}">
+            </div>
+          </div>
+          <div class="form-group {{ 'has-error' if required is defined and 'text' in required else '' }}">
+            <div class="col-sm-12">
+              <textarea name="text" rows="8" class="form-control" placeholder="{{ _('Your message') }}*">{{ form['text'] if 'text' in form else '' }}</textarea>
+            </div>
+          </div>
+        
+          <div class="form-group shadow">
+            <div class="col-sm-12">
+              <label class="checkbox control-label">
+                <input type="checkbox" name="robot" value="robot" {{'checked="checked"' if 'robot' in form else '' }}> {{ _("Yes, I'm robot.") }}
+              </label></div>
+          </div>
+          <div class="form-group shadow">
+            <input type="hidden" name="qid" value="{{ qid }}">
+            <div class="col-sm-12">
+              <input id="input_answer" name="answer" type="text" class="form-control span5" placeholder="{{ question }}" value="{{ form['answer'] if 'answer' in form else '' }}">
+            </div>
+          </div><!-- /.shadow -->
+ 
+          <div class="form-group">
+            <div class="col-sm-12">
+              <span class="help-inline">* {{ _('Valid value is require.') }}</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12">
+              <button class="btn btn-default" type="submit">{{ _('Send') }}</button></div>
+          </div>
+        </form>
+
+        <script>
+          function chr(o) {
+            return String.fromCharCode(o);
+          }
+
+          $(document).ready(function() {
+            $('#input_answer')[0].value = '' {% for c in answer %}+chr({{ ord(c) }}){% endfor %};
+            $('.shadow').hide();
+          });
+        </script>
+
+    </div><!--/container-->
+{% include "_footer.html" %}
