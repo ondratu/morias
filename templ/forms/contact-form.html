@@ -26,17 +26,17 @@
         
           <div class="form-group">
             <div class="col-sm-12">
-              <input name="name" type="text" class="form-control" placeholder="{{ _('Your name') }}" value="{{ form['name'] if 'name' in form else '' }}">
+              <input name="name" type="text" class="form-control" placeholder="{{ _('Your name') }}" value="{{ form['name']|e if 'name' in form else '' }}">
             </div>
           </div>
           <div class="form-group {{ 'has-error' if required is defined and 'email' in required else '' }}">
             <div class="col-sm-12">
-              <input name="email" type="email" class="form-control" placeholder="{{ _('Your email') }}*" value="{{ form['email'] if 'email' in form else '' }}">
+              <input name="email" type="email" class="form-control" placeholder="{{ _('Your email') }}*" value="{{ form['email']|e if 'email' in form else '' }}">
             </div>
           </div>
           <div class="form-group {{ 'has-error' if required is defined and 'text' in required else '' }}">
             <div class="col-sm-12">
-              <textarea name="text" rows="8" class="form-control" placeholder="{{ _('Your message') }}*">{{ form['text'] if 'text' in form else '' }}</textarea>
+              <textarea name="text" rows="8" class="form-control" placeholder="{{ _('Your message') }}*">{{ form['text']|e if 'text' in form else '' }}</textarea>
             </div>
           </div>
         
@@ -49,7 +49,7 @@
           <div class="form-group shadow">
             <input type="hidden" name="qid" value="{{ qid }}">
             <div class="col-sm-12">
-              <input id="input_answer" name="answer" type="text" class="form-control span5" placeholder="{{ question }}" value="{{ form['answer'] if 'answer' in form else '' }}">
+              <input id="input_answer" name="answer" type="text" class="form-control span5" placeholder="{{ question }}" value="{{ form['answer']|e if 'answer' in form else '' }}">
             </div>
           </div><!-- /.shadow -->
  

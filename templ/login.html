@@ -9,7 +9,7 @@
         <div class="alert alert-danger">{{ _('Your login is banned') }}</div>
       {% endif %}
         <h2 class="form-signin-heading">{{ _('Please sign in') }}</h2>
-        <input name="email" type="text" class="form-control" placeholder="{{ _('Email address') }}" value="{{ data.email }}" autofocus>
+        <input name="email" type="text" class="form-control" placeholder="{{ _('Email address') }}" value="{{ data.email|e }}" autofocus>
         <input name="passwd" type="password" class="form-control" placeholder="{{ _('Password') }}">
         <label class="checkbox">
           <input type="checkbox" value="ip"> {{ _('Check IP') }}

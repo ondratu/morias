@@ -30,7 +30,7 @@
         <div class="form-group {{ 'has-error' if error is defined and error in (1, 5) else '' }}">
           <label for="input_email" class="col-sm-3 control-label">{{ _('Email') }}</label>
           <div class="col-sm-4">
-            <input type="email" id="input_email" name="email" class="form-control" placeholder="{{ _('Email') }}" value="{{ item.email or '' }}"></div>
+            <input type="email" id="input_email" name="email" class="form-control" placeholder="{{ _('Email') }}" value="{{ item.email|e or '' }}"></div>
         {% if error is defined and error in (1, 5) %}
           <div class="col-sm-4 help-inline" >{% include "admin/_login_error.html" %}</div>
         {% endif %}
@@ -56,7 +56,7 @@
               <span class="pull-left">{{ right }}</span>
               <span class="pull-right glyphicon"></span></a>
             <div class="col-sm-1"></div>
-            <input type="hidden" value="{{right}}" name="rights">
+            <input type="hidden" value="{{right|e}}" name="rights">
           {% endfor %}
           </div>
         </div>
