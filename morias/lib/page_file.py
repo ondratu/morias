@@ -91,7 +91,7 @@ class Page():
         # meta file about deleted page
         backup = req.cfg.pages_history + '/' + self.name
         with open (backup + '.' + datetime.now().isoformat() + '.deleted' , 'w+') as tmp:
-            tmp.write("title: %s\n" % self.title)
+            tmp.write("title: %s\n" % self.title.encode('utf-8'))
             tmp.write("locale: %s\n" % self.locale)
             tmp.write("editor_rights: %s\n" % rights)
 
