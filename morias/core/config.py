@@ -82,7 +82,8 @@ class Config:
 
         self.debug      = p.get('morias', 'debug', False, cls = bool)
 
-        self.templates  = p.get('morias', 'templates')
+        self.templates  = p.get('morias', 'templates', cls = tuple,
+                                                            delimiter = ':')
         self.modules    = p.get('morias', 'modules', cls = tuple)
         self.langs      = p.get('morias', 'langs', 'en,cs', cls = list)
         self.locales    = p.get('morias', 'locales', 'locales/')
