@@ -27,13 +27,13 @@
         <div class="form-group">
           <label for="input_filename" class="col-sm-2 control-label">{{ _('File name') }}</label>
           <div class="col-sm-5 {{ 'has-error' if error is defined else '' }}">
-            <input type="text" id="input_filename" name="name" class="form-control" placeholder="{{ _('File name on server') }}" value="{{ page.name|e or '' }}">
+            <input type="text" id="input_filename" name="name" class="form-control" placeholder="{{ _('File name on server') }}" value="{{ (page.name or '')|e }}">
             <div class="help-inline" >{% include "admin/_page_error.html" %}</div>
           </div>
 
           <label for="input_locale" class="col-sm-1 control-label">{{ _('Locale') }}</label>
           <div class="col-sm-3">
-            <input type="text" id="input_locale" name="locale" class="form-control" placeholder="{{ _('Locale') }}" value="{{ page.locale|e or '' }}">
+            <input type="text" id="input_locale" name="locale" class="form-control" placeholder="{{ _('Locale') }}" value="{{ (page.locale or '')|e }}">
           </div>
         </div>
 
@@ -66,7 +66,7 @@
         <div class="form-group">
           <label for="input_title" class="col-sm-1 control-label">{{ _('Title') }}</label>
           <div class="col-sm-8">
-            <input type="text" id="input_title" name="title" class="form-control" placeholder="{{ _('Title') }}" value="{{ page.title|e or '' }}">
+            <input type="text" id="input_title" name="title" class="form-control" placeholder="{{ _('Title') }}" value="{{ (page.title or '')|e }}">
           </div>
 
           <div class="col-sm-1"><a class="swittcher pull-right" elm="page_panel"><span class="glyphicon glyphicon-chevron-up"></span></a></div>
@@ -75,7 +75,7 @@
 
         <div class="form-group">
           <div class="col-sm-12">
-            <textarea id="input_text" name="text" class="form-control" rows="18">{{ page.text|e or '' }}</textarea></div>
+            <textarea id="input_text" name="text" class="form-control" rows="18">{{ (page.text or '')|e }}</textarea></div>
         </div>
         <div class="form-group">
           <div class="col-sm-12">

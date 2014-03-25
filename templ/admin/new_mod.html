@@ -23,7 +23,7 @@
         <div class="form-group">
           <label for="input_title" class="col-sm-1 control-label">{{ _('Title') }}</label>
           <div class="col-sm-11 {{ 'has-error' if error is defined and error == 1 else '' }}">
-            <input type="text" id="input_title" name="title" class="form-control" placeholder="{{ _('Title') }}" value="{{ new.title|e or '' }}">
+            <input type="text" id="input_title" name="title" class="form-control" placeholder="{{ _('Title') }}" value="{{ (new.title or '')|e }}">
             {% if error is defined and error == 1 %}<div class="help-inline" >{{ _('Empty title') }}</div>{% endif %}
           </div>
         </div>
@@ -31,14 +31,14 @@
         <div class="form-group">
           <label for="input_locale" class="col-sm-1 control-label">{{ _('Locale') }}</label>
           <div class="col-sm-5">
-            <input type="text" id="input_locale" name="locale" class="form-control" placeholder="{{ _('Locale') }}" value="{{ new.locale|e or '' }}">
+            <input type="text" id="input_locale" name="locale" class="form-control" placeholder="{{ _('Locale') }}" value="{{ (new.locale or '')|e }}">
           </div>
           <div class="col-sm-2 col-sm-offset-4"><button class="btn btn-default btn-block" type="submit">{{ _('Save') }}</button></div>
         </div>
 
         <div class="form-group {{ 'has-error' if error is defined and error == 2 else '' }}">
           <div class="col-sm-12">
-            <textarea id="input_body" name="body" class="form-control" rows="10">{{ new.body|e or '' }}</textarea>
+            <textarea id="input_body" name="body" class="form-control" rows="10">{{ (new.body or '')|e }}</textarea>
             {% if error is defined and error == 2 %}<div class="help-inline" >{{ _('Empty body') }}</div>{% endif %}
           </div>
         </div>
