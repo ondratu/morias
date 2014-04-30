@@ -82,11 +82,10 @@ def admin_page(req):
     check_login(req, '/login?referer=/admin/page')
     check_right(req, 'page_list')
 
-    form = FieldStorage(req)
-    error = form.getfirst('error', 0, int)
+    error = req.args.getfirst('error', 0, int)
 
     pager = Pager()
-    pager.bind(form)
+    pager.bind(req.args)
 
     rows = Page.list(req, pager)
     return generate_page(req, "admin/page.html",
@@ -100,9 +99,8 @@ def admin_page_add(req):
     check_right(req, 'page_create', '/admin/page?error=%d' % ACCESS_DENIED)
 
     if req.method == 'POST':
-        form = FieldStorage(req)
         page = Page()
-        page.bind(form)
+        page.bind(req.form)
         error = page.add(req)
 
         if error:
@@ -124,13 +122,12 @@ def admin_page_mod(req):
     check_login(req, '/login?referer=/admin/page/mod')
     check_right(req, 'page_edit', '/admin/page?error=%d' % ACCESS_DENIED)
 
-    form = FieldStorage(req)
-    page = Page(form.getfirst('page_id', 0, int))
+    page = Page(req.args.getfirst('page_id', 0, int))
     if not page.check_right(req):
         redirect(req, '/admin/page?error=%d' % ACCESS_DENIED)
 
     if req.method == 'POST':
-        page.bind(form)
+        page.bind(req.form)
         error = page.mod(req)
         if error:
             return generate_page(req, "admin/page_mod.html",
@@ -153,8 +150,7 @@ def admin_page_del(req):
     check_right(req, 'page_delete', '/admin/page?error=%d' % ACCESS_DENIED)
     check_referer(req, '/admin/page')
 
-    form = FieldStorage(req)
-    page = Page(form.getfirst('page_id', 0, int))
+    page = Page(req.form.getfirst('page_id', 0, int))
     if not page.check_right(req):
         redirect(req, '/admin/page?error=%d' % ACCESS_DENIED)
 

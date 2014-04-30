@@ -1,7 +1,7 @@
 
 import json, re
 
-from falias.util import uni
+from falias.util import uni, nint
 
 from core.login import sha1_sdigest
 
@@ -97,7 +97,7 @@ class Login(object):
         return m.enable(self, req)
 
     def bind(self, form, salt):
-        self.id = form.getfirst('login_id', fce = int) if 'login_id' in form else None
+        self.id = form.getfirst('login_id', self.id, nint)
         self.email = form.getfirst('email', '', uni)
         self.plain = form.getfirst('passwd', '', uni)
         self.passwd = sha1_sdigest(form.getfirst('passwd', '', uni), salt)

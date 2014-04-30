@@ -6,7 +6,7 @@ from os.path import exists
 from datetime import datetime
 from shutil import copyfile
 
-from falias.util import uni
+from falias.util import uni, nint
 
 from core.render import generate_page
 from core.login import match_right
@@ -63,7 +63,7 @@ class Page():
         return m.delete(self, req)
 
     def bind(self, form):
-        self.id = form.getfirst('page_id', fce = int) if 'page_id' in form else None
+        self.id = form.getfirst('page_id', self.id, nint)
         self.name = form.getfirst('name', '', uni)
         self.title = form.getfirst('title', '', uni)
         self.locale = form.getfirst('locale', '', uni)

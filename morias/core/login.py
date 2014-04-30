@@ -74,7 +74,7 @@ def check_right(req, right, redirect_uri = '/'):
 #enddef
 
 def match_right(req, rights):
-    if not 'login' in req.__dict__ or not 'rights' in req.login.__dict__:
+    if not 'login' in req.__dict__ or req.login is None or not 'rights' in req.login.__dict__:
         req_login_rights = ('guest',)   # guest is default user right
     else:
         req_login_rights = req.login.rights

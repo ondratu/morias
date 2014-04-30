@@ -1,5 +1,5 @@
 
-from falias.util import uni
+from falias.util import uni, nint
 
 #errors
 EMPTY_TITLE     = 1
@@ -44,7 +44,7 @@ class New():
         return m.enable(self, req)
 
     def bind(self, form):
-        self.id = form.getfirst('new_id', fce = int) if 'new_id' in form else None
+        self.id = form.getfirst('new_id', self.id, nint)
         self.title = form.getfirst('title', '', uni)
         self.locale = form.getfirst('locale', '', uni)
         self.body = form.getfirst('body', '', uni)

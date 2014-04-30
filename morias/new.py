@@ -43,11 +43,10 @@ def admin_new(req):
     check_login(req, '/login?referer=/admin/new')
     check_right(req, 'new_list')
 
-    form = FieldStorage(req)
-    error = form.getfirst('error', 0, int)
+    error = req.args.getfirst('error', 0, int)
 
     pager = Pager(sort = 'desc')
-    pager.bind(form)
+    pager.bind(req.args)
 
     rows = New.list(req, pager)
     return generate_page(req, "admin/new.html",
@@ -61,9 +60,8 @@ def admin_new_add(req):
     check_right(req, 'new_create', '/admin/new?error=%d' % ACCESS_DENIED)
 
     if req.method == 'POST':
-        form = FieldStorage(req)
         new = New()
-        new.bind(form)
+        new.bind(req.form)
         error = new.add(req)
 
         if error:
@@ -84,11 +82,10 @@ def admin_new_mod(req):
     check_login(req, '/login?referer=/admin/new/mod')
     check_right(req, 'new_edit', '/admin/new?error=%d' % ACCESS_DENIED)
 
-    form = FieldStorage(req)
-    new = New(form.getfirst('new_id', 0, int))
+    new = New(req.args.getfirst('new_id', 0, int))
     
     if req.method == 'POST':
-        new.bind(form)
+        new.bind(req.form)
         error = new.mod(req)
         if error:
             return generate_page(req, "admin/new_mod.html",
@@ -111,8 +108,7 @@ def admin_new_enable(req):
     check_right(req, 'new_delete', '/admin/new?error=%d' % ACCESS_DENIED)
     check_referer(req, '/admin/new')
     
-    form = FieldStorage(req)
-    new = New(form.getfirst('new_id', 0, int))
+    new = New(req.args.getfirst('new_id', 0, int))
     new.enabled = int(req.uri == '/admin/new/enable')
     new.enable(req)
     redirect(req, '/admin/new')
@@ -120,14 +116,13 @@ def admin_new_enable(req):
 
 @app.route('/new/list')
 def new_list(req):
-    form = FieldStorage(req)
-    error = form.getfirst('error', 0, int)
-    locale = form.getfirst('locale', get_lang(req), uni)
+    error = req.args.getfirst('error', 0, int)
+    locale = req.args.getfirst('locale', get_lang(req), uni)
 
     pager = Pager(limit = 5, sort = 'desc', order = 'create_date')
-    pager.bind(form)
+    pager.bind(req.args)
 
-    if 'locale' in form:                        # if locale is explicit set
+    if 'locale' in req.args:                    # if locale is explicit set
         pager.set_params(locale = locale)
 
     rows = New.list(req, pager, body = True, enabled = 1, locale = (locale, ''))
@@ -137,8 +132,7 @@ def new_list(req):
 
 @app.route('/new/detail')
 def new_detail(req):
-    form = FieldStorage(req)
-    new = New(form.getfirst('new_id', 0, int))
+    new = New(req.args.getfirst('new_id', 0, int))
 
     error = new.get(req)
     if error: redirect(req, '/new/list?error=%d' % NOT_FOUND)

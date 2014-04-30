@@ -42,8 +42,7 @@ def test_db(req):
 
 @app.route('/login', method = state.METHOD_GET_POST)
 def login(req):
-    form = FieldStorage(req)
-    referer = form.getfirst('referer', '', str)
+    referer = req.args.getfirst('referer', '', str)
 
     data = Object()
     data.referer = referer
@@ -51,8 +50,8 @@ def login(req):
 
     if req.method == 'POST':
         login = Login()
-        ip = 'ip' in form
-        login.bind(form, req.cfg.morias_salt)
+        ip = 'ip' in req.form
+        login.bind(req.form, req.cfg.morias_salt)
         if login.find(req):
             do_login(req, login.simple(), ip)
             if referer:
@@ -81,11 +80,10 @@ def admin_login(req):
     check_login(req, '/login?referer=/admin/login')
     check_right(req, 'login_list')
 
-    form = FieldStorage(req)
-    error = form.getfirst('error', 0, int)
+    error = req.args.getfirst('error', 0, int)
 
     pager = Pager()
-    pager.bind(form)
+    pager.bind(req.args)
 
     rows = Login.list(req, pager)
     return generate_page(req, "admin/login.html",
@@ -99,9 +97,8 @@ def admin_login_add(req):
     check_right(req, 'login_create', '/admin/login?error=%d' % ACCESS_DENIED)
 
     if req.method == 'POST':
-        form = FieldStorage(req)
         login = Login()
-        login.bind(form, req.cfg.morias_salt)
+        login.bind(req.form, req.cfg.morias_salt)
         error = login.add(req)
 
         if error:
@@ -124,14 +121,13 @@ def admin_login_mod(req):
     check_login(req, '/login?referer=/admin/login/mod')
     check_right(req, 'login_edit', '/admin/login?error=%d' % ACCESS_DENIED)
 
-    form = FieldStorage(req)
-    login = Login(form.getfirst('login_id', 0, int))
+    login = Login(req.args.getfirst('login_id', 0, int))
     if req.login.id == login.id:
         redirect(req, '/admin/login?error=%d' % ACCESS_DENIED)
 
     state = None
     if req.method == 'POST':
-        login.bind(form, req.cfg.morias_salt)
+        login.bind(req.form, req.cfg.morias_salt)
         state = login.mod(req)
 
         if state < 100:
@@ -157,8 +153,7 @@ def admin_login_enable(req):
     check_right(req, 'login_ban', '/admin/login?error=%d' % ACCESS_DENIED)
     check_referer(req, '/admin/login')
 
-    form = FieldStorage(req)
-    login = Login(form.getfirst('login_id', 0, int))
+    login = Login(req.args.getfirst('login_id', 0, int))
     if req.login.id == login.id:
         redirect(req, '/admin/login?error=%d' % ACCESS_DENIED)
 
@@ -171,12 +166,11 @@ def admin_login_enable(req):
 def user_login_pref(req):
     check_login(req, '/login?referer=/user/profile')
 
-    form = FieldStorage(req)
     login = Login(req.login.id)
 
     state = None
     if req.method == 'POST':
-        login.bind(form, req.cfg.morias_salt)
+        login.bind(req.form, req.cfg.morias_salt)
         state = login.pref(req)
 
         if state < 100:
