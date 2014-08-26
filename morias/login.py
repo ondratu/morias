@@ -1,7 +1,8 @@
 from poorwsgi import *
 from falias.sql import Sql
+from falias.util import Object
 
-from core.render import Object, generate_page
+from core.render import generate_page
 from core.login import rights, do_login, do_logout, check_login, check_referer
 
 from lib.menu import Item, correct_menu

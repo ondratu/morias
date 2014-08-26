@@ -13,7 +13,7 @@ def not_found(req):
     req.add_common_vars()
     req.state = state.HTTP_NOT_FOUND
     req.write(generate_page(req, "error/not_found.html",
-        request_uri = req.subprocess_env['REQUEST_URI']))
+        request_uri = req.environ['REQUEST_URI']))
     return state.DONE
 
 

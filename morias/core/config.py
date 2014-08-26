@@ -1,63 +1,10 @@
 from poorwsgi import *
-from falias.util import uni
-from ConfigParser import ConfigParser, NoSectionError, NoOptionError
+from falias.parser import Parser, Options
 from time import strftime
 
 import os
 
 config = None
-
-def smart_get(value, cls = unicode, delimiter = ','):
-    if issubclass(cls, unicode):
-        return uni(value)
-    if issubclass(cls, str):
-        return value
-    if issubclass(cls, bool):
-        if value.lower() in ('true', 'yes', '1', 'on', 'enable'):
-            return True
-        elif value.lower() in ('false', 'no', '0', 'off', 'disable'):
-            return False
-        else:
-            raise ValueError("%s is not boolean value" % value)
-    if issubclass(cls, list) or issubclass(cls, tuple):
-        if value:
-            return cls(map(lambda s: uni(s.strip()), value.split(delimiter)))
-        return cls()
-    else:
-        return cls(value)
-#enddef
-
-
-class SuperParser(ConfigParser):
-    def get(self, section, option, default = None, cls = unicode, delimiter = ','):
-        #cls = cls if default is None else default.__class__
-        default = None if default is None else str(default)
-
-        try:
-            value = ConfigParser.get(self, section, option).strip()
-        except NoSectionError:
-            if default is None: raise
-            value = default
-        except NoOptionError:
-            if default is None: raise
-            value = default
-        return smart_get(value, cls, delimiter)
-#endclass
-
-class SuperOptions:
-    def __init__(self, options):
-        self.o = options;
-
-    def get(self, sec, key, default = None, cls = unicode, delimiter = ','):
-        #cls = cls if default is None else default.__class__
-        default = None if default is None else str(default)
-
-        key = "%s_%s" % (sec, key)
-        if default is None and key not in self.o:
-            raise RuntimeError('Envirnonment variable `%s` is not set' % key)
-        value = self.o.get(key, default).strip()
-        return smart_get(value, cls, delimiter)
-#endclass
 
 class Config:
     def __init__(self, options, req):
@@ -66,11 +13,11 @@ class Config:
             inifile = options.get('morias_config')
             # TODO: check if file is readable
             req.log_error('Read config from file ...', state.LOG_INFO)
-            p = SuperParser()
+            p = Parser()
             p.read(inifile)
         else:
             req.log_error('Read config from options ...', state.LOG_INFO)
-            p = SuperOptions(options)
+            p = Options(options)
         #endif        
 
         #dbg.logFile(cfg.get('main','debuglog'))

@@ -57,7 +57,7 @@ class Login(object):
     def mod(self, req):
         keys = ['email', 'rights']
         vals = [self.email, json.dumps(self.rights)]
-
+        # FIXME!!!
         if self.plain or self.passwd != self.again:     # if passwd was set
             if not self.check_email(): return BAD_EMAIL
             if not self.check_passwd(): return WEAK_PASSWD
