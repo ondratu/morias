@@ -1,4 +1,4 @@
-{% if site.this == '/admin/new/add' -%}
+{% if site.this == '/admin/news/add' -%}
     {% set title = 'Admin - edit new ' + new.title -%}
 {% else -%}
     {% set title = 'Admin - new new' -%}
@@ -7,16 +7,16 @@
 {% include "admin/_menu.html" %}
 
     <div class="container">
-    {% if site.this == '/admin/new/add' -%}
+    {% if site.this == '/admin/news/add' -%}
       <h2 class="form-signin-heading">{{ _('New new') }}
     {% else -%}
       <h2 class="form-signin-heading">{{ _('Edit new') }}
       {% if check_right('new_create') -%}
-        <span class="btn btn-default pull-right"><a href="/admin/new/add">{{ _('New new') }}</a></span>
+        <span class="btn btn-default pull-right"><a href="/admin/news/add">{{ _('New new') }}</a></span>
       {% endif -%}
     {% endif -%}
       {% if check_right('new_list') -%}
-        <span class="btn btn-default pull-right"><a href="/admin/new">{{ _('News list') }}</a></span>
+        <span class="btn btn-default pull-right"><a href="/admin/news">{{ _('News list') }}</a></span>
       {% endif -%}
       </h2>
       <form class="form-horizontal" role="form" method="post">
@@ -48,11 +48,4 @@
         </div>
       </form>
     </div>
-  {% if site.this == '/admin/page/mod' -%}
-    <script>
-        var btn = $('.swittcher');
-        M.hiddener.close(btn, 0); 
-    </script>
-  {% endif -%}
-
 {% include "_footer.html" %}

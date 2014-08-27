@@ -1,4 +1,4 @@
-{% if site.this == '/admin/page/add' -%}
+{% if site.this == '/admin/pages/add' -%}
     {% set title = 'Admin - edit page ' + page.name -%}
 {% else -%}
     {% set title = 'Admin - new page' -%}
@@ -10,17 +10,15 @@
     <script src="/js/hiddener.js"></script>
 
     <div class="container">
-    {% if site.this == '/admin/page/add' -%}
+    {% if site.this == '/admin/pages/add' -%}
       <h2 class="form-signin-heading">{{ _('New page') }}
     {% else -%}
       <h2 class="form-signin-heading">{{ _('Edit page') }} <small class="monospace">{{ page.name }}</small>
-      {% if check_right('page_create') -%}
-        <span class="btn btn-default pull-right"><a href="/admin/page/add">{{ _('New page') }}</a></span>
+      {% if match_right(('pages_author', 'pages_modify')) -%}
+        <span class="btn btn-default pull-right"><a href="/admin/pages/add">{{ _('New page') }}</a></span>
+        <span class="btn btn-default pull-right"><a href="/admin/pages">{{ _('Pages list') }}</a></span>
       {% endif -%}
-    {% endif -%}
-      {% if check_right('page_list') -%}
-        <span class="btn btn-default pull-right"><a href="/admin/page">{{ _('Pages list') }}</a></span>
-      {% endif -%}
+    {% endif -%}  
       </h2>
       <form class="form-horizontal" role="form" method="post">
        <div id="page_panel">
@@ -28,7 +26,7 @@
           <label for="input_filename" class="col-sm-2 control-label">{{ _('File name') }}</label>
           <div class="col-sm-5 {{ 'has-error' if error is defined else '' }}">
             <input type="text" id="input_filename" name="name" class="form-control" placeholder="{{ _('File name on server') }}" value="{{ (page.name or '')|e }}">
-            <div class="help-inline" >{% include "admin/_page_error.html" %}</div>
+            <div class="help-inline" >{% include "admin/_pages_error.html" %}</div>
           </div>
 
           <label for="input_locale" class="col-sm-1 control-label">{{ _('Locale') }}</label>
@@ -82,7 +80,7 @@
             <button class="col-sm-2 btn btn-default pull-right" type="submit">{{ _('Save') }}</button></div></div>
       </form>
     </div>
-  {% if site.this == '/admin/page/mod' -%}
+  {% if site.this != '/admin/pages/add' -%}
     <script>
         var btn = $('.swittcher');
         M.hiddener.close(btn, 0); 

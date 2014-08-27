@@ -1,4 +1,4 @@
-from core.login import match_right
+from core.login import do_match_right
 
 class Item(object):
     def __init__(self, uri, label = None, title = None, rights = []):
@@ -8,4 +8,4 @@ class Item(object):
         self.rights = rights
 
 def correct_menu(req, menu):
-    return list ( item for item in menu if match_right(req, item.rights) )
+    return list ( item for item in menu if do_match_right(req, item.rights) )

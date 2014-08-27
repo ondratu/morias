@@ -19,11 +19,11 @@ _check_conf = (
     ('morias', 'db', Sql, None),
 )
 
-rights += ['new_list', 'new_create', 'new_edit', 'new_delete']
+rights += ['news_editor', 'news_author', 'news_redactor']
 
-admin_menu.append(Item('/admin/new', label="News", rights = ['new_list']))
+admin_menu.append(Item('/admin/news', label="News", rights = ['news_list']))
 
-@app.route("/test/new/db")
+@app.route("/test/news/db")
 def test_db(req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
@@ -38,10 +38,10 @@ def test_db(req):
         return "Test of DB time failed\n%s != %s" % (value, 1386613140)
 #enddef
 
-@app.route('/admin/new')
-def admin_new(req):
-    check_login(req, '/login?referer=/admin/new')
-    check_right(req, 'new_list')
+@app.route('/admin/news')
+def admin_news(req):
+    check_login(req)
+    check_right(req, 'news_editor')
 
     error = req.args.getfirst('error', 0, int)
 
@@ -49,15 +49,15 @@ def admin_new(req):
     pager.bind(req.args)
 
     rows = New.list(req, pager)
-    return generate_page(req, "admin/new.html",
+    return generate_page(req, "admin/news.html",
                         menu = correct_menu(req, admin_menu),
                         pager = pager, rows = rows, error = error)
 #enddef
 
-@app.route('/admin/new/add', method = state.METHOD_GET_POST)
-def admin_new_add(req):
-    check_login(req, '/login?referer=/admin/new/add')
-    check_right(req, 'new_create', '/admin/new?error=%d' % ACCESS_DENIED)
+@app.route('/admin/news/add', method = state.METHOD_GET_POST)
+def admin_news_add(req):
+    check_login(req)
+    check_right(req, 'news_editor', '/admin/news?error=%d' % ACCESS_DENIED)
 
     if req.method == 'POST':
         new = New()
@@ -65,57 +65,54 @@ def admin_new_add(req):
         error = new.add(req)
 
         if error:
-            return generate_page(req, "admin/new_mod.html",
+            return generate_page(req, "admin/news_mod.html",
                         menu = correct_menu(req, admin_menu),
                         new = new, error = error)
 
-        #redirect(req, '/admin/new/mod?new_id=%d' % new.id)
-        redirect(req, '/admin/new')
+        redirect(req, '/admin/news/%d' % new.id)
     #end
 
-    return generate_page(req, "admin/new_mod.html",
+    return generate_page(req, "admin/news_mod.html",
                         menu = correct_menu(req, admin_menu))
 #enddef
 
-@app.route('/admin/new/mod', state.METHOD_GET_POST)
-def admin_new_mod(req):
-    check_login(req, '/login?referer=/admin/new/mod')
-    check_right(req, 'new_edit', '/admin/new?error=%d' % ACCESS_DENIED)
+@app.route('/admin/news/<id:int>', state.METHOD_GET_POST)
+def admin_news_mod(req, id):
+    check_login(req)
+    check_right(req, 'news_editor', '/admin/news?error=%d' % ACCESS_DENIED)
 
-    new = New(req.args.getfirst('new_id', 0, int))
+    new = New(id)
     
     if req.method == 'POST':
         new.bind(req.form)
         error = new.mod(req)
         if error:
-            return generate_page(req, "admin/new_mod.html",
+            return generate_page(req, "admin/news_mod.html",
                                     menu = correct_menu(req, admin_menu),
                                     new = new, error = error)
-        #endif
-        redirect(req, '/admin/new')
-    #end
+
     error = new.get(req)
-    if error: redirect(req, '/admin/new?error=%d' % NOT_FOUND)
-    return generate_page(req, "admin/new_mod.html",
+    if error: redirect(req, '/admin/news?error=%d' % NOT_FOUND)
+    return generate_page(req, "admin/news_mod.html",
                         menu = correct_menu(req, admin_menu),
                         new = new)
 #enddef
 
-@app.route('/admin/new/disable')
-@app.route('/admin/new/enable')
-def admin_new_enable(req):
-    check_login(req, '/login?referer=/admin/new')
-    check_right(req, 'new_delete', '/admin/new?error=%d' % ACCESS_DENIED)
-    check_referer(req, '/admin/new')
+@app.route('/admin/news/<id:int>/disable', state.METHOD_POST)
+@app.route('/admin/news/<id:int>/enable', state.METHOD_POST)
+def admin_news_enable(req, id):
+    check_login(req, '/login?referer=/admin/news')
+    check_right(req, 'news_editor', '/admin/news?error=%d' % ACCESS_DENIED)
+    check_referer(req, '/admin/news')
     
-    new = New(req.args.getfirst('new_id', 0, int))
-    new.enabled = int(req.uri == '/admin/new/enable')
+    new = New(id)
+    new.enabled = int(req.uri.endswith('/enable'))
     new.enable(req)
-    redirect(req, '/admin/new')
+    redirect(req, '/admin/news')
 #enddef
 
-@app.route('/new/list')
-def new_list(req):
+@app.route('/news')
+def news_list(req):
     error = req.args.getfirst('error', 0, int)
     locale = req.args.getfirst('locale', get_lang(req), uni)
 
@@ -126,17 +123,17 @@ def new_list(req):
         pager.set_params(locale = locale)
 
     rows = New.list(req, pager, body = True, enabled = 1, locale = (locale, ''))
-    return generate_page(req, "new_list.html",
+    return generate_page(req, "news_list.html",
                         pager = pager, rows = rows, error = error, lang = locale)
 #enddef
 
-@app.route('/new/detail')
-def new_detail(req):
-    new = New(req.args.getfirst('new_id', 0, int))
+@app.route('/news/<id:int>')
+def news_detail(req, id):
+    new = New(id)
 
     error = new.get(req)
-    if error: redirect(req, '/new/list?error=%d' % NOT_FOUND)
-    return generate_page(req, "new_detail.html",
+    if error: redirect(req, '/news?error=%d' % NOT_FOUND)
+    return generate_page(req, "news_detail.html",
                         new = new)
 #enddef
 

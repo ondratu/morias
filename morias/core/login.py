@@ -32,13 +32,11 @@ def do_logout(req):
     req.log_error("Login cookie was be destroyed (Logout).", state.LOG_INFO)
 #enddef
 
-def check_login(req, redirect_uri = None):
+def do_check_login(req):
     req.login = None
     cookie = PoorSession(req)
     if not "data" in cookie.data:
         req.log_error("Login cookie not found.", state.LOG_INFO)
-        if redirect_uri:
-            redirect(req, redirect_uri)
         return None
 
     if "ip" in cookie.data and cookie.data["ip"] != req.get_remote_host():
@@ -46,34 +44,28 @@ def check_login(req, redirect_uri = None):
         cookie.header(req, req.headers_out)
         req.log_error("Login cookie was be destroyed (invalid IP address)",
                 state.LOG_INFO)
-        if redirect_uri:
-            redirect(req, redirect_uri)
         return None
 
     __class__, __dict__ = cookie.data["data"]
     req.login = __class__()
-    req.login.__dict__ = __dict__
+    req.login.__dict__ = __dict__.copy()
     
     if not req.login.check(req):
         cookie.destroy()
         cookie.header(req, req.headers_out)
         req.log_error("Login cookie was be destroyed (check failed)",
                 state.LOG_INFO)
-        if redirect_uri:
-            redirect(req, redirect_uri)
         return None
 
     cookie.header(req, req.headers_out)     # refresh cookie
     return req.login
 #enddef
 
-def check_right(req, right, redirect_uri = '/'):
-    if right in req.login.rights or 'super' in req.login.rights:
-        return
-    redirect(req, redirect_uri)
-#enddef
+def do_check_right(req, right):
+    return right in req.login.rights or 'super' in req.login.rights
 
-def match_right(req, rights):
+
+def do_match_right(req, rights):
     if not 'login' in req.__dict__ or req.login is None or not 'rights' in req.login.__dict__:
         req_login_rights = ('guest',)   # guest is default user right
     else:
@@ -87,6 +79,23 @@ def match_right(req, rights):
 
     return True                         # some rights match
 #enddef
+
+def check_login(req, redirect_uri = None):
+    if do_check_login(req) is None:
+        if redirect_uri is None:
+            redirect_uri = "/login?referer=%s" % req.uri
+        redirect(req, redirect_uri)
+
+
+def check_right(req, right, redirect_uri = '/'):
+    if not do_check_right(req, right):
+        redirect(req, redirect_uri)
+
+
+def match_right(req, rights, redirect_uri = '/'):
+    if not do_match_right(req, rights):
+        redirect(req, redirect_uri)
+
 
 def check_referer(req, referer, redirect = None):
     full_referer = "%s://%s%s" % (req.scheme, req.hostname, referer)

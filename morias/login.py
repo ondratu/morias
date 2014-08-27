@@ -19,12 +19,12 @@ _check_conf = (
     ('morias', 'register', bool, False),            # if users can regiser
 )
 
-rights += ['login_list', 'login_create', 'login_edit', 'login_ban']
+rights += ['login_list', 'login_create', 'login_ban']
 
-admin_menu.append(Item('/admin/login', label="Logins", rights = ['login_list']))
+admin_menu.append(Item('/admin/logins', label="Logins", rights = ['login_list']))
 user_menu.append(Item('/user/profile', label="Profile", rights = ['user']))
 
-@app.route("/test/login/db")
+@app.route("/test/logins/db")
 def test_db(req):
     data = (None, 123, 3.14, "user@domain.xy", "'; SELECT 1; SELECT")
     tran = req.db.transaction(req.logger)
@@ -76,9 +76,9 @@ def logout(req):
     redirect(req, req.referer or '/')
 #enddef
 
-@app.route('/admin/login')
-def admin_login(req):
-    check_login(req, '/login?referer=/admin/login')
+@app.route('/admin/logins')
+def admin_logins(req):
+    check_login(req)
     check_right(req, 'login_list')
 
     error = req.args.getfirst('error', 0, int)
@@ -87,15 +87,15 @@ def admin_login(req):
     pager.bind(req.args)
 
     rows = Login.list(req, pager)
-    return generate_page(req, "admin/login.html",
+    return generate_page(req, "admin/logins.html",
                         menu = correct_menu(req, admin_menu),
                         pager = pager, rows = rows, error = error)
 #enddef
 
-@app.route('/admin/login/add', method = state.METHOD_GET_POST)
-def admin_login_add(req):
-    check_login(req, '/login?referer=/admin/login/add')
-    check_right(req, 'login_create', '/admin/login?error=%d' % ACCESS_DENIED)
+@app.route('/admin/logins/add', method = state.METHOD_GET_POST)
+def admin_logins_add(req):
+    check_login(req)
+    check_right(req, 'login_create', '/admin/logins?error=%d' % ACCESS_DENIED)
 
     if req.method == 'POST':
         login = Login()
@@ -103,28 +103,25 @@ def admin_login_add(req):
         error = login.add(req)
 
         if error:
-            return generate_page(req, "admin/login_mod.html",
+            return generate_page(req, "admin/logins_mod.html",
                             menu = correct_menu(req, admin_menu),
                             rights = rights,
                             item = login, error = error)
 
-        #redirect(req, '/admin/login/mod?login_id=%d' % login.id)
-        redirect(req, '/admin/login')
+        redirect(req, '/admin/logins/%d' % login.id)
     #end
 
-    return generate_page(req, "admin/login_mod.html",
+    return generate_page(req, "admin/logins_mod.html",
                             menu = correct_menu(req, admin_menu),
                             rights = rights)
 #enddef
 
-@app.route('/admin/login/mod', state.METHOD_GET_POST)
-def admin_login_mod(req):
-    check_login(req, '/login?referer=/admin/login/mod')
-    check_right(req, 'login_edit', '/admin/login?error=%d' % ACCESS_DENIED)
+@app.route('/admin/logins/<id:int>', state.METHOD_GET_POST)
+def admin_logins_mod(req, id):
+    check_login(req)
+    check_right(req, 'login_create', '/admin/logins?error=%d' % ACCESS_DENIED)
 
-    login = Login(req.args.getfirst('login_id', 0, int))
-    if req.login.id == login.id:
-        redirect(req, '/admin/login?error=%d' % ACCESS_DENIED)
+    login = Login(id)
 
     state = None
     if req.method == 'POST':
@@ -132,7 +129,7 @@ def admin_login_mod(req):
         state = login.mod(req)
 
         if state < 100:
-            return generate_page(req, "admin/login_mod.html",
+            return generate_page(req, "admin/logins_mod.html",
                                  menu = correct_menu(req, admin_menu),
                                  rights = rights,
                                  item = login, error = state)
@@ -140,32 +137,32 @@ def admin_login_mod(req):
     #endif
 
     if not login.get(req):
-        redirect(req, '/admin/login?error=%d' % NOT_FOUND)
-    return generate_page(req, "admin/login_mod.html",
+        redirect(req, '/admin/logins?error=%d' % NOT_FOUND)
+    return generate_page(req, "admin/logins_mod.html",
                             menu = correct_menu(req, admin_menu),
                             rights = rights,
                             item = login, state = state)
 #enddef
 
-@app.route('/admin/login/disable')
-@app.route('/admin/login/enable')
-def admin_login_enable(req):
-    check_login(req, '/login?referer=/admin/login')
-    check_right(req, 'login_ban', '/admin/login?error=%d' % ACCESS_DENIED)
-    check_referer(req, '/admin/login')
+@app.route('/admin/logins/<id:int>/disable', state.METHOD_POST)
+@app.route('/admin/logins/<id:int>/enable', state.METHOD_POST)
+def admin_logins_enable(req, id):
+    check_login(req, '/login?referer=/admin/logins')
+    check_right(req, 'login_ban', '/admin/logins?error=%d' % ACCESS_DENIED)
+    check_referer(req, '/admin/logins')
 
-    login = Login(req.args.getfirst('login_id', 0, int))
+    login = Login(id)
     if req.login.id == login.id:
-        redirect(req, '/admin/login?error=%d' % ACCESS_DENIED)
+        redirect(req, '/admin/logins?error=%d' % ACCESS_DENIED)
 
-    login.enabled = int(req.uri == '/admin/login/enable')
+    login.enabled = int(req.uri.endswith('/enable'))
     login.enable(req)
-    redirect(req, '/admin/login')
+    redirect(req, '/admin/logins')
 #enddef
 
 @app.route('/user/profile', state.METHOD_GET_POST)
-def user_login_pref(req):
-    check_login(req, '/login?referer=/user/profile')
+def user_logins_pref(req):
+    check_login(req)
 
     login = Login(req.login.id)
 

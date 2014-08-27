@@ -9,7 +9,7 @@ from shutil import copyfile
 from falias.util import uni, nint
 
 from core.render import generate_page
-from core.login import match_right
+from core.login import do_match_right, do_check_right
 
 #errors
 EMPTY_FILENAME  = 1
@@ -31,6 +31,7 @@ def driver(req):
 class Page():
     def __init__(self, id = None):
         self.id = id
+        self.author_id = None   # TODO
 
     def get(self, req):
         m = driver(req)
@@ -119,8 +120,12 @@ class Page():
 
     def check_right(self, req):
         """ check if any of login.rights metch any of page.rights """
+        # if author is author of text
+        if do_check_right(req, ['pages_author']) and self.author_id == req.login.id:
+            return True
+
         m = driver(req)
-        return match_right(req, m.load_rights(self, req))
+        return do_match_right(req, m.load_rights(self, req))
     #enddef
 
     def check_filename(self):

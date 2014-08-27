@@ -1,4 +1,4 @@
-{% if site.this == '/admin/login/add' -%}
+{% if site.this == '/admin/logins/add' -%}
     {% set title = 'Admin - edit login ' + item.email -%}
 {% else -%}
     {% set title = 'Admin - new login' -%}
@@ -9,16 +9,16 @@
     <script src="/js/rights.js"></script>
 
     <div class="container">
-    {% if site.this == '/admin/login/add' -%}
+    {% if site.this == '/admin/logins/add' -%}
       <h2 class="form-signin-heading">{{ _('New login') }}
     {% else -%}
       <h2 class="form-signin-heading">{{ _('Edit login') }}
       {% if check_right('login_create') -%}
-        <span class="btn btn-default pull-right"><a href="/admin/login/add">{{ _('New login') }}</a></span>
+        <span class="btn btn-default pull-right"><a href="/admin/logins/add">{{ _('New login') }}</a></span>
       {% endif -%}
     {% endif -%}
       {% if check_right('login_list') -%}
-        <span class="btn btn-default pull-right"><a href="/admin/login">{{ _('Login list') }}</a></span>
+        <span class="btn btn-default pull-right"><a href="/admin/logins">{{ _('Login list') }}</a></span>
       {% endif -%}
       </h2>
 
@@ -67,7 +67,7 @@
             <input type="password" id="input_passwd" name="passwd" class="form-control" placeholder="{{ _('Password') }}"></div>
         {% if error is defined and error == 2 %}
           <div class="col-sm-4 help-inline" >{% include "admin/_login_error.html" %}</div>
-        {% elif site.this == '/admin/login/mod' %}
+        {% elif site.this != '/admin/logins/add' %}
           <div class="col-sm-4 help-inline">{{ _('Fill it only, if you want to change.') }}</div>
         {% endif %}
         </div>

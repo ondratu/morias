@@ -10,7 +10,6 @@ SUCCESS         = 2000
 
 @app.http_state(state.HTTP_NOT_FOUND)
 def not_found(req):
-    req.add_common_vars()
     req.state = state.HTTP_NOT_FOUND
     req.write(generate_page(req, "error/not_found.html",
         request_uri = req.environ['REQUEST_URI']))

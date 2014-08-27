@@ -1,7 +1,7 @@
 
 from poorwsgi import *
 
-from core.login import check_login, check_right, match_right
+from core.login import check_login, check_right
 from core.render import generate_page
 
 from lib.menu import correct_menu
@@ -10,7 +10,7 @@ admin_menu = []
 
 @app.route('/admin')
 def root(req):
-    check_login(req, '/login?referer=/admin')
+    check_login(req)
     check_right(req, 'admin')
 
     menu = correct_menu(req, admin_menu)

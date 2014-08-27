@@ -6,7 +6,7 @@
       <h2 class="form-signin-heading">
         <span class="pul-l-left">{{ _('Logins list') }}</span>
       {% if check_right('login_create') -%}
-        <span class="btn btn-default pull-right"><a href="/admin/login/add">{{ _('New login') }}</a></span>
+        <span class="btn btn-default pull-right"><a href="/admin/logins/add">{{ _('New login') }}</a></span>
       {% endif -%}
       </h2>
 
@@ -24,13 +24,13 @@
             <td>
           {% if item.id != login.id -%}
             {% if check_right('login_edit') -%}
-              <a href="/admin/login/mod?login_id={{ item.id }}">{{ _('Edit') }}</a>
+              <a href="/admin/logins/{{ item.id }}">{{ _('Edit') }}</a>
             {% endif -%}
             {% if check_right('login_ban') -%}
              {%- if item.enabled %}
-              / <a href="/admin/login/disable?login_id={{ item.id }}">{{ _('Disable') }}</a>
+              / <a href="#" post="/admin/logins/{{ item.id }}/disable">{{ _('Disable') }}</a>
              {%- elif not item.enabled %}
-              / <a href="/admin/login/enable?login_id={{ item.id }}">{{ _('Enabled') }}</a>
+              / <a href="#" post="/admin/logins/{{ item.id }}/enable">{{ _('Enabled') }}</a>
              {% endif -%}
             {% endif -%}
           {% endif -%}
@@ -39,6 +39,15 @@
         {%- endfor %}
       </table>
 {% include "_pager.html" %}
+
+      <script>
+        $(document).ready(function() { 
+          // send form after click to links with post attribut
+          $('a[post]').click(function() {
+            $('<form/>',{'method':'post','action':$(this).attr('post')}).submit();
+          });
+        });
+      </script>
 
     </div>
 {% include "_footer.html" %}

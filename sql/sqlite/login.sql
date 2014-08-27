@@ -14,4 +14,4 @@ CREATE unique index if not exists
 
 -- text + salt -> password + dev
 INSERT INTO login (enabled, email, passwd, rights)
-    VALUES (1, 'admin@morias.dev', '36d4186adcfa2cf7d60a77ee4d18b83f95e83f05', '["super"]');
+    VALUES (1, 'admin@morias.dev', '36d4186adcfa2cf7d60a77ee4d18b83f95e83f05', '["super"]');    -- passwd : password
