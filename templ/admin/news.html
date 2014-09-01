@@ -1,6 +1,6 @@
 {% set title = 'Admin - news' -%}
 {% include "_header.html" -%}
-{% include "admin/_menu.html" %}
+{% include "user/_menu.html" %}
 
     <div class="container">
       <h2 class="form-signin-heading">
@@ -9,7 +9,7 @@
         <span class="btn btn-default pull-right"><a href="/admin/news/add">{{ _('New new') }}</a></span>
       {% endif -%}
       </h2>
-      
+
    {%- if error is defined and error == 1001 -%}
      <div class="alert alert-danger">{{ _('Access denied') }}</div>
    {%- endif -%}
@@ -50,7 +50,7 @@
 {% include "_pager.html" %}
 
       <script>
-        $(document).ready(function() { 
+        $(document).ready(function() {
           // send form after click to links with post attribut
           $('a[post]').click(function() {
             $('<form/>',{'method':'post','action':$(this).attr('post')}).submit();

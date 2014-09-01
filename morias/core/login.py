@@ -81,7 +81,8 @@ def do_match_right(req, rights):
 #enddef
 
 def check_login(req, redirect_uri = None):
-    if do_check_login(req) is None:
+    #if do_check_login(req) is None:
+    if req.login is None:       # do_check_login was called averytime
         if redirect_uri is None:
             redirect_uri = "/login?referer=%s" % req.uri
         redirect(req, redirect_uri)

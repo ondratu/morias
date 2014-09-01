@@ -8,22 +8,12 @@
         </button>
 
         <a class="navbar-brand" href="/">{{ site.name }}</a>
-        {% set full = '/' %}
-        {% for uri in site.this.split('/')[1:-1] %}
         <span class="navbar-text">&raquo;</span>
-        <a class="navbar-brand" href="{{ full }}{{ uri }}">{{ uri }}</a>
-        {% set full = full + uri + '/' %}
-        {% endfor %}
-        <span class="navbar-text">&raquo;</span>
-        <span class="navbar-brand">{{ site.this.split('/')[-1] }}</span>
+        <span class="navbar-brand">{{ page.name }}</span>
       </div>
 
       <div class="collapse navbar-collapse">
-        {% if login is defined %}
-        <a class="pull-right navbar-text" href="/logout">{{ _('Logout') }} {{ login.email.split('@')[0] }}</a>
-        {% else %}
         <a class="pull-right navbar-text" href="/login">{{ _('Sign in') }}</a>
-        {% endif %}
 
         <ul class="pull-right nav navbar-nav">
         {% for item in menu -%}              {# TODO: tooltip (title) #}
@@ -32,6 +22,4 @@
         {%- endfor -%}
         </ul>
       </div>
-
-      
     </nav>

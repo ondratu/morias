@@ -21,7 +21,7 @@ _check_conf = (
 
 rights += ['news_editor', 'news_author', 'news_redactor']
 
-admin_menu.append(Item('/admin/news', label="News", rights = ['news_list']))
+content_menu.append(Item('/admin/news', label="News", rights = ['news_list']))
 
 @app.route("/test/news/db")
 def test_db(req):
@@ -50,7 +50,6 @@ def admin_news(req):
 
     rows = New.list(req, pager)
     return generate_page(req, "admin/news.html",
-                        menu = correct_menu(req, admin_menu),
                         pager = pager, rows = rows, error = error)
 #enddef
 
@@ -66,14 +65,12 @@ def admin_news_add(req):
 
         if error:
             return generate_page(req, "admin/news_mod.html",
-                        menu = correct_menu(req, admin_menu),
                         new = new, error = error)
 
         redirect(req, '/admin/news/%d' % new.id)
     #end
 
-    return generate_page(req, "admin/news_mod.html",
-                        menu = correct_menu(req, admin_menu))
+    return generate_page(req, "admin/news_mod.html")
 #enddef
 
 @app.route('/admin/news/<id:int>', state.METHOD_GET_POST)
@@ -82,19 +79,17 @@ def admin_news_mod(req, id):
     check_right(req, 'news_editor', '/admin/news?error=%d' % ACCESS_DENIED)
 
     new = New(id)
-    
+
     if req.method == 'POST':
         new.bind(req.form)
         error = new.mod(req)
         if error:
             return generate_page(req, "admin/news_mod.html",
-                                    menu = correct_menu(req, admin_menu),
                                     new = new, error = error)
 
     error = new.get(req)
     if error: redirect(req, '/admin/news?error=%d' % NOT_FOUND)
     return generate_page(req, "admin/news_mod.html",
-                        menu = correct_menu(req, admin_menu),
                         new = new)
 #enddef
 
@@ -104,7 +99,7 @@ def admin_news_enable(req, id):
     check_login(req, '/login?referer=/admin/news')
     check_right(req, 'news_editor', '/admin/news?error=%d' % ACCESS_DENIED)
     check_referer(req, '/admin/news')
-    
+
     new = New(id)
     new.enabled = int(req.uri.endswith('/enable'))
     new.enable(req)

@@ -122,4 +122,6 @@ def load_config(req):
     def logger(msg):
         req.log_error(msg, state.LOG_INFO)
     req.logger = logger
+
+    req.login = None    # if there is no user module
 #enddef

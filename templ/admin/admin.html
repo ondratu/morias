@@ -1,6 +1,6 @@
 {% set title = _('Admin') -%}
 {% include "_header.html" -%}
-{% include "_menu.html" %}
+{% include "user/_menu.html" %}
 
     <div class="container">
     {%- for submenu in admin_sections if length(submenu) > 0 -%}

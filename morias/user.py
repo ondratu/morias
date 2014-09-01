@@ -1,6 +1,6 @@
 from poorwsgi import *
 
-from core.login import check_login
+from core.login import check_login, do_check_login
 from core.render import generate_page
 
 from lib.menu import correct_menu, Menu
@@ -10,6 +10,10 @@ user_menu = Menu('User')  # menu for any users: Profile / Logout / Login / Regis
 @app.pre_process()
 def append_menu(req):
     req.menu = user_menu
+
+@app.pre_process()
+def auto_check_login(req):
+    do_check_login(req)
 
 @app.route('/user')
 def root(req):
