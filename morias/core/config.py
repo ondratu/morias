@@ -78,7 +78,7 @@ class Config:
 
     def load_module(self, p, req, module):
         #m = __import__("morias.%s" % module, globals())
-        exec ("import morias.%s as m" % module) in globals()
+        exec ("import %s as m" % module) in globals()
 
         if not '_check_conf' in m.__dict__:
             req.log_error('No config need for module %s...' % module, state.LOG_INFO)

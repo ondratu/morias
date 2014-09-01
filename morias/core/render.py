@@ -7,6 +7,7 @@ from gettext import NullTranslations, translation
 from falias.util import Object
 
 from lang import get_lang, get_langs
+from morias.lib.menu import correct_menu
 
 class sdict(dict):
     def set(self, key, item):
@@ -153,6 +154,9 @@ def generate_page(req, template, **kwargs):
     else:
         req.content_type = 'text/html'
     #endif
+
+    if not 'menu' in kwargs:
+        kwargs['menu'] = correct_menu(req, req.menu)
 
     return morias_template(req, template, **kwargs)
 #enddef

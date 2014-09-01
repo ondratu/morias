@@ -5,7 +5,7 @@ from falias.util import Object
 from core.render import generate_page
 from core.login import rights, do_login, do_logout, check_login, check_referer
 
-from lib.menu import Item, correct_menu
+from lib.menu import Item
 from lib.pager import Pager
 from lib.login import Login
 
@@ -16,12 +16,15 @@ from core.errors import *
 _check_conf = (
     ('morias', 'salt', unicode, None),              # salt for passwords
     ('morias', 'db', Sql, None),                    # database configuration
-    ('morias', 'register', bool, False),            # if users can regiser
+    ('morias', 'register', bool, False),            # if users can register
 )
 
-rights += ['login_list', 'login_create', 'login_ban']
+R_ADMIN = 'users_admin'     # right admin - do anythig with users
 
-admin_menu.append(Item('/admin/logins', label="Logins", rights = ['login_list']))
+rights += [R_ADMIN]
+
+system_menu.append(Item('/admin/logins', label="Logins", rights = [R_ADMIN]))
+user_menu.append(Item('/admin', label="Admin", rights = ['admin']))
 user_menu.append(Item('/user/profile', label="Profile", rights = ['user']))
 
 @app.route("/test/logins/db")
@@ -59,8 +62,6 @@ def login(req):
                 redirect(req, referer)
             if 'admin' in login.rights or 'super' in login.rights:
                 redirect(req, '/admin')
-            if 'user' in login.rights:
-                redirect(req, '/user')
             redirect(req, '/')
 
         data.ip = ip
@@ -79,7 +80,7 @@ def logout(req):
 @app.route('/admin/logins')
 def admin_logins(req):
     check_login(req)
-    check_right(req, 'login_list')
+    check_right(req, R_ADMIN)
 
     error = req.args.getfirst('error', 0, int)
 
@@ -88,14 +89,13 @@ def admin_logins(req):
 
     rows = Login.list(req, pager)
     return generate_page(req, "admin/logins.html",
-                        menu = correct_menu(req, admin_menu),
                         pager = pager, rows = rows, error = error)
 #enddef
 
 @app.route('/admin/logins/add', method = state.METHOD_GET_POST)
 def admin_logins_add(req):
     check_login(req)
-    check_right(req, 'login_create', '/admin/logins?error=%d' % ACCESS_DENIED)
+    check_right(req, R_ADMIN)
 
     if req.method == 'POST':
         login = Login()
@@ -104,7 +104,6 @@ def admin_logins_add(req):
 
         if error:
             return generate_page(req, "admin/logins_mod.html",
-                            menu = correct_menu(req, admin_menu),
                             rights = rights,
                             item = login, error = error)
 
@@ -112,16 +111,17 @@ def admin_logins_add(req):
     #end
 
     return generate_page(req, "admin/logins_mod.html",
-                            menu = correct_menu(req, admin_menu),
                             rights = rights)
 #enddef
 
 @app.route('/admin/logins/<id:int>', state.METHOD_GET_POST)
 def admin_logins_mod(req, id):
     check_login(req)
-    check_right(req, 'login_create', '/admin/logins?error=%d' % ACCESS_DENIED)
+    check_right(req, R_ADMIN)
 
     login = Login(id)
+    if req.login.id == login.id:                    # not good idea to remove
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)   # rights himself for example
 
     state = None
     if req.method == 'POST':
@@ -130,16 +130,14 @@ def admin_logins_mod(req, id):
 
         if state < 100:
             return generate_page(req, "admin/logins_mod.html",
-                                 menu = correct_menu(req, admin_menu),
                                  rights = rights,
                                  item = login, error = state)
         #endif
     #endif
 
     if not login.get(req):
-        redirect(req, '/admin/logins?error=%d' % NOT_FOUND)
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
     return generate_page(req, "admin/logins_mod.html",
-                            menu = correct_menu(req, admin_menu),
                             rights = rights,
                             item = login, state = state)
 #enddef
@@ -148,12 +146,12 @@ def admin_logins_mod(req, id):
 @app.route('/admin/logins/<id:int>/enable', state.METHOD_POST)
 def admin_logins_enable(req, id):
     check_login(req, '/login?referer=/admin/logins')
-    check_right(req, 'login_ban', '/admin/logins?error=%d' % ACCESS_DENIED)
+    check_right(req, R_ADMIN)
     check_referer(req, '/admin/logins')
 
     login = Login(id)
-    if req.login.id == login.id:
-        redirect(req, '/admin/logins?error=%d' % ACCESS_DENIED)
+    if req.login.id == login.id:                    # not good idea to
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)   # disable himself
 
     login.enabled = int(req.uri.endswith('/enable'))
     login.enable(req)
@@ -173,7 +171,6 @@ def user_logins_pref(req):
 
         if state < 100:
             return generate_page(req, "user/login_pref.html",
-                                 menu = correct_menu(req, user_menu),
                                  error = state)
         #endif
     #endif
@@ -181,6 +178,5 @@ def user_logins_pref(req):
     login.get(req)
     req.login = login
     return generate_page(req, "user/login_pref.html",
-                        menu = correct_menu(req, user_menu),
                         state = state)
 #enddef

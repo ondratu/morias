@@ -6,7 +6,7 @@ from poorwsgi.session import PoorSession
 from time import time
 from hashlib import sha1
 
-from render import Object
+from falias.util import Object
 
 rights = ['super', 'admin', 'user', 'guest']
 
@@ -87,14 +87,18 @@ def check_login(req, redirect_uri = None):
         redirect(req, redirect_uri)
 
 
-def check_right(req, right, redirect_uri = '/'):
+def check_right(req, right, redirect_uri = None):
     if not do_check_right(req, right):
-        redirect(req, redirect_uri)
+        if redirect_uri:
+            redirect(req, redirect_uri)
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
 
 
-def match_right(req, rights, redirect_uri = '/'):
+def match_right(req, rights, redirect_uri = None):
     if not do_match_right(req, rights):
-        redirect(req, redirect_uri)
+        if redirect_uri:
+            redirect(req, redirect_uri)
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
 
 
 def check_referer(req, referer, redirect = None):

@@ -4,7 +4,7 @@
     {% set title = 'Admin - new login' -%}
 {% endif -%}
 {% include "_header.html" -%}
-{% include "admin/_menu.html" %}
+{% include "_menu.html" %}
 
     <script src="/js/rights.js"></script>
 
@@ -13,13 +13,9 @@
       <h2 class="form-signin-heading">{{ _('New login') }}
     {% else -%}
       <h2 class="form-signin-heading">{{ _('Edit login') }}
-      {% if check_right('login_create') -%}
         <span class="btn btn-default pull-right"><a href="/admin/logins/add">{{ _('New login') }}</a></span>
-      {% endif -%}
     {% endif -%}
-      {% if check_right('login_list') -%}
         <span class="btn btn-default pull-right"><a href="/admin/logins">{{ _('Login list') }}</a></span>
-      {% endif -%}
       </h2>
 
     {% if state is defined and state == 200 -%}

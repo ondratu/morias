@@ -1,8 +1,17 @@
 {% set title = _('Admin') -%}
 {% include "_header.html" -%}
-{% include "admin/_menu.html" %}
+{% include "_menu.html" %}
 
     <div class="container">
-
+    {%- for submenu in admin_sections if length(submenu) > 0 -%}
+      <h2>{{ submenu.label }}</h2>
+        <div class="row">
+      {%- for item in submenu -%}
+        <div class="col-md-4"><div class="well">
+          <a href="{{ item.uri }}"><h2>{{ item.label }}</h2></a>
+        </div></div>
+      {%- endfor %}
+        </div><!-- /row -->
+    {%- endfor %}
     </div>
 {% include "_footer.html" %}

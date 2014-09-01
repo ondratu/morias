@@ -1,13 +1,11 @@
 {% set title = 'Admin - logins' -%}
 {% include "_header.html" -%}
-{% include "admin/_menu.html" %}
+{% include "_menu.html" %}
 
     <div class="container">
       <h2 class="form-signin-heading">
         <span class="pul-l-left">{{ _('Logins list') }}</span>
-      {% if check_right('login_create') -%}
         <span class="btn btn-default pull-right"><a href="/admin/logins/add">{{ _('New login') }}</a></span>
-      {% endif -%}
       </h2>
 
    {%- if error is defined and error == 1001 -%}
@@ -23,16 +21,12 @@
             <td {{ 'class="disabled"' if not item.enabled else '' }}>{{ item.email }}</td>
             <td>
           {% if item.id != login.id -%}
-            {% if check_right('login_edit') -%}
               <a href="/admin/logins/{{ item.id }}">{{ _('Edit') }}</a>
-            {% endif -%}
-            {% if check_right('login_ban') -%}
              {%- if item.enabled %}
               / <a href="#" post="/admin/logins/{{ item.id }}/disable">{{ _('Disable') }}</a>
              {%- elif not item.enabled %}
               / <a href="#" post="/admin/logins/{{ item.id }}/enable">{{ _('Enabled') }}</a>
              {% endif -%}
-            {% endif -%}
           {% endif -%}
             </td>
         </tr>

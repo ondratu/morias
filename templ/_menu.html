@@ -1,17 +1,36 @@
     <nav class="container navbar navbar-default" role="navigation">
       <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-admin">
+          <span class="sr-only">{{ _('Toggle navigation') }}</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
         <a class="navbar-brand" href="/">{{ site.name }}</a>
+        {% set full = '/' %}
+        {% for uri in site.this.split('/')[1:-1] %}
+        <span class="navbar-text">&raquo;</span>
+        <a class="navbar-brand" href="{{ full }}{{ uri }}">{{ uri }}</a>
+        {% set full = full + uri + '/' %}
+        {% endfor %}
+        <span class="navbar-text">&raquo;</span>
+        <span class="navbar-brand">{{ site.this.split('/')[-1] }}</span>
       </div>
 
       <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
+        {% if login is defined %}
+        <a class="pull-right navbar-text" href="/logout">{{ _('Logout') }} {{ login.email.split('@')[0] }}</a>
+        {% else %}
+        <a class="pull-right navbar-text" href="/login">{{ _('Sign in') }}</a>
+        {% endif %}
+
+        <ul class="pull-right nav navbar-nav">
         {% for item in menu -%}              {# TODO: tooltip (title) #}
           <li {{ 'class="active"' if page.name == '/'+item.uri else '' }}>
                 <a href="{{ item.uri }}">{{ item.label }}</a></li>
         {%- endfor -%}
         </ul>
-
-        <a class="pull-right navbar-text" href="/login">{{ _('Sign in') }}</a>
       </div>
 
       

@@ -5,7 +5,7 @@
 {% macro subdict(dictionary, in = 0) %}
   {%- for key, val in dictionary.items() %}
     {% if val|attr("__dict__") is defined and length(val.__dict__) > 0 -%}      {#- object -#}
-    {{ indent(in) }}{{ key }}: {{ val|e }}
+    {{ indent(in) }}{{ key }}: {{ val.__class__|e }}
       {%- for k, v in val.__dict__.items() %}
     {{ indent(in+2) }}{{k}}: {{ v|e }}
       {%- endfor -%}
@@ -25,7 +25,7 @@
     {%- for i in range(length(list)) %}
     {%- set val = list[i] -%}
     {% if val|attr("__dict__") is defined and length(val.__dict__) > 0 -%}      {#- object -#}
-    {{ indent(in) }}{{ i }}: {{ val|e }}
+    {{ indent(in) }}{{ i }}: {{ val.__class__|e }}
       {%- for k, v in val.__dict__.items() %}
     {{ indent(in+2) }}{{k}}: {{ v|e }}
       {%- endfor -%}

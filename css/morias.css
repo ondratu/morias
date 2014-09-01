@@ -57,7 +57,10 @@ table .disabled {
     content: "\2212";
 }
 
-
+.navbar-brand, .navbar-text {
+    margin-left: 0;
+    margin-right: 0;
+}
 
 html, body {
   height: 100%;
