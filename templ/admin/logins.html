@@ -35,7 +35,7 @@
 {% include "_pager.html" %}
 
       <script>
-        $(document).ready(function() { 
+        $(document).ready(function() {
           // send form after click to links with post attribut
           $('a[post]').click(function() {
             $('<form/>',{'method':'post','action':$(this).attr('post')}).submit();

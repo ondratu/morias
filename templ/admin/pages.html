@@ -1,6 +1,6 @@
 {% set title = 'Admin - pages' -%}
 {% include "_header.html" -%}
-{% include "admin/_menu.html" %}
+{% include "_menu.html" %}
 
     <div class="container">
       <h2 class="form-signin-heading">
@@ -9,10 +9,10 @@
         <span class="btn btn-default pull-right"><a href="/admin/pages/add">{{ _('New page') }}</a></span>
       {% endif -%}
       {% if check_right('pages_modify') -%}
-        <span class="btn btn-default pull-right"><a href="/admin/pages/all/regenerate">{{ _('Regenerate all') }}</a></span>
+        <span class="btn btn-default pull-right"><a href="#" post="/admin/pages/all/regenerate">{{ _('Regenerate all') }}</a></span>
       {% endif -%}
       </h2>
-      
+
     {%- if error is defined and error == 1001 -%}
       <div class="alert alert-danger">{{ _('Access denied') }}</div>
     {%- endif %}
@@ -50,7 +50,7 @@
               <a href="/admin/pages/{{ page.id }}">{{ _('Edit') }}</a>
             {% endif -%}
             {% if check_right('page_delete') and match_right(page.rights) -%}
-              / <a href="#" post="/admin/pages/{{ page.id }}/delete" name="{{ page.name }}">{{ _('Delete') }}</a>
+              / <a href="#" delete="/admin/pages/{{ page.id }}/delete" name="{{ page.name }}">{{ _('Delete') }}</a>
             {% endif -%}
             </td></tr>
         {% endfor %}
@@ -58,12 +58,19 @@
 {% include "_pager.html" %}
 
       <script>
-        $(document).ready(function() { 
+        $(document).ready(function() {
+          // send form after click to links with delete attribut
+          $('a[delete]').click(function() {
+            $('#sure_delete > > > > h3').text("{{ _('Are you sure to delete %s page ?') }}".replace("%s", $(this).attr('name')));
+            $('#sure_delete > > > form').attr('action', $(this).attr('delete'));
+            $('#sure_delete').modal('toggle');
+          });
+        });
+
+        $(document).ready(function() {
           // send form after click to links with post attribut
           $('a[post]').click(function() {
-            $('#sure_delete > > > > h3').text("{{ _('Are you sure to delete %s page ?') }}".replace("%s", $(this).attr('name')));
-            $('#sure_delete > > > form').attr('action', $(this).attr('post'));
-            $('#sure_delete').modal('toggle');
+            $('<form/>',{'method':'post','action':$(this).attr('post')}).submit();
           });
         });
       </script>

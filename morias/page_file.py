@@ -30,7 +30,7 @@ _check_conf = (
 module_rights = ['pages_listall', 'pages_author', 'pages_modify']
 rights += module_rights
 
-admin_menu.append(Item('/admin/pages', label="Pages", rights = module_rights))
+content_menu.append(Item('/admin/pages', label="Pages", rights = module_rights))
 
 @app.route("/test/pages/db")
 def test_db(req):
@@ -91,7 +91,6 @@ def admin_pages(req):
 
     rows = Page.list(req, pager)
     return generate_page(req, "admin/pages.html",
-                        menu = correct_menu(req, admin_menu),
                         pager = pager, rows = rows, error = error)
 #enddef
 
@@ -108,7 +107,6 @@ def admin_pagse_add(req):
 
         if error:
             return generate_page(req, "admin/pages_mod.html",
-                        menu = correct_menu(req, admin_menu),
                         rights = rights,
                         page = page, error = error)
 
@@ -116,7 +114,6 @@ def admin_pagse_add(req):
     #end
 
     return generate_page(req, "admin/pages_mod.html",
-                        menu = correct_menu(req, admin_menu),
                         rights = rights)
 #enddef
 
@@ -135,7 +132,6 @@ def admin_pages_mod(req, id):
         error = page.mod(req)
         if error:
             return generate_page(req, "admin/pages_mod.html",
-                                    menu = correct_menu(req, admin_menu),
                                     page = page,
                                     rights = rights,
                                     error = error)
@@ -143,7 +139,6 @@ def admin_pages_mod(req, id):
     #end
     page.get(req)
     return generate_page(req, "admin/pages_mod.html",
-                        menu = correct_menu(req, admin_menu),
                         rights = rights,
                         page = page)
 #enddef
