@@ -11,10 +11,6 @@ user_menu = Menu('User')  # menu for any users: Profile / Logout / Login / Regis
 def append_menu(req):
     req.menu = user_menu
 
-@app.pre_process()
-def auto_check_login(req):
-    do_check_login(req)
-
 @app.route('/user')
 def root(req):
     check_login(req)

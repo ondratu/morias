@@ -18,7 +18,7 @@ _check_conf = (
 
     ('form', 'web_templates', unicode, 'forms'),    # path to web templates relative to templates
     ('form', 'mail_templates', unicode, 'mail'),    # path to mail templates relative to templates
-    ('form', 'recipient', Email, None),           # default form recipient
+    ('form', 'recipient', Email, None),             # default form recipient
     ('form', 'paths', tuple, None),                 # list of paths
 )
 

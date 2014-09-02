@@ -2,6 +2,8 @@ from poorwsgi import *
 from falias.parser import Parser, Options
 from time import strftime
 
+from login import do_check_login
+
 import os
 
 config = None
@@ -60,12 +62,6 @@ class Config:
         self.mcPrefix = cfg.get('memcache', 'prefix', '')
         self.mcExpiry = cfg.getint('memcache', 'expiry', 360) # 60 min
 
-        # smtp
-        self.smtpserver = cfg.get('smtp','server','localhost')
-        self.smtpsender = cfg.get('smtp','sender')
-        self.smtpreply  = cfg.get('smtp','reply')
-        self.smtpadmin  = cfg.get('smtp','admin')
-
         # photo
         self.photosizes = cfg.get('photo','sizes')
         self.thumbsize = cfg.get('photo','thumbsize')
@@ -123,5 +119,5 @@ def load_config(req):
         req.log_error(msg, state.LOG_INFO)
     req.logger = logger
 
-    req.login = None    # if there is no user module
+    do_check_login(req)                     # load login cookie avery time
 #enddef
