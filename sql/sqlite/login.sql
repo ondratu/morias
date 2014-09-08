@@ -5,8 +5,7 @@ CREATE TABLE login (
     email text not null,            -- user login
     passwd text not null,
 
-    rights text not null,           -- json list of rights
-    data text not null default '{}' -- json data
+    rights text not null            -- json list of rights
 );
 
 CREATE unique index if not exists

@@ -31,7 +31,6 @@ def driver(req):
 class Page():
     def __init__(self, id = None):
         self.id = id
-        self.author_id = None   # TODO
 
     def get(self, req):
         m = driver(req)
@@ -63,13 +62,15 @@ class Page():
         m = driver(req)
         return m.delete(self, req)
 
-    def bind(self, form):
+    def bind(self, form, author_id = None):
         self.id = form.getfirst('page_id', self.id, nint)
         self.name = form.getfirst('name', '', uni)
         self.title = form.getfirst('title', '', uni)
         self.locale = form.getfirst('locale', '', uni)
         self.rights = form.getlist('rights', uni)
         self.text = form.getfirst('text', '', uni)
+        if author_id:
+            self.author_id = author_id
     #enddef
 
     def save(self, req):
@@ -93,6 +94,7 @@ class Page():
         backup = req.cfg.pages_history + '/' + self.name
         with open (backup + '.' + datetime.now().isoformat() + '.deleted' , 'w+') as tmp:
             tmp.write("title: %s\n" % self.title.encode('utf-8'))
+            tmp.write("author_id: %ds\n" % self.author_id)
             tmp.write("locale: %s\n" % self.locale)
             tmp.write("editor_rights: %s\n" % rights)
 
@@ -120,12 +122,13 @@ class Page():
 
     def check_right(self, req):
         """ check if any of login.rights metch any of page.rights """
-        # if author is author of text
-        if do_check_right(req, ['pages_author']) and self.author_id == req.login.id:
-            return True
-
         m = driver(req)
-        return do_match_right(req, m.load_rights(self, req))
+        m.load_rights(self, req)
+        if do_check_right(req, 'pages_author') and self.author_id == req.login.id:
+            return True
+        elif self.rights and do_match_right(req, self.rights):
+            return True
+        return False
     #enddef
 
     def check_filename(self):
@@ -137,8 +140,8 @@ class Page():
         m.regenerate_all(req)
 
     @staticmethod
-    def list(req, pager):
+    def list(req, pager, **kwargs):
         m = driver(req)
-        return m.item_list(req, pager)
+        return m.item_list(req, pager, **kwargs)
 
 #endclass

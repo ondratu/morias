@@ -34,6 +34,7 @@ class Login(object):
         self.id = id
         self.email = ''
         self.rights = []
+        self.data = {}
         super(Login, self).__init__()
     #enddef
 
@@ -55,8 +56,8 @@ class Login(object):
         return m._mod(self, req, keys, vals)
 
     def mod(self, req):
-        keys = ['email', 'rights']
-        vals = [self.email, json.dumps(self.rights)]
+        keys = ['email', 'rights', 'data']
+        vals = [self.email, json.dumps(self.rights), json.dumps(self.data)]
         # FIXME!!!
         if self.plain or self.passwd != self.again:     # if passwd was set
             if not self.check_email(): return BAD_EMAIL
@@ -74,8 +75,8 @@ class Login(object):
     #enddef
 
     def pref(self, req):
-        keys = ['email']
-        vals = [self.email]
+        keys = ['email', 'data']
+        vals = [self.email, json.dumps(self.data)]
 
         if self.plain or self.passwd != self.again:     # if passwd was set
             if not self.check_email(): return BAD_EMAIL
@@ -103,6 +104,8 @@ class Login(object):
         self.passwd = sha1_sdigest(form.getfirst('passwd', '', uni), salt)
         self.again = sha1_sdigest(form.getfirst('again', '', uni), salt)
         self.rights = form.getlist('rights', uni)
+        # json data
+        
     #enddef
 
     def simple(self):
@@ -131,11 +134,7 @@ class Login(object):
         return m.find(self, req)
 
     def check(self, req):
-        try:
-            self.get(req)
-        except:
-            return False
-        return bool(self.enabled)
+        return bool(self.enabled) if self.get(req) else False
     #enddef
 
     @staticmethod

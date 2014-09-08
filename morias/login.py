@@ -21,7 +21,7 @@ _check_conf = (
 
 R_ADMIN = 'users_admin'     # right admin - do anythig with users
 
-rights += [R_ADMIN]
+rights.update((R_ADMIN,))
 
 system_menu.append(Item('/admin/logins', label="Logins", rights = [R_ADMIN]))
 user_menu.append(Item('/admin', label="Admin", rights = ['admin']))

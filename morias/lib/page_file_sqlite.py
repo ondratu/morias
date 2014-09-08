@@ -4,15 +4,16 @@ import json
 from sqlite3 import IntegrityError
 from os.path import getmtime
 from datetime import datetime
+from falias.util import islistable
 
 from lib.page_file import Page, PAGE_EXIST, PAGE_NOT_EXIST 
 
 def get(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT name, title, locale, editor_rights "
-                "FROM page WHERE page_id = %s", self.id)
-    self.name, self.title, self.locale, rights = c.fetchone()
+    c.execute("SELECT author_id, name, title, locale, editor_rights "
+                "FROM page_files WHERE page_id = %s", self.id)
+    self.author_id, self.name, self.title, self.locale, rights = c.fetchone()
     self.rights = json.loads(rights)
     tran.commit()
 #enddef
@@ -22,9 +23,11 @@ def add(self, req):
     c = tran.cursor()
 
     try:        # page must be uniq
-        c.execute("INSERT INTO page (name, title, locale, editor_rights) "
-                    "VALUES ( %s, %s, %s, %s )",
-                (self.name, self.title, self.locale, json.dumps(self.rights)))
+        c.execute("INSERT INTO page_files (author_id, name, title, locale, "
+                                            "editor_rights) "
+                    "VALUES ( %s, %s, %s, %s, %s )",
+                (self.author_id, self.name, self.title, self.locale,
+                 json.dumps(self.rights)))
         self.id = c.lastrowid
     except IntegrityError as e:
         return PAGE_EXIST
@@ -39,10 +42,11 @@ def mod(self, req):
     c = tran.cursor()
 
     try:        # page name must be uniq
-        c.execute("UPDATE page SET "
+        c.execute("UPDATE page_files SET "
                     "name = %s, title = %s, locale = %s, editor_rights = %s "
                 "WHERE page_id = %s",
-                (self.name, self.title, self.locale, json.dumps(self.rights), self.id))
+                (self.name, self.title, self.locale, json.dumps(self.rights),
+                 self.id))
     except IntegrityError as e:
         return PAGE_EXIST
 
@@ -57,11 +61,11 @@ def mod(self, req):
 def delete(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT name, title, locale, editor_rights "
-                "FROM page WHERE page_id = %s", self.id)
-    self.name, self.title, self.locale, rights = c.fetchone()
+    c.execute("SELECT author_id, name, title, locale, editor_rights "
+                "FROM page_files WHERE page_id = %s", self.id)
+    self.author_id, self.name, self.title, self.locale, rights = c.fetchone()
 
-    c.execute("DELETE FROM page WHERE page_id = %s", self.id)
+    c.execute("DELETE FROM page_files WHERE page_id = %s", self.id)
 
     if not c.rowcount:
         return PAGE_NOT_EXIST
@@ -74,50 +78,61 @@ def delete(self, req):
 def load_rights(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT editor_rights FROM page WHERE page_id = %s", self.id)
+    c.execute("SELECT author_id, editor_rights FROM page_files WHERE page_id = %s",
+                self.id)
 
-    rights = json.loads(c.fetchone()[0])
-    return rights
+    self.author_id, rights = c.fetchone()
+    tran.commit()
+    self.rights = json.loads(rights)
+    return self.rights
 #enddef
 
 def regenerate_all(req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT page_id, name, title, locale FROM page")
+    c.execute("SELECT page_id, author_id, name, title, locale FROM page_files")
     items = []
     row = c.fetchone()
     while row is not None:
-        page = Page(row[0])
-        page.name = row[1]
-        page.title = row[2]
-        page.locale = row[3]
+        page_id, author_id, name, title, locale = row
+        page = Page(page_id)
+        page.author_id = author_id
+        page.name = name
+        page.title = title
+        page.locale = locale
         page.regenerate(req)            
         row = c.fetchone()
 
     tran.commit()
 #enddef
 
-def item_list(req, pager):
+def item_list(req, pager, **kwargs):
+    keys = list( "%s %s %%s" % (k, 'in' if islistable(v) else '=') for k,v in kwargs.items() )
+    cond = "WHERE " + ' AND '.join(keys) if keys else '' 
+    print cond
+
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT page_id, name, title, locale, editor_rights "
-                "FROM page ORDER BY name LIMIT %s, %s",
-                (pager.offset, pager.limit))
+    c.execute("SELECT page_id, author_id, name, title, locale, editor_rights "
+                "FROM page_files %s ORDER BY name LIMIT %%s, %%s" % cond,
+                tuple(kwargs.values()) + (pager.offset, pager.limit))
     items = []
     row = c.fetchone()
     while row is not None:
-        page = Page(row[0])
-        page.name = row[1]
-        page.title = row[2]
-        page.locale = row[3]
-        page.rights = json.loads(row[4])
+        page_id, author_id, name, title, locale, editor_rights = row
+        page = Page(page_id)
+        page.author_id = author_id
+        page.name = name
+        page.title = title
+        page.locale = locale
+        page.rights = json.loads(editor_rights)
         page.modify = datetime.fromtimestamp(   # timestamp of last modify
                         getmtime(req.cfg.pages_source + '/' + page.name))
         items.append(page)
         row = c.fetchone()
     #endwhile
 
-    c.execute("SELECT count(*) FROM page")
+    c.execute("SELECT count(*) FROM page_files")
     pager.total = c.fetchone()[0]
     tran.commit()
 

@@ -7,7 +7,7 @@ from os.path import exists, isdir
 from os import access, R_OK, W_OK
 
 from core.login import check_login, rights, check_referer, check_right, \
-                    match_right
+                    match_right, do_check_right
 from core.render import generate_page
 from core.errors import ACCESS_DENIED, SUCCESS
 
@@ -25,10 +25,14 @@ _check_conf = (
     ('pages', 'source', str, None),
     ('pages', 'out', str, None),
     ('pages', 'history', str, ''),
+    ('pages', 'rights', tuple, '')
 )
 
+def _call_conf(cfg, parser):
+   rights.update(cfg.pages_rights)
+
 module_rights = ['pages_listall', 'pages_author', 'pages_modify']
-rights += module_rights
+rights.update(module_rights)
 
 content_menu.append(Item('/admin/pages', label="Pages", rights = module_rights))
 
@@ -89,7 +93,10 @@ def admin_pages(req):
     pager = Pager()
     pager.bind(req.args)
 
-    rows = Page.list(req, pager)
+    if not do_match_right(req, ('pages_modify', 'pages_listall')):
+        rows = Page.list(req, pager, author_id = req.login.id)
+    else:
+        rows = Page.list(req, pager)
     return generate_page(req, "admin/pages.html",
                         pager = pager, rows = rows, error = error)
 #enddef
@@ -97,12 +104,11 @@ def admin_pages(req):
 @app.route('/admin/pages/add', method = state.METHOD_GET_POST)
 def admin_pagse_add(req):
     check_login(req)
-    match_right(req, ('pages_author', 'pages_modify'),
-                     '/admin/pages?error=%d' % ACCESS_DENIED)
+    match_right(req, ('pages_author', 'pages_modify'))
 
     if req.method == 'POST':
         page = Page()
-        page.bind(req.form)
+        page.bind(req.form, req.login.id)
         error = page.add(req)
 
         if error:
@@ -119,13 +125,17 @@ def admin_pagse_add(req):
 
 @app.route('/admin/pages/<id:int>', state.METHOD_GET_POST)
 def admin_pages_mod(req, id):
+    """ Edit page could:
+            * author of page, if still have pages_author right
+            * admin with pages_modify right
+            * admin with pages_listall right and right which must have page too
+    """
     check_login(req)
-    match_right(req, ['pages_author', 'pages_modify'],
-                     '/admin/pages?error=%d' % ACCESS_DENIED)
+    match_right(req, module_rights)
 
     page = Page(id)
-    if not page.check_right(req):
-        redirect(req, '/admin/pages?error=%d' % ACCESS_DENIED)
+    if (not do_check_right(req, 'pages_modify')) and (not page.check_right(req)):
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
 
     if req.method == 'POST':
         page.bind(req.form)
@@ -145,14 +155,18 @@ def admin_pages_mod(req, id):
 
 @app.route('/admin/pages/<id:int>/delete', state.METHOD_POST)
 def admin_pages_del(req, id):
+    """ Delete page, could:
+            * author of page if have still pages_author right
+            * admin with pages_modify
+    """
+
     check_login(req, '/login?referer=/admin/pages')
-    match_right(req, ('pages_author', 'pages_modify'),
-                     '/admin/pages?error=%d' % ACCESS_DENIED)
+    match_right(req, ('pages_author', 'pages_modify'))
     check_referer(req, '/admin/pages')
 
     page = Page(id)
     if not page.check_right(req):
-        redirect(req, '/admin/pages?error=%d' % ACCESS_DENIED)
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
 
     page.delete(req)
     # TODO: redirect to same page

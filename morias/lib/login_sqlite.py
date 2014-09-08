@@ -8,12 +8,13 @@ from lib.login import Login, LOGIN_EXIST, LOGIN_NOT_EXIST
 def get(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT email, rights, enabled "
-                "FROM login WHERE login_id = %s", self.id)
+    c.execute("SELECT email, rights, enabled, data "
+                "FROM logins WHERE login_id = %s", self.id)
     row = c.fetchone()
     if not row: return False
-    self.email, rights, self.enabled = row
+    self.email, rights, self.enabled, data = row
     self.rights = json.loads(rights)
+    self.data = json.loads(data)
     tran.commit()
     return True
 #enddef
@@ -23,9 +24,10 @@ def add(self, req):
     c = tran.cursor()
 
     try:        # email must be uniq
-        c.execute("INSERT INTO login (email, rights, passwd) "
+        c.execute("INSERT INTO logins (email, rights, data, passwd) "
                 "VALUES ( %s, %s, %s )",
-                (self.email, json.dumps(self.rights), self.passwd))
+                (self.email, json.dumps(self.rights), json.dumps(self.data),
+                 self.passwd))
         self.id = c.lastrowid
     except IntegrityError as e:
         return LOGIN_EXIST
@@ -40,7 +42,7 @@ def _mod(self, req, keys, vals):
     c = tran.cursor()
 
     try:        # email must be uniq
-        c.execute("UPDATE login SET %s WHERE login_id = %%s " % \
+        c.execute("UPDATE logins SET %s WHERE login_id = %%s " % \
                         ', '.join(keys), vals)
     except IntegrityError as e:
         return LOGIN_EXIST
@@ -55,7 +57,7 @@ def enable(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
 
-    c.execute("UPDATE login SET enabled = %s WHERE login_id = %s",
+    c.execute("UPDATE logins SET enabled = %s WHERE login_id = %s",
                     (self.enabled, self.id))
 
     if not c.rowcount:
@@ -67,7 +69,7 @@ def enable(self, req):
 def find(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT login_id, rights FROM login "
+    c.execute("SELECT login_id, rights, data FROM logins "
             "WHERE email = %s AND passwd = %s AND enabled = 1",
             (self.email, self.passwd))
     row = c.fetchone()
@@ -76,14 +78,15 @@ def find(self, req):
     if not row: return False
     self.id = row[0]
     self.rights = json.loads(row[1])
+    self.data = json.loads(row[2])
     return True
 #enddef
 
 def item_list(req, pager):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT login_id, email, rights, enabled "
-                "FROM login ORDER BY email LIMIT %s, %s",
+    c.execute("SELECT login_id, email, rights, data, enabled "
+                "FROM logins ORDER BY email LIMIT %s, %s",
                 (pager.offset, pager.limit))
     items = []
     row = c.fetchone()
@@ -91,12 +94,13 @@ def item_list(req, pager):
         login = Login(row[0])
         login.email = row[1]
         login.rights = json.loads(row[2])
-        login.enabled = row[3]
+        login.data = json.loads(row[3])
+        login.enabled = row[4]
         items.append(login)
         row = c.fetchone()
     #endwhile
 
-    c.execute("SELECT count(*) FROM login")
+    c.execute("SELECT count(*) FROM logins")
     pager.total = c.fetchone()[0]
     tran.commit()
 

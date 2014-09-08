@@ -19,7 +19,7 @@ _check_conf = (
     ('morias', 'db', Sql, None),
 )
 
-rights += ['news_editor', 'news_author', 'news_redactor']
+rights.update(('news_editor', 'news_author', 'news_redactor'))
 
 content_menu.append(Item('/admin/news', label="News", rights = ['news_list']))
 

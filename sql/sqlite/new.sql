@@ -1,6 +1,4 @@
 drop table if exists new;
-drop index if exists new_create_date_idx;
-drop index if exists new_enabled_idx;
 
 CREATE TABLE new (
     new_id integer not null primary key autoincrement,

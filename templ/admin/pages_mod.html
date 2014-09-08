@@ -10,16 +10,20 @@
     <script src="/js/hiddener.js"></script>
 
     <div class="container">
+      <ul class="nav nav-pills">
     {% if site.this == '/admin/pages/add' -%}
-      <h2 class="form-signin-heading">{{ _('New page') }}
+        <li class="navbar-brand">{{ _('New page') }}</li>
     {% else -%}
-      <h2 class="form-signin-heading">{{ _('Edit page') }} <small class="monospace">{{ page.name }}</small>
+        <li class="navbar-brand">{{ _('Edit page') }} <small class="monospace">{{ page.name }}</small></li>
       {% if match_right(('pages_author', 'pages_modify')) -%}
-        <span class="btn btn-default pull-right"><a href="/admin/pages/add">{{ _('New page') }}</a></span>
-        <span class="btn btn-default pull-right"><a href="/admin/pages">{{ _('Pages list') }}</a></span>
+        <li class="pull-right"><a href="/admin/pages/add">{{ _('New page') }}</a></li>
       {% endif -%}
-    {% endif -%}  
-      </h2>
+    {% endif -%}
+      {% if match_right(('pages_author', 'pages_modify')) -%}
+        <li class="pull-right"><a href="/admin/pages">{{ _('Pages list') }}</a></li>
+      {% endif -%}
+      </ul>
+
       <form class="form-horizontal" role="form" method="post">
        <div id="page_panel">
         <div class="form-group">
@@ -42,7 +46,7 @@
         </div>
         <div class="form-group">
           <div id="possible_rights" class="col-sm-5 col-sm-offset-1">
-          {% for right in rights if right not in page.rights -%}
+          {% for right in rights|sort if right not in page.rights -%}
             <a class="col-sm-5 btn btn-default btn-add" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
               <span class="pull-right glyphicon"></span></a>
@@ -50,7 +54,7 @@
           {% endfor %}
           </div>
           <div id="attache_rights" class="col-sm-5">    
-          {% for right in page.rights -%}
+          {% for right in page.rights|sort -%}
             <a class="col-sm-5 btn btn-default btn-remove" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
               <span class="pull-right glyphicon"></span></a>

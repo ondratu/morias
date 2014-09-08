@@ -8,7 +8,14 @@ from hashlib import sha1
 
 from falias.util import Object
 
-rights = ['super', 'admin', 'user', 'guest']
+"""
+    super - super user, which can averything
+    admin - view admin section
+    user  - is logged
+    guest - annonymous visitor (not logged)
+"""
+rights = set()
+rights.update(('super', 'admin', 'user', 'guest'))
 
 def do_login(req, obj, ip = False):
     cookie = PoorSession(req)

@@ -9,14 +9,15 @@
     <script src="/js/rights.js"></script>
 
     <div class="container">
+        <ul class="nav nav-pills">
     {% if site.this == '/admin/logins/add' -%}
-      <h2 class="form-signin-heading">{{ _('New login') }}
+        <li class="navbar-brand">{{ _('New login') }}</li>
     {% else -%}
-      <h2 class="form-signin-heading">{{ _('Edit login') }}
-        <span class="btn btn-default pull-right"><a href="/admin/logins/add">{{ _('New login') }}</a></span>
+        <li class="navbar-brand">{{ _('Edit login') }}</li>
+        <li class="pull-right"><a href="/admin/logins/add">{{ _('New login') }}</a></li>
     {% endif -%}
-        <span class="btn btn-default pull-right"><a href="/admin/logins">{{ _('Login list') }}</a></span>
-      </h2>
+        <li class="pull-right"><a href="/admin/logins">{{ _('Login list') }}</a></li>
+      </ul>
 
     {% if state is defined and state == 200 -%}
       <div class="alert alert-info">{{ _('Password was set!') }}</div>
@@ -39,7 +40,7 @@
         </div>
         <div class="form-group">
           <div id="possible_rights" class="col-sm-4 col-sm-offset-3">
-          {% for right in rights if right not in item.rights -%}
+          {% for right in rights|sort if right not in item.rights -%}
             <a class="col-sm-5 btn btn-default btn-add" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
               <span class="pull-right glyphicon"></span></a>
@@ -47,7 +48,7 @@
           {% endfor %}
           </div>
           <div id="attache_rights" class="col-sm-4">    
-          {% for right in item.rights -%}
+          {% for right in item.rights|sort -%}
             <a class="col-sm-5 btn btn-default btn-remove" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
               <span class="pull-right glyphicon"></span></a>

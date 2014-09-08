@@ -3,10 +3,11 @@
 {% include "user/_menu.html" %}
 
     <div class="container">
-      <h2 class="form-signin-heading">
-        <span class="pul-l-left">{{ _('Logins list') }}</span>
-        <span class="btn btn-default pull-right"><a href="/admin/logins/add">{{ _('New login') }}</a></span>
-      </h2>
+
+      <ul class="nav nav-pills">
+        <li class="navbar-brand">{{ _('Logins list') }}</li>
+        <li class="pull-right"><a href="/admin/logins/add">{{ _('New login') }}</a></li>
+      </ul>
 
    {%- if error is defined and error == 1001 -%}
      <div class="alert alert-danger">{{ _('Access denied') }}</div>
