@@ -36,7 +36,7 @@
   .http-error {
     margin: 10px 0;
   }
-} 
+}
 .http-error h1 {
   color: #b94a48;
   margin-bottom: 40px;
@@ -60,6 +60,33 @@ table .disabled {
 .navbar-brand, .navbar-text {
     margin-left: 0;
     margin-right: 0;
+}
+
+/* fix dropdown buttons in btn-groups */
+.btn-group > .btn:first-child:not(:last-child) {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+.btn-group > .btn + .dropdown-toggle {
+  padding: 6px 12px;
+}
+.btn-group > .btn:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+.btn-group .btn + .dropdown-menu,
+.btn-group .dropdown-menu + .btn
+{
+  margin-left: -1px;
+}
+
+.nav-sm {
+  font-size: 80%;
+}
+.nav-sm > .navbar-brand {
+  padding: 5px 7px;
+}
+.nav--sm > li > a {
+  padding: 5px 7px;
 }
 
 html, body {
