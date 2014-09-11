@@ -10,7 +10,7 @@
     <script src="/js/hiddener.js"></script>
 
     <div class="container">
-      <ul class="nav nav-pills">
+      <ul class="nav nav-pills nav-sm">
     {% if site.this == '/admin/pages/add' -%}
         <li class="navbar-brand">{{ _('New page') }}</li>
     {% else -%}
@@ -77,7 +77,9 @@
 
         <div class="form-group">
           <div class="col-sm-12">
-            <textarea id="input_text" name="text" class="form-control" rows="18">{{ (page.text or '')|e }}</textarea></div>
+            {% set wysiwyg = dict(header = True, code = True, justify = True, list = True, ident = True) %}
+            {% include "_wysiwyg.html" %}
+            <textarea id="input_text" data-source="#editor" name="text" class="form-control" rows="18">{{ (page.text or '')|e }}</textarea></div>
         </div>
         <div class="form-group">
           <div class="col-sm-12">
@@ -87,7 +89,7 @@
   {% if site.this != '/admin/pages/add' -%}
     <script>
         var btn = $('.swittcher');
-        M.hiddener.close(btn, 0); 
+        M.hiddener.close(btn, 0);
     </script>
   {% endif -%}
 

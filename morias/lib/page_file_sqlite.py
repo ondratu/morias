@@ -13,9 +13,13 @@ def get(self, req):
     c = tran.cursor()
     c.execute("SELECT author_id, name, title, locale, editor_rights "
                 "FROM page_files WHERE page_id = %s", self.id)
-    self.author_id, self.name, self.title, self.locale, rights = c.fetchone()
+    row = c.fetchone()
+    if not row:
+        return None
+    self.author_id, self.name, self.title, self.locale, rights = row
     self.rights = json.loads(rights)
     tran.commit()
+    return self
 #enddef
 
 def add(self, req):
@@ -80,8 +84,13 @@ def load_rights(self, req):
     c = tran.cursor()
     c.execute("SELECT author_id, editor_rights FROM page_files WHERE page_id = %s",
                 self.id)
+    row = c.fetchone()
+    if not row:
+        self.author_id = None
+        self.rights = ()
+        return ()
 
-    self.author_id, rights = c.fetchone()
+    self.author_id, rights = row
     tran.commit()
     self.rights = json.loads(rights)
     return self.rights

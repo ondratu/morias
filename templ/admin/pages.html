@@ -3,8 +3,8 @@
 {% include "user/_menu.html" %}
 
     <div class="container">
-      
-      <ul class="nav nav-pills">
+
+      <ul class="nav nav-pills nav-sm">
         <li class="navbar-brand">{{ _('Pages list') }}</li>
       {% if match_right(('pages_author', 'pages_modify')) -%}
         <li class="pull-right"><a href="/admin/pages/add">{{ _('New page') }}</a></li>
@@ -14,9 +14,6 @@
       {% endif -%}
       </ul>
 
-    {%- if error is defined and error == 1001 -%}
-      <div class="alert alert-danger">{{ _('Access denied') }}</div>
-    {%- endif %}
     {%- if error is defined and error == 2000 -%}
       <div class="alert alert-info">{{ _('Operation success') }}</div>
     {%- endif %}

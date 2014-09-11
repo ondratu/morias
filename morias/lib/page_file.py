@@ -34,10 +34,11 @@ class Page():
 
     def get(self, req):
         m = driver(req)
-        m.get(self, req)
-
-        with open (req.cfg.pages_source + '/' + self.name, 'r') as f:
-            self.text = f.read().decode('utf-8')
+        if m.get(self, req):
+            with open (req.cfg.pages_source + '/' + self.name, 'r') as f:
+                self.text = f.read().decode('utf-8')
+            return self
+        return None
     #enddef
 
     def add(self, req):

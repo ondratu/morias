@@ -147,7 +147,8 @@ def admin_pages_mod(req, id):
                                     error = error)
         #endif
     #end
-    page.get(req)
+    if not page.get(req):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
     return generate_page(req, "admin/pages_mod.html",
                         rights = rights,
                         page = page)
