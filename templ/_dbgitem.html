@@ -28,7 +28,7 @@
     {{ indent(in) }}{{ i }}: {{ val.__class__|e }}
       {%- for k, v in val.__dict__.items() %}
     {{ indent(in+2) }}{{k}}: {{ v|e }}
-      {%- endfor -%}
+      {%- endfor %}
     {% elif val is iterable and val|attr("items") and length(val) > 0 -%}       {#- dictionary -#}
     {{ indent(in) }}{{ key }}: { ... }
       {{ subdict(val, in + 2) }}
