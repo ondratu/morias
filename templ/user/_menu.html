@@ -8,14 +8,8 @@
         </button>
 
         <a class="navbar-brand" href="/">{{ site.name }}</a>
-        {% set full = '/' %}
-        {% for uri in site.this.split('/')[1:-1] %}
-        <span class="navbar-text">&raquo;</span>
-        <a class="navbar-brand" href="{{ full }}{{ uri }}">{{ uri }}</a>
-        {% set full = full + uri + '/' %}
-        {% endfor %}
-        <span class="navbar-text">&raquo;</span>
-        <span class="navbar-brand">{{ site.this.split('/')[-1] }}</span>
+        <span class="navbar-text">Content Management System</span>
+
       </div>
 
       <div class="collapse navbar-collapse">
@@ -32,5 +26,15 @@
         {%- endfor -%}
         </ul>
       </div>
-
     </nav>
+
+    <ol class="breadcrumb container">
+      <li><a class="nav-bar-brand" href="/">{{ site.name }}</a></li>
+    {% set full = '/' %}
+    {% for uri in site.this.split('/')[1:-1] %}
+      <!--li><span class="navbar-text">&raquo;</span></li-->
+      <li><a class="navb-ar-brand" href="{{ full }}{{ uri }}">{{ uri }}</a></li>
+    {% set full = full + uri + '/' %}
+    {% endfor %}
+      <li class="active">{{ site.this.split('/')[-1] }}</li>
+    </ol>
