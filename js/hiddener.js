@@ -8,8 +8,8 @@ M.hiddener = {
 
         elm.slideDown(duration);
         btn.attr('state', 'open');
-        chl.removeClass('glyphicon-chevron-down');
-        chl.addClass('glyphicon-chevron-up');
+        chl.removeClass('fa-chevron-down');
+        chl.addClass('fa-chevron-up');
     },
 
     close: function(btn) {
@@ -19,8 +19,8 @@ M.hiddener = {
 
         elm.slideUp(100);
         btn.attr('state', 'close');
-        chl.removeClass('glyphicon-chevron-up');
-        chl.addClass('glyphicon-chevron-down');
+        chl.removeClass('fa-chevron-up');
+        chl.addClass('fa-chevron-down');
     },
 
     change : function() {

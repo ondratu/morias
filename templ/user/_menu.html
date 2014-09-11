@@ -1,6 +1,6 @@
     <nav class="container navbar navbar-default" role="navigation">
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-user">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
           <span class="sr-only">{{ _('Toggle navigation') }}</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -13,27 +13,26 @@
       </div>
 
       <div class="collapse navbar-collapse">
-        {% if login is defined and login != none %}
-        <a class="pull-right navbar-text" href="/logout">{{ _('Logout') }} {{ login.email.split('@')[0] }}</a>
-        {% else %}
-        <a class="pull-right navbar-text" href="/login">{{ _('Sign in') }}</a>
-        {% endif %}
-
         <ul class="pull-right nav navbar-nav">
         {% for item in menu -%}              {# TODO: tooltip (title) #}
           <li {{ 'class="active"' if site.this == item.uri else '' }}>
                 <a href="{{ item.uri }}">{{ item.label }}</a></li>
         {%- endfor -%}
+        {% if login is defined and login != none %}
+          <li><a href="/logout">{{ _('Logout') }} {{ login.email.split('@')[0] }}</a></li>
+        {% else %}
+          <li><a href="/login">{{ _('Sign in') }}</a></li>
+        {% endif %}
         </ul>
       </div>
     </nav>
 
     <ol class="breadcrumb container">
-      <li><a class="nav-bar-brand" href="/">{{ site.name }}</a></li>
+      <li><a href="/">{{ site.name }}</a></li>
     {% set full = '/' %}
     {% for uri in site.this.split('/')[1:-1] %}
       <!--li><span class="navbar-text">&raquo;</span></li-->
-      <li><a class="navb-ar-brand" href="{{ full }}{{ uri }}">{{ uri }}</a></li>
+      <li><a href="{{ full }}{{ uri }}">{{ uri }}</a></li>
     {% set full = full + uri + '/' %}
     {% endfor %}
       <li class="active">{{ site.this.split('/')[-1] }}</li>

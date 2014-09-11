@@ -49,7 +49,7 @@
           {% for right in rights|sort if right not in page.rights -%}
             <a class="col-sm-5 btn btn-default btn-add" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
-              <span class="pull-right glyphicon"></span></a>
+              <i class="pull-right fa"></i></a>
             <div class="col-sm-1"></div>
           {% endfor %}
           </div>
@@ -57,7 +57,7 @@
           {% for right in page.rights|sort -%}
             <a class="col-sm-5 btn btn-default btn-remove" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
-              <span class="pull-right glyphicon"></span></a>
+              <i class="pull-right fa"></i></a>
             <div class="col-sm-1"></div>
             <input type="hidden" value="{{right|e}}" name="rights">
           {% endfor %}
@@ -71,7 +71,7 @@
             <input type="text" id="input_title" name="title" class="form-control" placeholder="{{ _('Title') }}" value="{{ (page.title or '')|e }}">
           </div>
 
-          <div class="col-sm-1"><a class="swittcher pull-right" elm="page_panel"><span class="glyphicon glyphicon-chevron-up"></span></a></div>
+          <div class="col-sm-1"><a class="swittcher pull-right" elm="page_panel"><i class="fa -chevron-up"></i></a></div>
           <div class="col-sm-2"><button class="btn btn-default btn-block pull-right" type="submit">{{ _('Save') }}</button></div>
         </div>
 

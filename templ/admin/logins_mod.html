@@ -43,7 +43,7 @@
           {% for right in rights|sort if right not in item.rights -%}
             <a class="col-sm-5 btn btn-default btn-add" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
-              <span class="pull-right glyphicon"></span></a>
+              <i class="pull-right fa"></i></a>
             <div class="col-sm-1"></div>
           {% endfor %}
           </div>
@@ -51,7 +51,7 @@
           {% for right in item.rights|sort -%}
             <a class="col-sm-5 btn btn-default btn-remove" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
-              <span class="pull-right glyphicon"></span></a>
+              <i class="pull-right fa"></i></a>
             <div class="col-sm-1"></div>
             <input type="hidden" value="{{right|e}}" name="rights">
           {% endfor %}

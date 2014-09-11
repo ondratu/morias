@@ -9,7 +9,7 @@ create table news_01 (
     locale text not null default '',
     body text not null,
 
-    state integer not null default 1,                -- disable (0), draft (1), ready (2)
+    state integer not null default 1,       -- disable (0), draft (1), ready (2)
     data text not null default '{}'         -- additional data (coments 0|1 etc)
 );
 

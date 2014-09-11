@@ -34,7 +34,7 @@
             {% if new.public_date.year > 1970 -%}
               {{ new.public_date.strftime("%H:%M %d.%m.%Y") }}
             {% elif new.state == 2 -%}
-              <span style="font-size: 100%;" title="{{ _('Ready to public') }}" class="glyphicon glyphicon-thumbs-up"></span>
+              <i style="font-size: 100%;" title="{{ _('Ready to public') }}" class="fa fa-thumbs-o-up"></i>
             {% endif -%}
             </td>
             <td>

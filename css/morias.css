@@ -50,11 +50,11 @@ table .disabled {
     font-family: monospace, serif;
 }
 
-.btn-add > .glyphicon:before {
-    content: "\2b";
+.btn-add > .fa:before {
+    content: "\f067";
 }
-.btn-remove > .glyphicon:before {
-    content: "\2212";
+.btn-remove > .fa:before {
+    content: "\f068";
 }
 
 .navbar-brand, .navbar-text {
@@ -67,17 +67,18 @@ table .disabled {
   border-bottom-right-radius: 0;
   border-top-right-radius: 0;
 }
-.btn-group > .btn + .dropdown-toggle {
-  padding: 6px 12px;
-}
 .btn-group > .btn:not(:first-child):not(:last-child) {
   border-radius: 0;
+}
+.btn-group > .btn + .dropdown-toggle {
+  padding: 6px 12px;
 }
 .btn-group .btn + .dropdown-menu,
 .btn-group .dropdown-menu + .btn
 {
   margin-left: -1px;
 }
+
 
 .nav-sm {
   font-size: 80%;

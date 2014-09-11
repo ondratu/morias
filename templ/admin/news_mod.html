@@ -41,9 +41,9 @@
           </div>
           <div class="col-sm-1">
           {% if new.public_date.year > 1970 and new.state > 0 -%}
-            <span style="font-size: 200%;" title="{{ _('Public') }}" class="glyphicon glyphicon-eye-open"></span></div>
+            <i style="font-size: 200%;" title="{{ _('Public') }}" class="fa fa-eye"></i></div>
           {% else -%}
-            <span style="font-size: 200%;" title="{{ _('Not Public') }}" class="glyphicon glyphicon-eye-close"></span></div>
+            <i style="font-size: 200%;" title="{{ _('Not Public') }}" class="fa fa-eye-slash"></i></div>
           {% endif -%}
           <div class="col-sm-2"><button class="btn btn-default btn-block" type="submit">{{ _('Save') }}</button></div>
         </div>
