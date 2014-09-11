@@ -1,89 +1,133 @@
 
+import json
+
 from datetime import datetime
 from falias.util import islistable
+from falias.sqlite import DictCursor
 
-from lib.new import NEW_NOT_EXIST, New
+from lib.new import New
 
 def get(self, req):
     tran = req.db.transaction(req.logger)
-    c = tran.cursor()
-    c.execute("SELECT title, locale, create_date, body "
-                    "FROM new WHERE new_id = %s", self.id)
+    c = tran.cursor(DictCursor)
+    c.execute("SELECT author_id, title, locale, create_date, public_date, "
+                    "body, state, data "
+                "FROM news WHERE new_id = %s", self.id)
     row = c.fetchone()
     if not row:
-        return NEW_NOT_EXIST
+        return None
 
-    self.title, self.locale, create_date, self.body = row
-    self.create_date = datetime.fromtimestamp(create_date)
+    self.author_id = row['author_id']
+    self.title = row['title']
+    self.locale = row['locale']
+    self.body = row['body']
+    self.state = row['state']
+    self.create_date = datetime.fromtimestamp(row['create_date'])
+    self.public_date = datetime.fromtimestamp(row['public_date'])
+    self.data = json.loads(row['data'])
     tran.commit()
+    return self
 #enddef
-    
+
 def add(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
 
-    c.execute("INSERT INTO new (title, locale, create_date, body) "
-                "VALUES ( %s, %s, strftime('%%s','now')*1, %s )",
-                (self.title, self.locale, self.body))
-    self.id = c.lastrowid       
+    if self.public:
+        c.execute("INSERT INTO news "
+                "(author_id, title, locale, create_date, public_date, body, "
+                        "state, data) "
+            "VALUES (%s, %s, %s, strftime('%%s','now')*1, strftime('%%s','now')*1, "
+                        "%s, %s, %s)",
+                (self.author_id, self.title, self.locale, self.body, self.state,
+                 json.dumps(self.data)))
+    else:
+        c.execute("INSERT INTO news "
+                "(author_id, title, locale, create_date, body, state, data) "
+            "VALUES (%s, %s, %s, strftime('%%s','now')*1, %s, %s, %s)",
+                (self.author_id, self.title, self.locale, self.body, self.state,
+                 json.dumps(self.data)))
+    self.id = c.lastrowid
     tran.commit()
 #enddef
 
 def mod(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-        
-    c.execute("UPDATE new SET "
-                    "title = %s, locale = %s, body = %s "
+
+    if self.public:
+        c.execute("UPDATE news SET "
+                    "title = %s, locale = %s, body = %s, state = %s, data = %s, "
+                    "public_date = strftime('%%s','now')*1 "
                 "WHERE new_id = %s",
-                (self.title, self.locale, self.body, self.id))
-        
+                (self.title, self.locale, self.body, self.state,
+                 json.dumps(self.data), self.id))
+    else:
+        c.execute("UPDATE news SET "
+                    "title = %s, locale = %s, body = %s, state = %s, data = %s "
+                "WHERE new_id = %s",
+                (self.title, self.locale, self.body, self.state,
+                 json.dumps(self.data), self.id))
+
     if not c.rowcount:
-        return NEW_NOT_EXIST
+        return None
     tran.commit()
+    return self
 #enddef
 
-def enable(self, req):
+def set_state(self, req, state):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
 
-    c.execute("UPDATE new SET enabled = %s WHERE new_id = %s",
-                    (self.enabled, self.id))
-        
+    c.execute("UPDATE news SET state = %s WHERE new_id = %s",
+                    (state, self.id))
+
     if not c.rowcount:
-        return NEW_NOT_EXIST
+        return None
 
     tran.commit()
+    self.state = state
+    return self
 #enddef
 
 def item_list(req, pager, body, **kwargs):
     body = ',body ' if body else ''
 
+    public = kwargs.pop('public', False)
     keys = list( "%s %s %%s" % (k, 'in' if islistable(v) else '=') for k,v in kwargs.items() )
-    cond = "WHERE " + ' AND '.join(keys) if keys else '' 
+    if public:       # public is alias key
+        keys.append("public_date > 0")
+        keys.append("state != 0")
+
+    cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
     tran = req.db.transaction(req.logger)
-    c = tran.cursor()
-    c.execute("SELECT new_id, enabled, create_date, title, locale %s"
-                "FROM new %s ORDER BY %s %s LIMIT %%s, %%s" % \
+    c = tran.cursor(DictCursor)
+    c.execute("SELECT new_id, author_id, email, state, create_date, public_date, title, "
+                        "locale, state %s"
+                "FROM news n LEFT JOIN logins l ON (n.author_id = l.login_id) %s "
+                    "ORDER BY %s %s LIMIT %%s, %%s" % \
                     (body, cond, pager.order, pager.sort),
                 tuple(kwargs.values()) + (pager.offset, pager.limit))
     items = []
     row = c.fetchone()
     while row is not None:
-        item = New(row[0])
-        item.enabled = row[1]
-        item.create_date = datetime.fromtimestamp(row[2])
-        item.title = row[3]
-        item.locale = row[4]
+        item = New(row['new_id'])
+        item.author_id = row['author_id']
+        item.author = row['email']
+        item.state = row['state']
+        item.create_date = datetime.fromtimestamp(row['create_date'])
+        item.public_date = datetime.fromtimestamp(row['public_date'])
+        item.title = row['title']
+        item.locale = row['locale']
         if body:
-            item.body = row[5]
+            item.body = row['body']
         items.append(item)
         row = c.fetchone()
     #endwhile
 
-    c.execute("SELECT count(*) FROM new %s" % cond, kwargs.values())
-    pager.total = c.fetchone()[0]
+    c.execute("SELECT count(*) FROM news %s" % cond, kwargs.values())
+    pager.total = c.fetchone()['count(*)']
     tran.commit()
 
     return items

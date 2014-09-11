@@ -3,13 +3,9 @@
 {% include "user/_menu.html" -%}
 
     <div class="container">
-      <ol class="breadcrumb">
-       <li><a href="/news">{{ _('News list') }}</a></li>
-       <li class="active">{{ new.title }}</li>
-      </ol>
-
       <h3>{{ new.title }}</h3>
       <div class="pull-right"><small>{{ new.create_date.strftime("%H:%M %d.%m.%Y") }}</small></div>
       <div>{{ new.body }}</div>
+
     </div>
 {% include "_footer.html" %}

@@ -1,17 +1,15 @@
-{% set title = _('News') -%}
+{% set title = _('News list') -%}
 {% include "_header.html" -%}
 {% include "user/_menu.html" -%}
 
     <div class="container">
-      <h1>{{ _('News list') }}</h1>
-
-   {%- if error is defined and error == 1002 -%}
-     <div class="alert alert-danger">{{ _('Not found') }}</div>
-   {%- endif -%}
+      <ul class="nav nav-pills">
+        <li class="navbar-brand">{{ _('News list') }}</li>
+      </ul>
 
       {% for new in rows -%}
       <div>
-        <h3><a href="/news/{{new.id}}">{{ new.title }}</a></h3>
+        <h3><a href="{{ site.this }}/{{new.id}}">{{ new.title }}</a></h3>
         <div class="pull-right"><small>{{ new.create_date.strftime("%H:%M %d.%m.%Y") }}</small></div>
         <div>{{ new.body }}</div>
       </div>

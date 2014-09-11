@@ -3,45 +3,47 @@
 {% include "user/_menu.html" %}
 
     <div class="container">
-      <h2 class="form-signin-heading">
-        <span class="pul-l-left">{{ _('News list') }}</span>
-      {% if match_right(('news_author','news_editor', 'news_redactor')) -%}
-        <span class="btn btn-default pull-right"><a href="/admin/news/add">{{ _('New new') }}</a></span>
-      {% endif -%}
-      </h2>
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('News list') }}</li>
+        <li {{ 'class="active"' if not show else ''}}><a href="/admin/news">{{ _('All') }}</a></li>
+        <li {{ 'class="active"' if show == 'ready' else ''}}><a href="/admin/news?show=ready">{{ _('Ready to Public') }}</a></li>
+        <li {{ 'class="active"' if show == 'drafts' else ''}}><a href="/admin/news?show=drafts">{{ _('Drafts') }}</a></li>
 
-   {%- if error is defined and error == 1001 -%}
-     <div class="alert alert-danger">{{ _('Access denied') }}</div>
-   {%- endif -%}
-   {%- if error is defined and error == 1002 -%}
-     <div class="alert alert-danger">{{ _('Not found') }}</div>
-   {%- endif -%}
+      {% if match_right(('news_author', 'news_editor')) -%}
+        <li class="pull-right"><a href="/admin/news/add">{{ _('New new') }}</a></li>
+      {% endif -%}
+      </ul>
 
       <table class="table table-hover">
         <tr><th>#</th>
             <th>{{ _('Title') }}</th>
+            <th>{{ _('Author') }}</th>
             <th>{{ _('Locale') }}</th>
             <th>{{ _('Create time') }}</th>
+            <th>{{ _('Publicated') }}</th>
             <th>{{ _('Action' )}}</th></tr>
         {% for new in rows %}
-        <tr><td>{{ new.id }}</td>
-            <td>{% if new.enabled -%}
+        <tr {{ 'class="disabled"' if new.state == 0 else '' }}><td>{{ new.id }}</td>
+            <td  >
                 <a href="/news/{{new.id}}">{{ new.title }}</a>
-                {% else -%}
-                <span class="disabled">{{ new.title }}</span>
-                {% endif -%}
             </td>
+            <td>{{ new.author or '' }}</td>
             <td>{{ new.locale }}</td>
             <td>{{ new.create_date.strftime("%H:%M %d.%m.%Y") }}</td>
             <td>
-            {% if check_right('news_redactor') -%}
-              <a href="/admin/news/{{ new.id }}">{{ _('Edit') }}</a>
+            {% if new.public_date.year > 1970 -%}
+              {{ new.public_date.strftime("%H:%M %d.%m.%Y") }}
+            {% elif new.state == 2 -%}
+              <span style="font-size: 100%;" title="{{ _('Ready to public') }}" class="glyphicon glyphicon-thumbs-up"></span>
             {% endif -%}
-            {% if check_right('news_redactor') -%}
-             {%- if new.enabled %}
+            </td>
+            <td>
+            {% if check_right('news_editor') or (check_right('news_author') and new.author_id == login.id and new.public_date.year == 1970) -%}
+              <a href="/admin/news/{{ new.id }}">{{ _('Edit') }}</a>
+             {%- if new.state in (1, 2) %}
               / <a href="#" post="/admin/news/{{ new.id }}/disable">{{ _('Disable') }}</a>
-             {%- elif not new.enabled %}
-              / <a href="#" post="/admin/news/{{ new.id }}/enable">{{ _('Enabled') }}</a>
+             {%- elif new.state == 0 %}
+              / <a href="#" post="/admin/news/{{ new.id }}/enable">{{ _('Enable') }}</a>
              {% endif -%}
             {% endif -%}
             </td></tr>

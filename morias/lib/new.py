@@ -4,7 +4,6 @@ from falias.util import uni, nint
 #errors
 EMPTY_TITLE     = 1
 EMPTY_BODY      = 2
-NEW_NOT_EXIST   = 3
 
 _drivers = ("sqlite",)
 
@@ -39,15 +38,21 @@ class New():
         return m.mod(self, req)
     #enddef
 
-    def enable(self, req):
+    def set_state(self, req, state):
         m = driver(req)
-        return m.enable(self, req)
+        return m.set_state(self, req, state)
 
-    def bind(self, form):
+    def bind(self, form, author_id = None):
         self.id = form.getfirst('new_id', self.id, nint)
         self.title = form.getfirst('title', '', uni)
         self.locale = form.getfirst('locale', '', uni)
         self.body = form.getfirst('body', '', uni)
+        # if new is public, that is not draft
+        self.public = form.getfirst('public', 0, int)
+        self.state = 2 if self.public else form.getfirst('state', 1, int)
+        self.data = {}
+        if author_id:
+            self.author_id = author_id
     #enddef
 
     @staticmethod

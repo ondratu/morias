@@ -1,9 +1,10 @@
 
 from poorwsgi import *
 from falias.sql import Sql
-from falias.util import uni
+from falias.util import uni, nint
 
-from core.login import check_login, check_referer, rights
+from core.login import check_login, check_referer, match_right, rights, \
+        do_check_right
 from core.render import generate_page
 from core.errors import ACCESS_DENIED, NOT_FOUND
 from core.lang import get_lang
@@ -19,9 +20,10 @@ _check_conf = (
     ('morias', 'db', Sql, None),
 )
 
-rights.update(('news_editor', 'news_author', 'news_redactor'))
+module_rights = ('news_editor', 'news_author')
+rights.update(module_rights)
 
-content_menu.append(Item('/admin/news', label="News", rights = ['news_list']))
+content_menu.append(Item('/admin/news', label="News", rights = module_rights))
 
 @app.route("/test/news/db")
 def test_db(req):
@@ -41,26 +43,41 @@ def test_db(req):
 @app.route('/admin/news')
 def admin_news(req):
     check_login(req)
-    check_right(req, 'news_editor')
+    match_right(req, module_rights)
 
-    error = req.args.getfirst('error', 0, int)
+    show = req.args.getfirst('show', '', uni)
 
     pager = Pager(sort = 'desc')
     pager.bind(req.args)
 
-    rows = New.list(req, pager)
+    kwargs = {}
+
+    if show == 'ready':
+        pager.set_params(show = show)
+        kwargs['state'] = 2
+        kwargs['public_date'] = 0
+    elif show == 'drafts':
+        pager.set_params(show = show)
+        kwargs['state'] = 1
+    else:
+        show = None
+
+    if not do_check_right(req, 'news_editor'):
+        kwargs['author_id'] = req.login.id
+
+    rows = New.list(req, pager, **kwargs)
     return generate_page(req, "admin/news.html",
-                        pager = pager, rows = rows, error = error)
+                        pager = pager, rows = rows, show = show)
 #enddef
 
 @app.route('/admin/news/add', method = state.METHOD_GET_POST)
 def admin_news_add(req):
     check_login(req)
-    check_right(req, 'news_editor', '/admin/news?error=%d' % ACCESS_DENIED)
+    match_right(req, module_rights)
 
+    new = New()
     if req.method == 'POST':
-        new = New()
-        new.bind(req.form)
+        new.bind(req.form, req.login.id)
         error = new.add(req)
 
         if error:
@@ -70,65 +87,84 @@ def admin_news_add(req):
         redirect(req, '/admin/news/%d' % new.id)
     #end
 
-    return generate_page(req, "admin/news_mod.html")
+    new.state = 2 if do_check_right(req, 'news_editor') else 1
+    return generate_page(req, "admin/news_mod.html", new = new)
 #enddef
 
 @app.route('/admin/news/<id:int>', state.METHOD_GET_POST)
 def admin_news_mod(req, id):
     check_login(req)
-    check_right(req, 'news_editor', '/admin/news?error=%d' % ACCESS_DENIED)
+    match_right(req, module_rights)
 
     new = New(id)
+    if not new.get(req):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+    if (not do_check_right(req, 'news_editor') and new.author_id != req.login.id):
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
 
     if req.method == 'POST':
         new.bind(req.form)
-        error = new.mod(req)
-        if error:
-            return generate_page(req, "admin/news_mod.html",
-                                    new = new, error = error)
+        new.mod(req)
 
-    error = new.get(req)
-    if error: redirect(req, '/admin/news?error=%d' % NOT_FOUND)
-    return generate_page(req, "admin/news_mod.html",
-                        new = new)
+        if not new.get(req):
+            raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+
+    return generate_page(req, "admin/news_mod.html", new = new)
 #enddef
 
 @app.route('/admin/news/<id:int>/disable', state.METHOD_POST)
 @app.route('/admin/news/<id:int>/enable', state.METHOD_POST)
 def admin_news_enable(req, id):
     check_login(req, '/login?referer=/admin/news')
-    check_right(req, 'news_editor', '/admin/news?error=%d' % ACCESS_DENIED)
+    match_right(req, module_rights)
     check_referer(req, '/admin/news')
 
     new = New(id)
-    new.enabled = int(req.uri.endswith('/enable'))
-    new.enable(req)
+    if not new.get(req):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+
+    if (not do_check_right(req, 'news_editor')) and \
+        (not (new.author_id == req.login.id and new.public_date.year == 1970)):
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
+
+    state = int(req.uri.endswith('/enable'))
+    state = (state * 2) if new.public_date.year > 1970 else state
+    new.set_state(req, state)
+
     redirect(req, '/admin/news')
-#enddef
-
-@app.route('/news')
-def news_list(req):
-    error = req.args.getfirst('error', 0, int)
-    locale = req.args.getfirst('locale', get_lang(req), uni)
-
-    pager = Pager(limit = 5, sort = 'desc', order = 'create_date')
-    pager.bind(req.args)
-
-    if 'locale' in req.args:                    # if locale is explicit set
-        pager.set_params(locale = locale)
-
-    rows = New.list(req, pager, body = True, enabled = 1, locale = (locale, ''))
-    return generate_page(req, "news_list.html",
-                        pager = pager, rows = rows, error = error, lang = locale)
 #enddef
 
 @app.route('/news/<id:int>')
 def news_detail(req, id):
     new = New(id)
 
-    error = new.get(req)
-    if error: redirect(req, '/news?error=%d' % NOT_FOUND)
+    if not new.get(req):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+
     return generate_page(req, "news_detail.html",
                         new = new)
 #enddef
 
+@app.route('/news/<locale:word>/<id:int>')
+def news_detail(req, locale, id):
+    new = New(id)
+
+    if not new.get(req):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+
+    return generate_page(req, "news_detail.html",
+                        new = new, locale = locale)
+#enddef
+
+@app.route('/news')
+@app.route('/news/<locale:word>')
+def news_list(req, locale = None):
+    locale = locale if locale else get_lang(req)
+
+    pager = Pager(limit = 5, sort = 'desc', order = 'create_date')
+    pager.bind(req.args)
+
+    rows = New.list(req, pager, body = True, public = 1, locale = (locale, ''))
+    return generate_page(req, "news_list.html",
+                        pager = pager, rows = rows, lang = locale)
+#enddef
