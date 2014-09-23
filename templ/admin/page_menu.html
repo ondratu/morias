@@ -1,0 +1,73 @@
+{% set title = 'Admin - menu' -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('Page menu items list') }}</li>
+        <li class="pull-right"><a href="/admin/pages/add">{{ _('New page') }}</a></li>
+      </ul>
+
+      <div id="sure_delete" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h3 id="sure_delete_label"></h3>
+            </div>
+            <div class="modal-footer" method="post" action="">
+              <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Cancel") }}</button>
+              <button type="button" class="btn btn-danger" delete="">{{ _("Delete") }}</button>
+            </div>
+          </div> <!-- /.modal-content -->
+        </div> <!-- /.modal-dialog -->
+      </div> <!-- /.modal -->
+
+      <table class="table table-hover" id="page-menu-items">
+        <tr><th>#</th>
+            <th>{{ _('Parent') }}</th>
+            <th>{{ _('Next') }}</th>
+            <th>{{ _('Order') }}</th>
+            <th>{{ _('Title') }}</th>
+            <th>{{ _('Link') }}</th>
+            <th>{{ _('Locale') }}</th>
+            <th>{{ _('Action' )}}</th></tr>
+        {% for item in items %}
+        <tr md5="{{ item.md5 }}"><td>{{ item.id }}</td>
+            <td>{{ item.parent or '' }}</td>
+            <td>{{ item.next or '' }}</td>
+            <td>{{ item.order if none != item.order else '' }}</td>
+            <td>{{ item.title }}</td>
+            <td>{{ item.link|e }}</td>
+            <td>{{ item.locale }}</td>
+            <td>
+              <a href="#" edit="edit">{{ _('Edit') }}</a>
+              / <a href="#" delete="/admin/menu/{{ item.id }}/delete" data="{{ item.title }}">{{ _('Delete') }}</a>
+            </td></tr>
+        {% endfor %}
+      </table>
+{% include "_pager.html" %}
+
+      <script src="/js/i18n.js"></script>
+      <script src="/js/page_menu.js"></script>
+      <script>
+          M.locales = {
+              'Edit'    :   "{{ _('Edit') }}",
+              'Delete'  :   "{{ _('Delete') }}",
+              sure_delete:  "{{ _('Are you sure to delete %s item ?') }}",
+              empty_title:  "{{ _('Empty title') }}",
+              title_exist:  "{{ _('Title exist yet') }}"
+          };
+
+          $(document).ready(function() {
+              // send form after click to links with delete attribut
+              $('a[de_ete]').click(function() {
+                $('#sure_delete > > > > h3').text("".replace("%s", $(this).attr('data')));
+                $('#sure_delete > > > form').attr('action', $(this).attr('delete'));
+                $('#sure_delete').modal('toggle');
+              });
+          });
+      </script>
+
+    </div>
+{% include "_footer.html" %}
