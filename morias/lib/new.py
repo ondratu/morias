@@ -59,7 +59,7 @@ class New():
     def list(req, pager, body = False, **kwargs):
         if pager.order not in ('create_date', 'title', 'locale'):
             pager.order = 'create_date'
-        
+
         m = driver(req)
         return m.item_list(req, pager, body, **kwargs)
     #enddef

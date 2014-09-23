@@ -10,7 +10,7 @@ config = None
 
 class Config:
     def __init__(self, options, req):
-    
+
         if 'morias_config' in options:
             inifile = options.get('morias_config')
             # TODO: check if file is readable
@@ -20,12 +20,12 @@ class Config:
         else:
             req.log_error('Read config from options ...', state.LOG_INFO)
             p = Options(options)
-        #endif        
+        #endif
 
         #dbg.logFile(cfg.get('main','debuglog'))
         #dbg.logMask(cfg.get('main','debugmask', 'I1E1F3'))
         #dbg.logBufSize(cfg.getint('main','debugsize', 1024))
-            
+
         #rpcAddress      = cfg.get('rpc', 'address', 'localhost')
         #rpcPort       = cfg.getint('rpc', 'port', 3030)
 
@@ -54,7 +54,7 @@ class Config:
         self.origPath   = cfg.get('main','orig')
         self.pubPath    = cfg.get('main','pub')
         self.maintanancePath = cfg.get('maintanance','path')
-        
+
         # memcache
         mc_servers = cfg.get('memcache', 'servers')
         mc_servers = map(lambda x: x.strip(), mc_servers.split(','))
@@ -104,7 +104,7 @@ def load_config(req):
     if config is None:
         options = req.get_options()
         config = Config(options, req)
-        
+
     req.cfg = config
     if 'morias_db' in config.__dict__:      # fast alias to db
         req.db = config.morias_db

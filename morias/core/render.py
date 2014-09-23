@@ -64,7 +64,7 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     missing = []
 
     class MissingUndefined(DebugUndefined):
-    
+
         def __recursion__(self, *args, **kwargs):
             missing.append(self._undefined_name)
             return MissingUndefined()
@@ -111,7 +111,7 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
 
     # gettext support
     env.install_gettext_translations(translations)
-    
+
     template = env.get_template(filename)
     return template.render(kwargs)
 #enddef

@@ -6,7 +6,7 @@ from os.path import getmtime
 from datetime import datetime
 from falias.util import islistable
 
-from lib.page_file import Page, PAGE_EXIST, PAGE_NOT_EXIST 
+from lib.page_file import Page, PAGE_EXIST, PAGE_NOT_EXIST
 
 def get(self, req):
     tran = req.db.transaction(req.logger)
@@ -73,7 +73,7 @@ def delete(self, req):
 
     if not c.rowcount:
         return PAGE_NOT_EXIST
-        
+
     self.remove(req, rights) # backup deleted file to history and remove target
 
     tran.commit()
@@ -109,7 +109,7 @@ def regenerate_all(req):
         page.name = name
         page.title = title
         page.locale = locale
-        page.regenerate(req)            
+        page.regenerate(req)
         row = c.fetchone()
 
     tran.commit()
@@ -117,8 +117,7 @@ def regenerate_all(req):
 
 def item_list(req, pager, **kwargs):
     keys = list( "%s %s %%s" % (k, 'in' if islistable(v) else '=') for k,v in kwargs.items() )
-    cond = "WHERE " + ' AND '.join(keys) if keys else '' 
-    print cond
+    cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
