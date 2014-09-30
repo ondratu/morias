@@ -18,7 +18,7 @@ rights = set()
 rights.update(('super', 'admin', 'user', 'guest'))
 
 def do_login(req, obj, ip = False):
-    cookie = PoorSession(req)
+    cookie = PoorSession(req, compress = None)
     # so cookie is not so long, just less then 500 chars 
     cookie.data["data"] = (obj.__class__, obj.__dict__)
     cookie.data["timestamp"] = int(time())
@@ -29,7 +29,7 @@ def do_login(req, obj, ip = False):
 #enddef
 
 def do_logout(req):
-    cookie = PoorSession(req)
+    cookie = PoorSession(req, compress = None)
     if not "data" in cookie.data:
         req.log_error("Login cookie not found.", state.LOG_INFO)
         return
@@ -41,7 +41,7 @@ def do_logout(req):
 
 def do_check_login(req):
     req.login = None
-    cookie = PoorSession(req)
+    cookie = PoorSession(req, compress = None)
     if not "data" in cookie.data:
         req.log_error("Login cookie not found.", state.LOG_INFO)
         return None
@@ -59,10 +59,9 @@ def do_check_login(req):
 
     if not req.login.check(req):
         cookie.destroy()
-        cookie.header(req, req.headers_out)
+        req.login = None
         req.log_error("Login cookie was be destroyed (check failed)",
                 state.LOG_INFO)
-        return None
 
     cookie.header(req, req.headers_out)     # refresh cookie
     return req.login

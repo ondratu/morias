@@ -32,9 +32,6 @@ def driver(req):
 class Login(object):
     def __init__(self, id = None):
         self.id = id
-        self.email = ''
-        self.rights = []
-        self.data = {}
         super(Login, self).__init__()
     #enddef
 
@@ -105,13 +102,13 @@ class Login(object):
         self.again = sha1_sdigest(form.getfirst('again', '', uni), salt)
         self.rights = form.getlist('rights', uni)
         # json data
-        
+        self.data = ''  # TODO: json dump of dictionary
+
     #enddef
 
     def simple(self):
         rv = Login(self.id)
-        rv.email = self.email
-        rv.rights = self.rights
+        rv.md5 = self.md5       # using md5 checksum of login state
         return rv
     #enddef
 
@@ -134,7 +131,10 @@ class Login(object):
         return m.find(self, req)
 
     def check(self, req):
-        return bool(self.enabled) if self.get(req) else False
+        _md5 = self.md5
+        if self.get(req):
+            return _md5 == self.md5
+        return False
     #enddef
 
     @staticmethod
