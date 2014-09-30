@@ -1,4 +1,6 @@
 {% set title = page.title -%}
+{% do site.__setattr__('this', '/'+page.name) -%}
+{% set lang = page.locale or lang -%}
 {% include "_header.html" -%}
 {% include "_menu.html" -%} {#- could be "_menu_" + page.lang + ".html" -#}
 

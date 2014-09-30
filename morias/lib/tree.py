@@ -56,8 +56,8 @@ class Item(object):
             prev = m._get_item(c, self.__class__, next = self.next)
             if prev is None:                # fix next, if is not first
                 self.order = 0
-                next = m._get_item(c, self.__class__, id = self.next) if self.next else None
-                if next:
+                if self.next:
+                    next = m._get_item(c, self.__class__, id = self.next)
                     next.order = int(time())
                     self.parent = next.parent
                     m._mod(next, c)
@@ -127,11 +127,11 @@ class Item(object):
 
 
     def move(self, req):        # TODO: move not work yet !
-        """ * set items's next to None
+        """ * set items's next to None and 0 order to time()
             * set prev's next to items's next or next.order to 0
             * set all items where parent = item to patent = item.parent
 
-            * set prev's next to item or fix next's item order to 0
+            * set prev's next to item or fix next's item order to not 0
             * update item (next = next, parent = next's parent)
         """
 
@@ -139,42 +139,110 @@ class Item(object):
         c = m._lock(req)                    # lock the table first
 
         try:
-            # fix old position
-            orig = m._get_item(c, self.__class__, id = self.id)
-            if orig.order == 0:      # fix my prev
-                prev = m._get_item(c, self.__class__, next = orig.id)
-                prev.next = orig.next
-                m._mod(prev, c)
-            next = m._get_item(c, self.__class__, id = orig.next) if orig.next else None
-            if next:                        # fix my next that is first
-                if orig.order == 0:
-                    next.order = 0
-                    self.order = None
-                if next.parent == self.id:  # my child have my parent as parent
-                    next.parent = self.parent
-                if orig.order == 0 or next.parent == self.id:
-                    m._mod(next, c)
+            new_next = self.next            # store new position
+            m._get(self, c)                 # fresh item's data
+            if self.next == new_next:
+                m._rollback(c)
+                return self                 # no moving :)
 
-            # fix new position
-            prev = m._get_item(c, self.__class__, next = self.next)
-            next = m._get_item(c, self.__class__, id = self.next) if self.next else None
-            if next:
+            # load new prev first, couse for move to and, there wold be two
+            # next == null
+            prev = m._get_item(c, self.__class__, next = new_next)
+
+            tmp_next = self.next
+            tmp_order = self.order
+            ''' cut item from old position '''
+            if tmp_next:
+                self.next = None            # fix next to move is posible
+            if tmp_order == 0:
+                self.order = int(time())    # fix item is not first now
+            if tmp_next or tmp_order == 0:
+                m._mod(self, c)
+
+            if tmp_order != 0:              # fix my prev item
+                oprev = m._get_item(c, self.__class__, next = self.id)
+                oprev.next = tmp_next
+                m._mod(oprev, c)
+            elif tmp_next:                  # fix nexts order to be first
+                next = m._get_item(c, self.__class__, id = tmp_next)
+                next.order = 0;
+                m._mod(next, c)
+
+            m._fix_parent(c, self.__class__, self.id, self.parent)  # fix item's child
+
+            ''' push item to new position '''
+            if new_next:                    # fix new parents
+                next = m._get_item(c, self.__class__, id = new_next)
                 self.parent = next.parent
-            if prev:                # fix my new prev
+
+            if prev is None:                # fix next, if is not first
+                self.order = 0
+                if new_next:                # fix nexts's order
+                    next.order = int(time())
+            else:                           # set prev's next
+                if prev.id == tmp_next:
+                    m._get(prev, c)         # fresh prev, couse could have order=0
                 prev.next = self.id
                 m._mod(prev, c)
-            elif self.next:         # fix my next that is not First
-                next.order = None
-                self.order = 0
-                m.mod(next, c)
 
-            m._mod(self.c)
+            if new_next:
+                m._mod(next, c)
+
+            self.next = new_next
+            m._mod(self, c)
             m._commit(c)
         except KeyError as e:
             m._rollback(c)
             return None
         return self
     # enddef move
+
+    def to_child(self, req):
+        m = driver(req)
+        c = m._lock(req)                    # lock the table first
+
+        try:
+            m._get(self, c)                 # fresh item's data
+            prev = m._get_item(c, self.__class__, next = self.id)
+            if prev is None:
+                m._rollback(c)
+                return None                 # no moving :)
+
+            if self.parent == prev.parent:
+                self.parent = prev.id       # move to same lvl as prev
+            else:
+                self.parent = prev.parent   # be prev's child
+
+            m._mod(self, c)
+            m._commit(c)
+        except KeyError as e:
+            m._rollback(c)
+            return None
+        return self
+    # enddef to_child
+
+    def to_parent(self, req):
+        m = driver(req)
+        c = m._lock(req)                    # lock the table first
+
+        try:
+            m._get(self, c)                 # fresh item's data
+            if self.parent is None:
+                raise StopIteration("Item is at root")
+
+            nparent = m._get_item(c, self.__class__, id = self.next) if self.next else None
+            if self.parent == nparent:
+                raise StopIteration("Can't be higher then next")
+
+            # if item not on root, it must have parent
+            self.parent = m._get_item(c, self.__class__, id = self.parent).parent
+            m._mod(self, c)
+            m._commit(c)
+        except (KeyError, StopIteration) as e:
+            m._rollback(c)
+            return None
+        return self
+    # enddef to_parent
 
     def bind(self, form):
         self.id = form.getfirst(self.ID, self.id, nint)
@@ -195,9 +263,12 @@ class Item(object):
     def sort(cls, items):
         if not items: return []
         _sorted = []
+        _levels = {}
 
         _id, item = items.popitem(False)
         while item:
+            item['_level'] = _levels[item[cls.PARENT]] + 1 if item[cls.PARENT] else 0
+            _levels[item[cls.ID]] = item['_level']
             _sorted.append(item)
             item = items.pop(item[cls.NEXT], None)
         return _sorted

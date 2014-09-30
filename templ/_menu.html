@@ -13,11 +13,36 @@
 
       <div class="collapse navbar-collapse">
         <ul class="pull-right nav navbar-nav">
-        {% for item in menu -%}              {# TODO: tooltip (title) #}
-          <li {{ 'class="active"' if page.name == '/'+item.uri else '' }}>
-                <a href="{{ item.uri }}">{{ item.label }}</a></li>
+        {%- for item in staticmenu -%}              {# TODO: tooltip (title) #}
+          {% if item.locale not in (lang, '') %}
+            {% continue %}
+          {% endif %}
+          {% if item.items -%}
+            <li class="dropdown">
+              <a class="btn-link dropdown-toggle" data-toggle="dropdown">{{ item.label }} <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+            {% for it in item.items -%}
+              <li {{ 'class="active"' if site.this == item.uri else '' }}>
+                <a href="{{ it.uri }}">{{ it.label }}</a></li>
+            {% endfor -%}
+            </ul></li>
+          {%- else -%}
+            <li {{ 'class="active"' if site.this == item.uri else '' }}>
+              <a href="{{ item.uri }}">{{ item.label }}</a></li>
+          {%- endif %}
         {%- endfor -%}
-          <li><a href="/login">{{ _('Sign in') }}</a></li>
+          <!--li><a href="/login">{{ _('Sign in') }}</a></li-->
         </ul>
       </div>
     </nav>
+
+    <ol class="breadcrumb container">
+      <li><a href="/">{{ site.name }}</a></li>
+    {% set full = '/' %}
+    {% for uri in site.this.split('/')[1:-1] %}
+      <!--li><span class="navbar-text">&raquo;</span></li-->
+      <li><a href="{{ full }}{{ uri }}">{{ uri }}</a></li>
+    {% set full = full + uri + '/' %}
+    {% endfor %}
+      <li class="active">{{ site.this.split('/')[-1] }}</li>
+    </ol>

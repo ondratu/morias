@@ -56,7 +56,7 @@ def do_check_login(req):
     __class__, __dict__ = cookie.data["data"]
     req.login = __class__()
     req.login.__dict__ = __dict__.copy()
-    
+
     if not req.login.check(req):
         cookie.destroy()
         cookie.header(req, req.headers_out)

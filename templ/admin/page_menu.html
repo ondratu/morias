@@ -6,67 +6,65 @@
 
       <ul class="nav nav-pills nav-sm">
         <li class="navbar-brand">{{ _('Page menu items list') }}</li>
-        <li class="pull-right"><a href="/admin/pages/add">{{ _('New page') }}</a></li>
+        <li class="pull-right"><a href="/admin/menu/optimize" title="{{ _('Reorder menu items and store it to backend') }}">{{ _('Optimize menu') }}</a></li>
       </ul>
 
-      <div id="sure_delete" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div id="confirm_delete" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-body">
-              <h3 id="sure_delete_label"></h3>
+              <div class="pull-right"><i class="confirm-icon fa fa-question-circle"></i></div>
+              <span class="popup-message"></span>
             </div>
             <div class="modal-footer" method="post" action="">
               <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Cancel") }}</button>
-              <button type="button" class="btn btn-danger" delete="">{{ _("Delete") }}</button>
+              <button type="button" class="btn btn-danger" data-ok="ok">{{ _("Delete") }}</button>
             </div>
           </div> <!-- /.modal-content -->
         </div> <!-- /.modal-dialog -->
       </div> <!-- /.modal -->
 
+      {% include "_popup.html" -%}
+
       <table class="table table-hover" id="page-menu-items">
-        <tr><th>#</th>
-            <th>{{ _('Parent') }}</th>
-            <th>{{ _('Next') }}</th>
-            <th>{{ _('Order') }}</th>
+        <tr>
+            <th>#</th>
             <th>{{ _('Title') }}</th>
             <th>{{ _('Link') }}</th>
             <th>{{ _('Locale') }}</th>
             <th>{{ _('Action' )}}</th></tr>
         {% for item in items %}
-        <tr md5="{{ item.md5 }}"><td>{{ item.id }}</td>
-            <td>{{ item.parent or '' }}</td>
-            <td>{{ item.next or '' }}</td>
-            <td>{{ item.order if none != item.order else '' }}</td>
-            <td>{{ item.title }}</td>
+        <tr md5="{{ item.md5 }}" item="{{ item.id }}" parent="{{ item.parent or '' }}" next="{{ item.next or '' }}" order="{{ item.order }}">
+            <td>{{ item.id }}</td>
+            <td level="{{ item.level }}">{{ item.title|e }}</td>
             <td>{{ item.link|e }}</td>
-            <td>{{ item.locale }}</td>
+            <td>{{ item.locale|e }}</td>
             <td>
-              <a href="#" edit="edit">{{ _('Edit') }}</a>
-              / <a href="#" delete="/admin/menu/{{ item.id }}/delete" data="{{ item.title }}">{{ _('Delete') }}</a>
+            {% if (item.parent) %}
+                <span put="/admin/menu/{{ item.id }}/to_parent" class="btn-link">&laquo;&laquo;</span>
+            {% else %}
+                <span class="btn-link disabled">&laquo;&laquo;</span>
+            {% endif%}
+              / <span insert="{{ item.id }}" class="btn-link">{{ _('Insert') }}</span>
+              / <span edit="/admin/menu/{{ item.id }}" class="btn-link">{{ _('Edit') }}</span>
+              / <span delete="/admin/menu/{{ item.id }}/delete" data="{{ item.title }}" class="btn-link">{{ _('Delete') }}</span>
+              / <span put="/admin/menu/{{ item.id }}/to_child" class="btn-link">&raquo;&raquo;</span>
             </td></tr>
         {% endfor %}
       </table>
-{% include "_pager.html" %}
 
       <script src="/js/i18n.js"></script>
       <script src="/js/page_menu.js"></script>
       <script>
           M.locales = {
+              'Insert'  :   "{{ _('Insert') }}",
               'Edit'    :   "{{ _('Edit') }}",
               'Delete'  :   "{{ _('Delete') }}",
-              sure_delete:  "{{ _('Are you sure to delete %s item ?') }}",
+              sure_delete:  "{{ _('Are you sure to `delete\' %s item ?') }}",
               empty_title:  "{{ _('Empty title') }}",
-              title_exist:  "{{ _('Title exist yet') }}"
+              title_exist:  "{{ _('Title exist yet') }}",
+              not_possible: "{{ _('This operation is not possible.') }}"
           };
-
-          $(document).ready(function() {
-              // send form after click to links with delete attribut
-              $('a[de_ete]').click(function() {
-                $('#sure_delete > > > > h3').text("".replace("%s", $(this).attr('data')));
-                $('#sure_delete > > > form').attr('action', $(this).attr('delete'));
-                $('#sure_delete').modal('toggle');
-              });
-          });
       </script>
 
     </div>

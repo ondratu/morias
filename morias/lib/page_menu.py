@@ -6,6 +6,8 @@ import json
 
 from lib.tree import Item
 
+from lib import menu
+
 class MenuItem(Item):
     """ MenuItem from sql have this structure:
 
@@ -74,6 +76,7 @@ class MenuItem(Item):
             item.link   = row['link']
             item.state  = row['state']
             item.locale = row['locale']
+            item.level  = row['_level'] if '_level' in row else 0
             item.md5    = md5(json.dumps(item.__dict__)).hexdigest()
             items.append(item)
         return items
@@ -81,4 +84,22 @@ class MenuItem(Item):
 
     @staticmethod
     def get_menu(req):
-        return Item.full_tree(req, MenuItem)
+        rows =  Item.full_tree(req, MenuItem)
+        items = { None: menu.Menu('') }
+        for row in rows:
+            if row[MenuItem.PARENT]:
+                items[row[MenuItem.PARENT]] = menu.Menu('')
+
+        for row in rows:
+            if row['state'] == 0:
+                continue            # only active items
+            item = items.get(row[MenuItem.ID], menu.Item(row['link']))
+            item.label = row['title']
+            item.locale = row['locale']
+
+            items[row[MenuItem.PARENT]].append(item)
+
+        print items[None].items
+        return items[None]
+    #enddef
+#endclass

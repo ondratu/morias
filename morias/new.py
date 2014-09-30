@@ -142,7 +142,8 @@ def news_detail(req, id):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
 
     return generate_page(req, "news_detail.html",
-                        new = new)
+                        new = new,
+                        staticmenu = req.cfg.get_static_menu(req) )
 #enddef
 
 @app.route('/news/<locale:word>/<id:int>')
@@ -153,7 +154,8 @@ def news_detail(req, locale, id):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
 
     return generate_page(req, "news_detail.html",
-                        new = new, locale = locale)
+                        new = new, locale = locale,
+                        staticmenu = req.cfg.get_static_menu(req) )
 #enddef
 
 @app.route('/news')
@@ -166,5 +168,6 @@ def news_list(req, locale = None):
 
     rows = New.list(req, pager, body = True, public = 1, locale = (locale, ''))
     return generate_page(req, "news_list.html",
-                        pager = pager, rows = rows, lang = locale)
+                        pager = pager, rows = rows, lang = locale,
+                        staticmenu = req.cfg.get_static_menu(req) )
 #enddef

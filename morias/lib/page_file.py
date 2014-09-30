@@ -86,7 +86,8 @@ class Page():
         target = req.cfg.pages_out + '/' + self.name
         with open (target + '.tmp', 'w+') as tmp:
             tmp.write(generate_page(req,
-                                "page_file.html", page = self, menu = ()).encode('utf-8'))
+                    "page_file.html", page = self,
+                    staticmenu = req.cfg.get_static_menu(req) ).encode('utf-8'))
         rename(target + '.tmp', target)
     #enddef
 
@@ -116,7 +117,8 @@ class Page():
         target = req.cfg.pages_out + '/' + self.name
         with open (target + '.tmp', 'w+') as tmp:
             tmp.write(generate_page(req,
-                                "page_file.html", page = self, menu = ()).encode('utf-8'))
+                    "page_file.html", page = self,
+                    staticmenu = req.cfg.get_static_menu(req) ).encode('utf-8'))
         rename(target + '.tmp', target)
     #enddef
 

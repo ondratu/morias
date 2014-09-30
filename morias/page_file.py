@@ -9,13 +9,14 @@ from os import access, R_OK, W_OK
 from core.login import check_login, rights, check_referer, check_right, \
                     match_right, do_check_right
 from core.render import generate_page
-from core.errors import ACCESS_DENIED, SUCCESS
+from core.errors import SUCCESS
 
 from lib.menu import Item
 from lib.pager import Pager
 from lib.page_file import Page
 
 from admin import *
+
 
 _check_conf = (
     # morias common block
@@ -29,7 +30,12 @@ _check_conf = (
 )
 
 def _call_conf(cfg, parser):
-   rights.update(cfg.pages_rights)
+    def empty(req):
+        return ()
+
+    rights.update(cfg.pages_rights)
+    if 'get_static_menu' not in cfg.__dict__: cfg.get_static_menu = empty
+#enddef
 
 module_rights = ['pages_listall', 'pages_author', 'pages_modify']
 rights.update(module_rights)
@@ -177,7 +183,7 @@ def admin_pages_del(req, id):
 @app.route('/admin/pages/all/regenerate', state.METHOD_POST)
 def admin_pages_regenerate_all(req):
     check_login(req, '/login?referer=/admin/pages')
-    check_right(req, 'pages_modify', '/admin/pages?error=%d' % ACCESS_DENIED)
+    check_right(req, 'pages_modify')
 
     Page.regenerate_all(req)
 

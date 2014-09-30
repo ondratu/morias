@@ -1,0 +1,32 @@
+
+      <div id="alert" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <i class="alert-icon pull-right fa fa-exclamation-triangle"></i>
+              <span class="popup-message"></span>
+            </div>
+            <div class="modal-footer" method="post" action="">
+              <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Ok") }}</button>
+            </div>
+          </div> <!-- /.modal-content -->
+        </div> <!-- /.modal-dialog -->
+      </div> <!-- /.modal -->
+
+      <div id="confirm" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <i class="confirm-icon pull-right fa fa-question-circle"></i>
+              <span class="popup-message"></span>
+            </div>
+            <div class="modal-footer" method="post" action="">
+              <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Cancel") }}</button>
+              <button type="button" class="btn btn-default" data-ok="ok">{{ _("Ok") }}</button>
+            </div>
+          </div> <!-- /.modal-content -->
+        </div> <!-- /.modal-dialog -->
+      </div> <!-- /.modal -->
+
+
+      <script src="/js/popup.js"></script>
