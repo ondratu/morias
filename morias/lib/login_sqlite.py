@@ -31,7 +31,7 @@ def add(self, req):
 
     try:        # email must be uniq
         c.execute("INSERT INTO logins (email, rights, data, passwd) "
-                "VALUES ( %s, %s, %s )",
+                "VALUES ( %s, %s, %s, %s )",
                 (self.email, json.dumps(self.rights), json.dumps(self.data),
                  self.passwd))
         self.id = c.lastrowid

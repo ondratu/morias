@@ -2,7 +2,12 @@
 from sqlite3 import IntegrityError
 from falias.sqlite import DictCursor
 from falias.util import islistable
-from collections import OrderedDict
+from sys import version_info
+
+if version_info[0] == 2 and version_info[1] < 7:
+    from ordereddict import OrderedDict
+else:
+    from collections import OrderedDict
 
 import json
 

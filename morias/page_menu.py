@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from poorwsgi import *
+from falias.sql import Sql
 
 import json
 
@@ -11,6 +12,10 @@ from lib.pager import Pager
 from lib.page_menu import MenuItem
 
 from admin import *
+
+_check_conf = (
+    ('morias', 'db', Sql, None),                    # database configuration
+)
 
 def _call_conf(cfg, parser):
     cfg.get_static_menu = MenuItem.get_menu

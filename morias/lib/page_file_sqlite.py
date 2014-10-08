@@ -125,8 +125,7 @@ def item_list(req, pager, **kwargs):
                 "FROM page_files %s ORDER BY name LIMIT %%s, %%s" % cond,
                 tuple(kwargs.values()) + (pager.offset, pager.limit))
     items = []
-    row = c.fetchone()
-    while row is not None:
+    for row in iter(c.fetchone, None):
         page_id, author_id, name, title, locale, editor_rights = row
         page = Page(page_id)
         page.author_id = author_id

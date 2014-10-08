@@ -32,7 +32,7 @@ def _call_conf(cfg, parser):
     for uri in cfg.form_paths:
         app.set_route('/form/' + uri.encode('utf-8'),
                       form_send, state.METHOD_GET_POST)
-        
+
         f = Object()
         f.template = parser.get('form_%s' % uri, 'template')
         f.required = parser.get('form_%s' % uri, 'required', '', tuple)
@@ -46,10 +46,9 @@ def _call_conf(cfg, parser):
 #enddef
 
 def form_send(req):
-    form = FieldStorage(req)
-    locale = form.getfirst('locale', get_lang(req), uni)
-    menu = correct_menu(req, user_menu)
-    fdict = dict( (key, uni(form.getvalue(key))) for key in form.keys() )
+    locale = req.args.getfirst('locale', get_lang(req), uni)
+    menu = req.cfg.get_static_menu(req)
+    fdict = dict( (key, uni(req.form.getvalue(key))) for key in req.form.keys() )
 
     form_obj = req.cfg.forms[req.uri.split('/')[-1]]
     qid, question, answer = (0, '', form_obj.answer)
@@ -57,12 +56,12 @@ def form_send(req):
 
     if req.method == 'POST':
         if form_obj.protection:
-            robot = True if form.getfirst("robot", "", str) else False
+            robot = True if req.form.getfirst("robot", "", str) else False
             if not form_obj.answer:
-                qid = int(form.getfirst("qid", '0', str), 16)
+                qid = int(req.form.getfirst("qid", '0', str), 16)
                 question, answer = robot_questions[qid]
 
-            check = form.getfirst("answer", "", str) == answer
+            check = req.form.getfirst("answer", "", str) == answer
         else:
             robot = False
             check = True
@@ -70,23 +69,23 @@ def form_send(req):
 
         required = []
         # check email if exist
-        if 'email' in form:
-            if not Email.check(form.getfirst("email", fce = str)):
+        if 'email' in req.form:
+            if not Email.check(req.form.getfirst("email", fce = str)):
                 required.append('email')
 
         for it in form_obj.required:
-            if it not in form:
+            if it not in req.form:
                 required.append(it)
-        
+
         if robot or not check or required:
             return generate_page(
                         req, req.cfg.form_web_templates + form_obj.template + '.html',
                         question = question, answer = answer, qid = hex(qid),
-                        form = fdict, menu = menu, lang = locale, 
+                        form = fdict, menu = menu, lang = locale,
                         required = required, robot = robot, check = check)
         # else
         kwargs = {'logger': req.logger}
-        if 'email' in form:
+        if 'email' in req.form:
             kwargs['reply'] = form.getfirst('email', '', str)
 
         status = False
