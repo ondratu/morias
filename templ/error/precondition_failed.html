@@ -4,8 +4,15 @@
     <div class="container">
       <div class="jumbotron http-error">
         <h1>{{ title }}</h1>
+    {%- if precondition.referer is defined %}
         <p>{{ _("Your request can't be call direct or from another page then") }}
           {{ precondition.referer }}
+    {%- elif precondition.origin is defined %}
+        <p>{{ _("Your request can't be call direct or from another domain then") }}
+          {{ precondition.origin }}
+    {%- else %}
+        <p>{{ _("Your request can't be call direct.") }}
+    {%- endif %}
         </p>
       </div>
     </div>
