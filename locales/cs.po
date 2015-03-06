@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Morias 0.0.1\n"
 "Report-Msgid-Bugs-To: mcbig@zeropage.cz\n"
-"POT-Creation-Date: 2014-01-22 06:56+0100\n"
-"PO-Revision-Date: 2014-01-22 06:56+0100\n"
+"POT-Creation-Date: 2014-10-20 06:46+0200\n"
+"PO-Revision-Date: 2014-10-20 06:46+0100\n"
 "Last-Translator: Ondřej Tůma <mcbig@zeropage.cz>\n"
 "Language-Team: Blackmouse\n"
 "Language: Czech\n"
@@ -17,10 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Czech\n"
 "X-Poedit-Country: CZECH REPUBLIC\n"
-
-#: ../templ/_menu.html:14 ../templ/login.html:1 ../templ/login.html:17
-msgid "Sign in"
-msgstr "Přihlásit se"
 
 #: ../templ/_pager.html:14 ../templ/_pager.html:17
 msgid "First"
@@ -46,6 +42,105 @@ msgstr "Další"
 msgid "Last"
 msgstr "Poslední"
 
+#: ../templ/_popup.html:10 ../templ/_popup.html:25
+msgid "Ok"
+msgstr ""
+
+#: ../templ/_popup.html:24 ../templ/admin/page_menu.html:20
+#: ../templ/admin/pages.html:28
+msgid "Cancel"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:3
+msgid "Show source code"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:6
+msgid "Bold (Ctrl/Cmd+B)"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:7
+msgid "Italic (Ctrl/Cmd+I)"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:8
+msgid "Strikethrough"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:9
+msgid "Underline (Ctrl/Cmd+U)"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:13
+#, fuzzy
+msgid "Bullet list"
+msgstr "Seznam aktualit"
+
+#: ../templ/_wysiwyg.html:14
+#, fuzzy
+msgid "Number list"
+msgstr "Seznam aktualit"
+
+#: ../templ/_wysiwyg.html:23
+msgid "Header"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:25 ../templ/_wysiwyg.html:26
+msgid "Header 2"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:27
+msgid "Header 3"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:28
+msgid "Header 4"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:29
+msgid "Header 5"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:30
+msgid "Header 6"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:34
+msgid "Code"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:37
+msgid "Normal Blok"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:49
+msgid "Hyperlink"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:56
+msgid "Remove Hyperlink"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:59
+msgid "Undo (Ctrl/Cmd+Z)"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:60
+msgid "Redo (Ctrl/Cmd+Y)"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:61
+msgid "Remove formating"
+msgstr ""
+
+#: ../templ/_wysiwyg.html:64
+msgid "Show formated text"
+msgstr ""
+
+#: ../templ/login.html:1 ../templ/login.html:17 ../templ/user/_menu.html:24
+msgid "Sign in"
+msgstr "Přihlásit se"
+
 #: ../templ/login.html:7
 msgid "Bad login email or password"
 msgstr "Špatný email nebo heslo"
@@ -62,8 +157,8 @@ msgstr "Prosím přihlaste se"
 msgid "Email address"
 msgstr "Emailová adresa"
 
-#: ../templ/login.html:13 ../templ/admin/login_mod.html:65
-#: ../templ/admin/login_mod.html:67 ../templ/user/login_pref.html:32
+#: ../templ/login.html:13 ../templ/admin/logins_mod.html:62
+#: ../templ/admin/logins_mod.html:64 ../templ/user/login_pref.html:32
 #: ../templ/user/login_pref.html:34
 msgid "Password"
 msgstr "Heslo"
@@ -72,18 +167,18 @@ msgstr "Heslo"
 msgid "Check IP"
 msgstr ""
 
-#: ../templ/new_detail.html:1 ../templ/new_list.html:1
+#: ../templ/news_detail.html:1
 msgid "News"
 msgstr "Aktuality"
 
-#: ../templ/new_detail.html:7 ../templ/new_list.html:6
-#: ../templ/admin/new.html:7 ../templ/admin/new_mod.html:19
+#: ../templ/news_list.html:1 ../templ/news_list.html:7
+#: ../templ/admin/news.html:7 ../templ/admin/news_mod.html:19
 msgid "News list"
 msgstr "Seznam aktualit"
 
-#: ../templ/new_list.html:9 ../templ/admin/new.html:17
-msgid "Not found"
-msgstr "Nebylo nalezeno"
+#: ../templ/admin/_attachments_upload.html:2
+msgid "Upload"
+msgstr ""
 
 #: ../templ/admin/_login_error.html:3
 msgid "Bad email"
@@ -110,192 +205,333 @@ msgstr "Stránka ještě neexistuje"
 msgid "Login does not exist"
 msgstr "Stránka již existuje"
 
-#: ../templ/admin/_menu.html:5 ../templ/admin/admin.html:1
-#: ../templ/user/_menu.html:19
+#: ../templ/admin/_menu.html:4 ../templ/user/_menu.html:4
+msgid "Toggle navigation"
+msgstr ""
+
+#: ../templ/admin/_menu.html:12 ../templ/admin/admin.html:1
 msgid "Admin"
 msgstr "Administrátor"
 
-#: ../templ/admin/_menu.html:16 ../templ/user/_menu.html:17
+#: ../templ/admin/_menu.html:23 ../templ/user/_menu.html:22
 msgid "Logout"
 msgstr "Odhlásit"
 
-#: ../templ/admin/_menu.html:17 ../templ/user/_menu.html:5
+#: ../templ/admin/_menu.html:24 ../templ/admin/jobs.html:14
 msgid "User"
 msgstr "Uživatel"
 
-#: ../templ/admin/_page_error.html:3
+#: ../templ/admin/_pages_error.html:3
 msgid "Empty file name"
 msgstr "Prázdné jmné souboru"
 
-#: ../templ/admin/_page_error.html:5
+#: ../templ/admin/_pages_error.html:5
 msgid "Bad file name"
 msgstr "Špatné jméno souboru"
 
-#: ../templ/admin/_page_error.html:7
+#: ../templ/admin/_pages_error.html:7
 msgid "Page does exist yet"
 msgstr "Stránka ještě neexistuje"
 
-#: ../templ/admin/_page_error.html:9
+#: ../templ/admin/_pages_error.html:9
 msgid "Page does not exist"
 msgstr "Stránka již existuje"
 
-#: ../templ/admin/login.html:7
+#: ../templ/admin/attachments.html:7
+#, fuzzy
+msgid "Attachments list"
+msgstr "Přiřazená práva"
+
+#: ../templ/admin/attachments.html:10
+#, fuzzy
+msgid "Regenerate Thumbs"
+msgstr "Přegenerovat vše"
+
+#: ../templ/admin/attachments.html:11 ../templ/admin/news.html:13
+#: ../templ/admin/news_mod.html:14 ../templ/admin/news_mod.html:17
+msgid "New new"
+msgstr "Nová aktualita"
+
+#: ../templ/admin/attachments.html:17 ../templ/admin/pages.html:36
+#: ../templ/admin/pages_mod.html:30
+msgid "File name"
+msgstr "Jméno souboru"
+
+#: ../templ/admin/attachments.html:18 ../templ/admin/news.html:20
+msgid "Author"
+msgstr ""
+
+#: ../templ/admin/attachments.html:19
+msgid "Upload time"
+msgstr ""
+
+#: ../templ/admin/attachments.html:20
+msgid "Mime type"
+msgstr ""
+
+#: ../templ/admin/attachments.html:21 ../templ/admin/jobs.html:16
+#: ../templ/admin/logins.html:19 ../templ/admin/news.html:24
+#: ../templ/admin/page_menu.html:35 ../templ/admin/pages.html:40
+msgid "Action"
+msgstr "Akce"
+
+#: ../templ/admin/attachments.html:25
+msgid "Download"
+msgstr ""
+
+#: ../templ/admin/attachments.html:32 ../templ/admin/jobs.html:24
+#: ../templ/admin/page_menu.html:21 ../templ/admin/page_menu.html:50
+#: ../templ/admin/page_menu.html:62 ../templ/admin/pages.html:29
+#: ../templ/admin/pages.html:51
+msgid "Delete"
+msgstr "Smazat"
+
+#: ../templ/admin/attachments.html:35 ../templ/admin/logins.html:25
+#: ../templ/admin/news.html:42 ../templ/admin/page_menu.html:49
+#: ../templ/admin/page_menu.html:61 ../templ/admin/pages.html:48
+msgid "Edit"
+msgstr "Upravit"
+
+#: ../templ/admin/attachments.html:57
+msgid "preview"
+msgstr ""
+
+#: ../templ/admin/jobs.html:7
+#, fuzzy
+msgid "Jobs list"
+msgstr "Seznam stránek"
+
+#: ../templ/admin/jobs.html:12
+msgid "Path"
+msgstr ""
+
+#: ../templ/admin/jobs.html:13
+msgid "Singleton"
+msgstr ""
+
+#: ../templ/admin/jobs.html:15
+msgid "Run Time"
+msgstr ""
+
+#: ../templ/admin/jobs.html:20
+msgid "No"
+msgstr ""
+
+#: ../templ/admin/jobs.html:20
+msgid "Yes"
+msgstr ""
+
+#: ../templ/admin/logins.html:8
 #, fuzzy
 msgid "Logins list"
 msgstr "Seznam stránek"
 
-#: ../templ/admin/login.html:9 ../templ/admin/login_mod.html:13
-#: ../templ/admin/login_mod.html:17
+#: ../templ/admin/logins.html:9 ../templ/admin/logins_mod.html:14
+#: ../templ/admin/logins_mod.html:17
 #, fuzzy
 msgid "New login"
 msgstr "Nová aktualita"
 
-#: ../templ/admin/login.html:14 ../templ/admin/new.html:14
-#: ../templ/admin/page.html:17
+#: ../templ/admin/logins.html:13
 msgid "Access denied"
 msgstr "Přístup odepřen"
 
-#: ../templ/admin/login.html:19 ../templ/admin/login_mod.html:31
-#: ../templ/admin/login_mod.html:33 ../templ/user/login_pref.html:23
+#: ../templ/admin/logins.html:18 ../templ/admin/logins_mod.html:28
+#: ../templ/admin/logins_mod.html:30 ../templ/user/login_pref.html:23
 #: ../templ/user/login_pref.html:25
 msgid "Email"
 msgstr "Email"
 
-#: ../templ/admin/login.html:20 ../templ/admin/new.html:25
-#: ../templ/admin/page.html:50
-msgid "Action"
-msgstr "Akce"
-
-#: ../templ/admin/login.html:27 ../templ/admin/new.html:38
-#: ../templ/admin/page.html:58
-msgid "Edit"
-msgstr "Upravit"
-
-#: ../templ/admin/login.html:31 ../templ/admin/new.html:42
+#: ../templ/admin/logins.html:27 ../templ/admin/news.html:44
+#: ../templ/admin/news_mod.html:39
 msgid "Disable"
 msgstr ""
 
-#: ../templ/admin/login.html:33 ../templ/admin/new.html:44
+#: ../templ/admin/logins.html:29
 msgid "Enabled"
 msgstr ""
 
-#: ../templ/admin/login_mod.html:15
+#: ../templ/admin/logins_mod.html:16
 #, fuzzy
 msgid "Edit login"
 msgstr "Editace aktuality"
 
-#: ../templ/admin/login_mod.html:21
+#: ../templ/admin/logins_mod.html:19
 #, fuzzy
 msgid "Login list"
 msgstr "Seznam stránek"
 
-#: ../templ/admin/login_mod.html:26 ../templ/user/login_pref.html:18
+#: ../templ/admin/logins_mod.html:23 ../templ/user/login_pref.html:18
 msgid "Password was set!"
 msgstr "Heslo bylo nastaveno!"
 
-#: ../templ/admin/login_mod.html:40 ../templ/admin/page_mod.html:41
+#: ../templ/admin/logins_mod.html:37 ../templ/admin/pages_mod.html:43
 msgid "Rights"
 msgstr "Práva"
 
-#: ../templ/admin/login_mod.html:41 ../templ/admin/page_mod.html:42
+#: ../templ/admin/logins_mod.html:38 ../templ/admin/pages_mod.html:44
 msgid "Possilbe rights"
 msgstr "Možná práva"
 
-#: ../templ/admin/login_mod.html:42 ../templ/admin/page_mod.html:43
+#: ../templ/admin/logins_mod.html:39 ../templ/admin/pages_mod.html:45
 msgid "Attache rights"
 msgstr "Přiřazená práva"
 
-#: ../templ/admin/login_mod.html:71 ../templ/user/login_pref.html:38
+#: ../templ/admin/logins_mod.html:68 ../templ/user/login_pref.html:38
 msgid "Fill it only, if you want to change."
 msgstr "Vyplň, pouze pokud chceš měnit."
 
-#: ../templ/admin/login_mod.html:76 ../templ/admin/login_mod.html:78
+#: ../templ/admin/logins_mod.html:73 ../templ/admin/logins_mod.html:75
 #: ../templ/user/login_pref.html:43 ../templ/user/login_pref.html:45
 msgid "Password again"
 msgstr "Znovu heslo"
 
-#: ../templ/admin/login_mod.html:86 ../templ/admin/new_mod.html:36
-#: ../templ/admin/new_mod.html:47 ../templ/admin/page_mod.html:73
-#: ../templ/admin/page_mod.html:82 ../templ/user/login_pref.html:53
+#: ../templ/admin/logins_mod.html:83 ../templ/admin/news_mod.html:50
+#: ../templ/admin/news_mod.html:67 ../templ/admin/pages_mod.html:75
+#: ../templ/admin/pages_mod.html:86 ../templ/user/login_pref.html:53
 msgid "Save"
 msgstr "Uložit"
 
-#: ../templ/admin/new.html:9 ../templ/admin/new_mod.html:11
-#: ../templ/admin/new_mod.html:15
-msgid "New new"
-msgstr "Nová aktualita"
+#: ../templ/admin/news.html:8
+msgid "All"
+msgstr ""
 
-#: ../templ/admin/new.html:22 ../templ/admin/new_mod.html:24
-#: ../templ/admin/new_mod.html:26 ../templ/admin/page.html:47
-#: ../templ/admin/page_mod.html:67 ../templ/admin/page_mod.html:69
+#: ../templ/admin/news.html:9
+msgid "Ready to Public"
+msgstr ""
+
+#: ../templ/admin/news.html:10
+msgid "Drafts"
+msgstr ""
+
+#: ../templ/admin/news.html:19 ../templ/admin/news_mod.html:24
+#: ../templ/admin/news_mod.html:26 ../templ/admin/page_menu.html:32
+#: ../templ/admin/pages.html:37 ../templ/admin/pages_mod.html:69
+#: ../templ/admin/pages_mod.html:71
 msgid "Title"
 msgstr "Titulek"
 
-#: ../templ/admin/new.html:23 ../templ/admin/new_mod.html:32
-#: ../templ/admin/new_mod.html:34 ../templ/admin/page.html:48
-#: ../templ/admin/page_mod.html:34 ../templ/admin/page_mod.html:36
+#: ../templ/admin/news.html:21 ../templ/admin/news_mod.html:32
+#: ../templ/admin/news_mod.html:34 ../templ/admin/page_menu.html:34
+#: ../templ/admin/pages.html:38 ../templ/admin/pages_mod.html:36
+#: ../templ/admin/pages_mod.html:38
 msgid "Locale"
 msgstr "Lokalizace"
 
-#: ../templ/admin/new.html:24
+#: ../templ/admin/news.html:22
 msgid "Create time"
 msgstr "Čas vytvoření"
 
-#: ../templ/admin/new_mod.html:13
+#: ../templ/admin/news.html:23
+msgid "Publicated"
+msgstr ""
+
+#: ../templ/admin/news.html:37 ../templ/admin/news_mod.html:41
+msgid "Ready to public"
+msgstr ""
+
+#: ../templ/admin/news.html:46
+msgid "Enable"
+msgstr ""
+
+#: ../templ/admin/news_mod.html:16
 msgid "Edit new"
 msgstr "Editace aktuality"
 
-#: ../templ/admin/new_mod.html:27
+#: ../templ/admin/news_mod.html:27 ../templ/admin/page_menu.html:64
 msgid "Empty title"
 msgstr "Prázdný titulek"
 
-#: ../templ/admin/new_mod.html:42
-msgid "Empty body"
-msgstr "Prázdné jméno"
+#: ../templ/admin/news_mod.html:36
+msgid "State"
+msgstr ""
 
-#: ../templ/admin/page.html:7 ../templ/admin/page_mod.html:22
+#: ../templ/admin/news_mod.html:40
+msgid "Draft"
+msgstr ""
+
+#: ../templ/admin/news_mod.html:46
+msgid "Public"
+msgstr ""
+
+#: ../templ/admin/news_mod.html:48
+msgid "Not Public"
+msgstr ""
+
+#: ../templ/admin/news_mod.html:57
+msgid "Empty body"
+msgstr "Prázdné tělo"
+
+#: ../templ/admin/news_mod.html:64
+msgid "Save and Public"
+msgstr ""
+
+#: ../templ/admin/page_menu.html:8
+#, fuzzy
+msgid "Page menu items list"
+msgstr "Seznam stránek"
+
+#: ../templ/admin/page_menu.html:9
+msgid "Reorder menu items and store it to backend"
+msgstr ""
+
+#: ../templ/admin/page_menu.html:9
+msgid "Optimize menu"
+msgstr ""
+
+#: ../templ/admin/page_menu.html:33
+msgid "Link"
+msgstr ""
+
+#: ../templ/admin/page_menu.html:48 ../templ/admin/page_menu.html:60
+msgid "Insert"
+msgstr ""
+
+#: ../templ/admin/page_menu.html:63
+#, fuzzy, python-format
+msgid "Are you sure to `delete' %s item ?"
+msgstr "Opravdu chceš smazat stránku %s ?"
+
+#: ../templ/admin/page_menu.html:65
+#, fuzzy
+msgid "Title exist yet"
+msgstr "Stránka ještě neexistuje"
+
+#: ../templ/admin/page_menu.html:66
+msgid "This operation is not possible."
+msgstr ""
+
+#: ../templ/admin/pages.html:8 ../templ/admin/pages_mod.html:23
 msgid "Pages list"
 msgstr "Seznam stránek"
 
-#: ../templ/admin/page.html:9 ../templ/admin/page_mod.html:14
-#: ../templ/admin/page_mod.html:18
+#: ../templ/admin/pages.html:10 ../templ/admin/pages_mod.html:15
+#: ../templ/admin/pages_mod.html:19
 msgid "New page"
 msgstr "Nová stránka"
 
-#: ../templ/admin/page.html:12
+#: ../templ/admin/pages.html:13
 msgid "Regenerate all"
 msgstr "Přegenerovat vše"
 
-#: ../templ/admin/page.html:20
+#: ../templ/admin/pages.html:18
 msgid "Operation success"
 msgstr "Operace byla úspěšná"
 
-#: ../templ/admin/page.html:31
-msgid "Close"
-msgstr "Zavřít"
+#: ../templ/admin/pages.html:39
+msgid "Last modify"
+msgstr "Poslední změna"
 
-#: ../templ/admin/page.html:32 ../templ/admin/page.html:61
-msgid "Delete"
-msgstr "Smazat"
-
-#: ../templ/admin/page.html:40
+#: ../templ/admin/pages.html:62
 #, python-format
 msgid "Are you sure to delete %s page ?"
 msgstr "Opravdu chceš smazat stránku %s ?"
 
-#: ../templ/admin/page.html:46 ../templ/admin/page_mod.html:28
-msgid "File name"
-msgstr "Jméno souboru"
-
-#: ../templ/admin/page.html:49
-msgid "Last modify"
-msgstr "Poslední změna"
-
-#: ../templ/admin/page_mod.html:16
+#: ../templ/admin/pages_mod.html:17
 msgid "Edit page"
 msgstr "Upravit stránku"
 
-#: ../templ/admin/page_mod.html:30
+#: ../templ/admin/pages_mod.html:32
 msgid "File name on server"
 msgstr "Jméno souboru na sereveru"
 
@@ -322,8 +558,18 @@ msgstr ""
 msgid "Precondition Failed"
 msgstr "Podmínka nebyla splněna"
 
-#: ../templ/error/precondition_failed.html:7
+#: ../templ/error/precondition_failed.html:8
 msgid "Your request can't be call direct or from another page then"
+msgstr "Váš požadavek nemohl být volán přímo nebo z jiné adresy než"
+
+#: ../templ/error/precondition_failed.html:11
+#, fuzzy
+msgid "Your request can't be call direct or from another domain then"
+msgstr "Váš požadavek nemohl být volán přímo nebo z jiné adresy než"
+
+#: ../templ/error/precondition_failed.html:14
+#, fuzzy
+msgid "Your request can't be call direct."
 msgstr "Váš požadavek nemohl být volán přímo nebo z jiné adresy než"
 
 #: ../templ/forms/contact-form.html:1 ../templ/forms/contact-form.html:25
@@ -386,6 +632,12 @@ msgstr "Editace aktuality"
 #: ../templ/user/login_pref.html:53
 msgid "Register"
 msgstr ""
+
+#~ msgid "Not found"
+#~ msgstr "Nebylo nalezeno"
+
+#~ msgid "Close"
+#~ msgstr "Zavřít"
 
 #~ msgid "Login"
 #~ msgstr "Přihlášení"
