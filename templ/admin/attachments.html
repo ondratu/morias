@@ -1,0 +1,69 @@
+{% set title = 'Admin - attachments' -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('Attachments list') }}</li>
+
+      {% if match_right(('attahchments_author', 'attachments_modify')) -%}
+        <li class="pull-right" background-action="{{ _('Regenerate Thumbs') }}" url="/admin/attachments/images/thumb"></li>
+        <!--li class="pull-right"><a href="/admin/news/add">{{ _('New new') }}</a></li-->
+      {% endif -%}
+      </ul>
+
+      <table class="table table-hover">
+        <tr><th>#</th>
+            <th>{{ _('File name') }}</th>
+            <th>{{ _('Author') }}</th>
+            <th>{{ _('Upload time') }}</th>
+            <th>{{ _('Mime type') }}</th>
+            <th>{{ _('Action' )}}</th></tr>
+        {% for item in rows %}
+        <tr><td>{{ item.id }}</td>
+            <td {%- if item.mime_type.startswith('image') %} webname="{{ item.webname() }}" {%- endif -%}>
+                <a href="/attachments/{{ item.webname() }}/realname" title="{{ _('Download') }}">{{ item.file_name|e }}</a>
+            </td>
+            <td>{{ item.author|e or '' }}</td>
+            <td>{{ datetime(item.timestamp).strftime("%H:%M %d.%m.%Y") }}</td>
+            <td>{{ item.mime_type }}</td>
+            <td>
+            {% if not item.object_type and (check_right('attachments_modify') or (check_right('attahchments_author') and item.author_id == login.id)) -%}
+              <a post="/admin/attachments/{{ item.id }}/delete">{{ _('Delete') }}</a> /
+            {% endif -%}
+            {% if check_right('attachments_modify') or (check_right('attahchments_author') and item.author_id == login.id) -%}
+              <a post="/admin/attachments/{{ item.id }}">{{ _('Edit') }}</a>
+            {% endif -%}
+            </td></tr>
+        {% endfor %}
+      </table>
+{% include "_pager.html" %}
+
+      <script src="/js/jobs.js"></script>
+      <script>
+        $(document).ready(function() {
+          // send form after click to links with post attribut
+          $('a[post]').click(function() {
+            $('<form/>',{'method':'post','action':$(this).attr('post')}).submit();
+          });
+          $('a[title]').tooltip({container: 'body', placement: 'bottom'});
+          $('td[webname]').tooltip({
+                html: true,
+                container: 'body',
+                placement: 'right',
+                title: function(){
+                    return $('<img>', {
+                            src: "/attachments/thumb/" + $(this).attr('webname'),
+                            alt: "{{ _('preview') }}"
+                        });
+                }
+          });
+
+          //$('li[background-action]').Baction();
+          var ba = new M.JobSingleton('li[background-action]');
+
+        });
+      </script>
+
+    </div>
+{% include "_footer.html" %}

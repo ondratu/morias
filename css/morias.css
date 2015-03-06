@@ -121,6 +121,11 @@ table tr td[level="8"] { padding-left: 90px; }
 }
 
 
+/* fix attachment preview tooltip*/
+.tooltip-inner {
+  max-width: 340px;
+}
+
 .nav-sm {
   font-size: 80%;
 }
@@ -129,6 +134,37 @@ table tr td[level="8"] { padding-left: 90px; }
 }
 .nav--sm > li > a {
   padding: 5px 7px;
+}
+
+.red {
+    background: red;
+}
+
+.attachments {
+    height: 150px;
+    overflow: auto;
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.attachments > div > .row {
+    width: 100%;
+    padding-bottom: 2px;
+    height: 40px;
+    margin: auto;
+}
+
+.attachments > div >.row:nth-child(odd){
+    background-color: #f9f9f9;
+}
+.attachments > div > .row > .text {
+    padding-top: 10px;
+}
+.attachments > div > .row > .preview > div {
+    height: 38px;
 }
 
 html, body {

@@ -1,0 +1,7 @@
+{% macro mime_type(mt) %}
+    {% if mt.endswith('/zip') %}
+        <i class="fa fa-file-archive-o"></i>
+    {% else %}
+        <i class="fa fa-file-o"></i>
+    {% endif %}
+{% endmacro %}

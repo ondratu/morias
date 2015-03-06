@@ -2,9 +2,10 @@
 
 from jinja2 import Environment, FileSystemLoader, DebugUndefined, \
         contextfunction
-from gettext import NullTranslations, translation
-
 from falias.util import Object
+
+from gettext import NullTranslations, translation
+from datetime import datetime
 
 from lang import get_lang, get_langs
 from morias.lib.menu import correct_menu
@@ -105,6 +106,7 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
 
     # some addons
     env.globals['ord'] = ord
+    env.globals['datetime'] = datetime.fromtimestamp
 
     # morias functionality
     env.globals['check_right'] = check_right

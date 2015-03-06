@@ -86,6 +86,9 @@ def do_match_right(req, rights):
     return True                         # some rights match
 #enddef
 
+def do_check_origin(req):
+    return req.headers_in.get('Origin') == "%s://%s" % (req.scheme, req.hostname)
+
 def check_login(req, redirect_uri = None):
     if req.login is None:       # do_check_login was called averytime
         if redirect_uri is None:
@@ -109,13 +112,21 @@ def match_right(req, rights, redirect_uri = None):
 
 def check_referer(req, referer, redirect = None):
     full_referer = "%s://%s%s" % (req.scheme, req.hostname, referer)
-    if full_referer != req.referer.split('?')[0]:
+    if req.referer and full_referer != req.referer.split('?')[0]:
         if redirect:
             redirect(req, redirect)
         req.precondition = Object()
         req.precondition.referer = full_referer
         raise SERVER_RETURN(state.HTTP_PRECONDITION_FAILED)
 #enddef
+
+def check_origin(req, redirect = None):
+    if not do_check_origin(req):
+        if redirect:
+            redirect(req, redirect)
+        req.precondition = Object()
+        req.precondition.origin = "%s://%s" % (req.scheme, req.hostname)
+        raise SERVER_RETURN(state.HTTP_PRECONDITION_FAILED)
 
 def sha1_sdigest(text, salt):
     #return sha1(salt + text + "0nb\xc5\x99e!\xc5\xa4\xc5\xafm@").hexdigest()

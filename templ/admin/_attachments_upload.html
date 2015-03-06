@@ -1,0 +1,41 @@
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#attachments_object" data-toggle="tab">{{ _('Object Attachments') }}</a></li>
+      <li><a href="#attachments_server" data-toggle="tab">{{ _('Attachments on server') }}</a></li>
+      <li><a href="#attachments_upload" data-toggle="tab">{{ _('Upload Attachmens') }}</a></li>
+    </ul>
+    <div class="tab-content attachments">
+        <div class="tab-pane fade in active" id="attachments_object"></div>
+        <div class="tab-pane fade" id="attachments_server"></div>
+        <div class="tab-pane fade" id="attachments_upload">
+          <div class="row">
+            <button action="select" class="btn btn-default col-md-6">{{ _('Select attachments')}}</button>
+            <button action="upload" class="btn btn-default col-md-6">{{ _('Upload attachments')}}</button>
+          </div>
+        </div>
+      </div>
+    <div id="atta_chments_view"></div>
+
+    <script src="/js/i18n.js"></script>
+    <script src="/js/attachments.js"></script>
+    <script>
+      M.locales = {
+        'Dettach'   : "{{ _('Dettach') }}"
+      };
+
+      $(document).ready(function(){
+        var ao = new M.AttachmensObject(
+                                    '#attachments_object',
+                                    '{{ attachments_object_type }}',
+                                    {{ attachments_object_id }});
+
+        var as = new M.AttachmensServer(
+                                    '#attachments_server',
+                                    '{{ attachments_object_type }}',
+                                    {{ attachments_object_id }});
+
+        var up = new M.AttachmensUploader(
+                                    '#attachments_upload',
+                                    '{{ attachments_object_type }}',
+                                    {{ attachments_object_id }});
+    });
+    </script>
