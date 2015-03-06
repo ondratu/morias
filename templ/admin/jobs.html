@@ -1,0 +1,41 @@
+{% set title = 'Admin - Jobs' -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('Jobs list') }}</li>
+      </ul>
+
+      <table class="table table-hover">
+        <tr><th>#</th>
+            <th>{{ _('Path') }}</th>
+            <th>{{ _('Singleton') }}</th>
+            <th>{{ _('User') }}</th>
+            <th>{{ _('Run Time') }}</th>
+            <th>{{ _('Action' )}}</th></tr>
+        {% for item in rows %}
+        <tr><td>{{ item.pid }}</td>
+            <td>{{ item.path|e }}</td>
+            <td>{{ _('Yes') if item.singleton or _('No') }}</td>
+            <td>{{ item.email|e or '' }}</td>
+            <td>{{ item.timestamp.strftime("%H:%M %d.%m.%Y") }}</td><!-- TODO -->
+            <td>
+              <a post="/admin/jobs/{{ item.pid }}/delete">{{ _('Delete') }}</a>
+            </td></tr>
+        {% endfor %}
+      </table>
+{% include "_pager.html" %}
+
+      <script>
+        $(document).ready(function() {
+          // send form after click to links with post attribut
+          $('a[post]').click(function() {
+            $('<form/>',{'method':'post','action':$(this).attr('post')}).submit();
+          });
+        });
+      </script>
+
+    </div>
+{% include "_footer.html" %}
+
