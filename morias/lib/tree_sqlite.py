@@ -145,7 +145,7 @@ def item_list(req, cls, pager, **kwargs):
         items.append( dict((k, row[k]) for k in row.keys()) )
     #endwhile
 
-    c.execute("SELECT count(*) FROM page_files")
+    c.execute("SELECT count(*) FROM %s %s" % cls.TABLE, cond)
     pager.total = c.fetchone()[0]
     tran.commit()
 

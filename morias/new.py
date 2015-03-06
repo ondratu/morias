@@ -104,7 +104,10 @@ def admin_news_mod(req, id):
 
     if req.method == 'POST':
         new.bind(req.form)
-        new.mod(req)
+        error = new.mod(req)
+        if error != new:
+            return generate_page(req, "admin/news_mod.html",
+                        new = new, error = error)
 
         if not new.get(req):
             raise SERVER_RETURN(state.HTTP_NOT_FOUND)

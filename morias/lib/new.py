@@ -21,7 +21,7 @@ class New():
     def get(self, req):
         m = driver(req)
         return m.get(self, req)
-        
+
     def add(self, req):
         if not self.title: return EMPTY_TITLE
         if not self.body: return EMPTY_BODY
