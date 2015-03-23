@@ -9,5 +9,4 @@ admin_menu.append(eshop_menu)
 
 @app.route('/admin/eshop')
 def admin_menu(req):
-    # default admin module is store
-    redirect(req, '/admin#eShop')
+    redirect(req, '/admin#eShop')   # redirect to eShop section on admin page

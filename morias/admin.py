@@ -26,12 +26,13 @@ def root(req):
     no_section = Menu('')
     no_section.items = list(item for item in admin_sections if isitem(item))
 
-    x_menu = Menu(admin_menu.label)
+    x_menu = Menu(admin_sections.label)
     x_menu.append(no_section)
-    x_menu.items += [item for item in admin_menu if ismenu(item)]
+    x_menu.items += [item for item in admin_sections if ismenu(item)]
 
     x_menu = correct_menu(req, x_menu)
 
-    #if len(menu) > 0:    # if there is only one admin page, redirect
-    #    redirect(req, menu[0].uri)
+    # if there is only one link, redirect to it
+    if len(x_menu) == 1 and len(x_menu[0]) == 1:
+        redirect(req, x_menu[0][0].uri)
     return generate_page(req, "admin/admin.html", admin_sections = x_menu)

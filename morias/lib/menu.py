@@ -31,6 +31,9 @@ class Menu(object):
     def __iter__(self):
         return iter(self.items)
 
+    def __getitem__(self, i):
+        return self.items[i]
+
     def __len__(self):
         return len(self.items)
 
