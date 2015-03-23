@@ -1,0 +1,87 @@
+{#- vim: tabstop=2 softtabstop=2 expandtab
+#}
+{% if site.this == '/admin/eshop/add' -%}
+    {% set title = 'Admin eShop - edit item' + item.name -%}
+{% else -%}
+    {% set title = 'Admin eShop - new item' -%}
+{% endif -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills nav-sm">
+    {% if site.this == '/admin/eshop/store/add' -%}
+        <li class="navbar-brand">{{ _('New item') }}</li>
+    {% else -%}
+        <li class="navbar-brand">{{ _('Edit item') }}</li>
+        <li class="pull-right"><a href="/admin/eshop/store/add">{{ _('New item') }}</a></li>
+    {% endif -%}
+        <li class="pull-right"><a href="/admin/eshop/store">{{ _('eShop store') }}</a></li>
+      </ul>
+
+      <form class="form-horizontal" role="form" method="post">
+        <div class="form-group">
+          <label for="input_name" class="col-sm-1 control-label">{{ _('Name') }}</label>
+          <div class="col-sm-11 {{ 'has-error' if error is defined and error == 1 else '' }}">
+            <input type="text" id="input_name" name="name" class="form-control" placeholder="{{ _('Name') }}" required="required" value="{{ (item.name or '')|e }}">
+            {% if error is defined and error == 1 %}<div class="help-inline" >{{ _('Empty Name') }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input_state" class="col-sm-1 control-label">{{ _('State')}}</label>
+          <div class="col-sm-2">
+            <select id="input_state" class="form-control" name="state">
+              <option value="0" {{ 'selected="selected"' if item.state == 0 else '' }}>{{ _('Disable') }}</option>
+              <option value="1" {{ 'selected="selected"' if item.state == 1 else '' }}>{{ _('Visible') }}</option>
+              <option value="2" {{ 'selected="selected"' if item.state == 2 else '' }}>{{ _('Hidden') }}</option>
+            </select>
+          </div>
+          <div class="col-sm-1">
+          {% if item.state == 1 -%}
+            <i style="font-size: 200%;" title="{{ _('Visible') }}" class="fa fa-eye"></i></div>
+          {% elif item.state == 2 -%}
+            <i style="font-size: 200%;" title="{{ _('Hidden') }}" class="fa fa-eye-slash"></i></div>
+          {% else -%}
+            <i style="font-size: 200%;" title="{{ _('Disabled') }}" class="fa fa-ban"></i></div>
+          {% endif -%}
+
+          <label class="col-sm-1 control-label">{{ _('Price')}}</label>
+          <div role="price" class="col-sm-1 help-inline">{{ item.price or 0.0 }}</div>
+          <label class="col-sm-1 control-label">{{ _('Count')}}</label>
+          <div role="count" class="col-sm-1 help-inline">{{ item.count or 0 }}</div>
+          <label class="col-sm-1 control-label">{{ _('Modify Date')}}</label>
+          <div class="col-sm-1 help-inline">{{ datetime(item.modify_date or now()).strftime("%H:%M %d.%m.%Y") }}</div>
+
+          <div class="col-sm-2 col-sm-off-set-2"><button class="btn btn-default btn-block" type="submit">{{ _('Save') }}</button></div>
+        </div>
+
+        <div class="form-group {#{ 'has-error' if error is defined and error == 2 else '' }#}">
+          <div class="col-sm-12">
+            {% include "_wysiwyg.html" %}
+            <textarea id="input_description" data-source="#editor" name="description" class="form-control" rows="10">{{ (item.description or '')|e }}</textarea>
+            {#% if error is defined and error == 2 %}<div class="help-inline" >{{ _('Empty description') }}</div>{% endif %#}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-2 col-sm-offset-10"><button class="btn btn-default btn-block" type="submit">{{ _('Save') }}</button></div>
+        </div>
+      </form>
+      {% if site.this != '/admin/eshop/store/add' -%}
+      <div class="row">
+        <div class="col-sm-6">
+        {% set item_id = item.id %}
+        {% set item_price = 'div[role=price]' %}
+        {% set item_count = 'div[role=count]' %}
+        {% include "admin/eshop/_store_actions.html" %}
+        </div>
+        <div class="col-sm-6">
+        {% set attachments_object_type = 'store' %}
+        {% set attachments_object_id = item.id %}
+        {% include "admin/_attachments_upload.html" %}
+        </div>
+      <div>
+      {% endif -%}
+    </div>
+{% include "_footer.html" %}

@@ -1,0 +1,66 @@
+{% set title = 'Admin eShop - store' -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('eShop store') }}</li>
+        <li {{ 'class="active"' if not show else ''}}><a href="/admin/eshop/store">{{ _('All') }}</a></li>
+        <li {{ 'class="active"' if show == 'visible' else ''}}><a href="/admin/eshop/store?show=visible">{{ _('Visible only') }}</a></li>
+        <li {{ 'class="active"' if show == 'hidden' else ''}}><a href="/admin/eshop/store?show=hidden">{{ _('Hidden only') }}</a></li>
+        <li {{ 'class="active"' if show == 'disabled' else ''}}><a href="/admin/eshop/store?show=disabled">{{ _('Disabled only') }}</a></li>
+
+        <li class="pull-right"><a href="/admin/eshop/store/add">{{ _('New item') }}</a></li>
+      </ul>
+
+      <table class="table table-hover">
+        <tr><th>#</th>
+            <th>{{ _('Name') }}</th>
+            <th>{{ _('Price') }}</th>
+            <th>{{ _('Count') }}</th>
+            <th>{{ _('Modify Date') }}</th>
+            <th>{{ _('State') }}</th>
+            <th>{{ _('Action' )}}</th></tr>
+        {% for item in items %}
+        <tr {{ 'class="disabled"' if item.state == 0 else '' }}><td>{{ item.id }}</td>
+            <td  >
+                <a href="/eshop/id/{{item.id}}">{{ item.name }}</a>
+            </td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.count }}</td>
+            <td>{{ datetime(item.modify_date).strftime("%H:%M %d.%m.%Y") }}</td>
+            <td>
+            {% if item.state == 1 -%}
+              <i style="font-size: 100%;" title="{{ _('Visible') }}" class="fa fa-eye"></i>
+            {% elif item.state == 2 -%}
+              <i style="font-size: 100%;" title="{{ _('Hidden') }}" class="fa fa-eye-slash"></i>
+            {% endif -%}
+            </td>
+            <td>
+              <a href="/admin/eshop/store/{{ item.id }}">{{ _('Edit') }}</a>
+             {%- if item.state in (1, 2) %}
+              / <a post="/admin/eshop/store/{{ item.id }}/disable">{{ _('Disable') }}</a>
+             {% endif -%}
+             {%- if item.state in (0, 1) %}
+              / <a post="/admin/eshop/store/{{ item.id }}/hidden">{{ _('Hidden') }}</a>
+             {% endif -%}
+             {%- if item.state in (0, 2) %}
+              / <a post="/admin/eshop/store/{{ item.id }}/visible">{{ _('Visible') }}</a>
+             {% endif -%}
+            </td></tr>
+        {% endfor %}
+      </table>
+{% include "_pager.html" %}
+
+      <script>
+        $(document).ready(function() {
+          // send form after click to links with post attribut
+          $('a[post]').click(function() {
+            $('<form/>',{'method':'post','action':$(this).attr('post')})
+                    .appendTo('body').submit();
+          });
+        });
+      </script>
+
+    </div>
+{% include "_footer.html" %}

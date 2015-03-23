@@ -1,0 +1,52 @@
+       <ul class="nav nav-pills nav-sm">
+        <li><a role="switch" show="all">{{ _('All') }}</a></li>
+        <li><a role="switch" show="inc">{{ _('Stored') }}{# Naskladněno #}</a></li>
+        <li><a role="switch" show="dec">{{ _('Sold') }}{# Prodáno #}</a></li>
+        <li><a role="switch" show="pri">{{ _('Pricings') }}{# Nacenění #}</a></li>
+
+        <li class="pull-right"><a role="fast" show="pri">{{ _('Set price') }}{# Nacenit #}</a></li>
+        <li class="pull-right"><a role="fast" show="inc">{{ _('Store up') }}{# Naskladnit #}</a></li>
+      </ul>
+
+       <table view="actions" class="table table-hover">
+        <tr role="header"><th class="col-sm-3">{{ _('Timestamp') }}</th>
+          <th class="col-sm-1">T</th>
+          <th class="col-sm-3">{{ _('Value') }}</th>
+          <th>{{ _('Note') }}</th>
+        <tr role="count" style="display: none;"><td></td>
+          <td></td>
+          <td class="col-sm-3"><input class="form-control input-sm" type="number" name="value" value="" placeholder="0"></td>
+          <td class="col-lg-5">
+              <div class="input-group">
+                <input class="form-control input-sm" type="text" name="note" value="" placeholder="{{ _('Note') }}">
+                <span class="input-group-btn"><a class="btn btn-default btn-sm" add="add">{{ _('Add') }}</a></span>
+              </div>
+          </td>
+        </tr>
+        <tr role="price" style="display: none;"><td></td>
+          <td></td>
+          <td class="col-sm-3"><input class="form-control input-sm" type="number" name="value" value="{{ item.price }}" placeholder="0"></td>
+          <td class="col-lg-5">
+              <div class="input-group">
+                <input class="form-control input-sm" type="text" name="note" value="" placeholder="{{ _('Note') }}">
+                <span class="input-group-btn"><a class="btn btn-default btn-sm" set="set">{{ _('Set') }}</a></span>
+              </div>
+          </td>
+        </tr>
+      </table>
+
+      {% include "_pager.html" %}
+      <script src="/js/stringformat.1.02/stringformat.js"></script>
+      <script src="/js/i18n.js"></script>
+      <script src="/js/eshop/store.js"></script>
+      <script>
+        $.extend(M.locales, {
+              'Stored'  :   "{{ _('Stored') }}",
+              'Pricing' :   "{{ _('Pricing') }}",
+              not_possible: "{{ _('This operation is not possible.') }}"
+        });
+
+        $(document).ready(function() {
+            var actions = new M.Eshop.Actions({{ item_id }}, '{{ item_price }}', '{{ item_count }}');
+        });
+      </script>
