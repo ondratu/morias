@@ -136,10 +136,9 @@ def item_list(req, pager, **kwargs):
         page.modify = datetime.fromtimestamp(   # timestamp of last modify
                         getmtime(req.cfg.pages_source + '/' + page.name))
         items.append(page)
-        row = c.fetchone()
     #endwhile
 
-    c.execute("SELECT count(*) FROM page_files")
+    c.execute("SELECT count(*) FROM page_files %s" % cond, kwargs.values())
     pager.total = c.fetchone()[0]
     tran.commit()
 

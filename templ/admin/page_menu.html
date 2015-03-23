@@ -56,7 +56,7 @@
       <script src="/js/i18n.js"></script>
       <script src="/js/page_menu.js"></script>
       <script>
-          M.locales = {
+          $.extend(M.locales, {
               'Insert'  :   "{{ _('Insert') }}",
               'Edit'    :   "{{ _('Edit') }}",
               'Delete'  :   "{{ _('Delete') }}",
@@ -64,7 +64,7 @@
               empty_title:  "{{ _('Empty title') }}",
               title_exist:  "{{ _('Title exist yet') }}",
               not_possible: "{{ _('This operation is not possible.') }}"
-          };
+          });
       </script>
 
     </div>

@@ -23,7 +23,7 @@ class Pager(object):
         self.offset = form.getfirst("offset", self.offset, int)
         self.limit = form.getfirst("limit", self.limit, int)
         self.order = form.getfirst("order", self.order, str)
-        
+
         sort = form.getfirst("sort", self.sort, str)
         self.sort = sort if sort in ('asc', 'desc') else self.sort
 

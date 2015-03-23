@@ -85,6 +85,10 @@
           <div class="col-sm-12">
             <button class="col-sm-2 btn btn-default pull-right" type="submit">{{ _('Save') }}</button></div></div>
       </form>
+  {% set attachments_object_type = 'page' %}
+  {% set attachments_object_id = page.id %}
+  {% include "admin/_attachments_upload.html" %}
+
     </div>
   {% if site.this != '/admin/pages/add' -%}
     <script>

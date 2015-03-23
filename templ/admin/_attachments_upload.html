@@ -18,9 +18,9 @@
     <script src="/js/i18n.js"></script>
     <script src="/js/attachments.js"></script>
     <script>
-      M.locales = {
+      $.extend(M.locales, {
         'Dettach'   : "{{ _('Dettach') }}"
-      };
+      });
 
       $(document).ready(function(){
         var ao = new M.AttachmensObject(

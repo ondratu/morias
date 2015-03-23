@@ -4,7 +4,7 @@
 
     <div class="container">
     {%- for submenu in admin_sections if length(submenu) > 0 -%}
-      <h2>{{ submenu.label }}</h2>
+      <h2><a name="{{ submenu.label }}"></a>{{ submenu.label }}</h2>
         <div class="row">
       {%- for item in submenu -%}
         <div class="col-md-4"><div class="well">

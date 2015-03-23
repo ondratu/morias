@@ -39,7 +39,6 @@ M.AttachmensUploader.prototype.constructor = function (){
 
 }
 
-var dbg = null;
 M.AttachmensUploader.prototype._select = function() {
     var _new_files = this.input.prop('files');
     for (var i = 0; i < _new_files.length; i++){
@@ -63,8 +62,8 @@ M.AttachmensUploader.prototype._select = function() {
         //upload.on('click', this._start_upload.bind(this));
 
         var row = $('<div>', {'class': 'row'})
-            .append($('<div>', {'class': 'col-md-6'}).html(it.name))
-            .append($('<div>', {'class': 'col-md-1'}).html(preview))
+            .append($('<div>', {'class': 'col-md-5'}).html(it.name))
+            .append($('<div>', {'class': 'col-md-2'}).html(preview))
             .append($('<div>', {'class': 'col-md-3'})
                 //.append(remove).append(' / ').append(upload) );
                 .append(remove) );
@@ -230,8 +229,8 @@ M.AttachmensObject.prototype._view = function(data){
                                 'object-id': this.object_id}).html(M._('Dettach'));
         remove.on('click', this._remove.bind(this));
         var row = $('<div>',{'class': 'row', md5: it.data.md5})
-                        .append($('<div>', {'class': 'col-md-6 text', webname: it.webname}).html(it.file_name))
-                        .append($('<div>', {'class': 'col-md-1 preview'}).html(preview))
+                        .append($('<div>', {'class': 'col-md-5 text', webname: it.webname}).html(it.file_name))
+                        .append($('<div>', {'class': 'col-md-2 preview'}).html(preview))
                         .append($('<div>', {'class': 'col-md-3 text'}).html(it.mime_type))
                         .append($('<div>', {'class': 'col-md-2 text'}).append(remove) );
         row.appendTo(this.$view);
@@ -289,8 +288,8 @@ M.AttachmensServer.prototype._view = function(data){
         }
         var actions = '';
         var row = $('<div>',{'class': 'row', md5: it.data.md5})
-                        .append($('<div>', {'class': 'col-md-6 text', webname: it.webname}).html(it.file_name))
-                        .append($('<div>', {'class': 'col-md-1 preview'}).html(preview))
+                        .append($('<div>', {'class': 'col-md-5 text', webname: it.webname}).html(it.file_name))
+                        .append($('<div>', {'class': 'col-md-2 preview'}).html(preview))
                         .append($('<div>', {'class': 'col-md-3 text'}).html(it.mime_type))
                         .append($('<div>', {'class': 'col-md-2 text'}).html(actions));
         row.appendTo(this.$view);
