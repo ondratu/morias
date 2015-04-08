@@ -1,0 +1,17 @@
+{% set title = _('User') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+    {%- for submenu in user_sections if length(submenu) > 0 -%}
+      <h2><a name="{{ submenu.label }}"></a>{{ submenu.label }}</h2>
+        <div class="row">
+      {%- for item in submenu -%}
+        <div class="col-md-4"><div class="well">
+          <a href="{{ item.uri }}"><h2>{{ item.label }}</h2></a>
+        </div></div>
+      {%- endfor %}
+        </div><!-- /row -->
+    {%- endfor %}
+    </div>
+{% include "_footer.html" %}

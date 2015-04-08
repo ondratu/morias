@@ -8,6 +8,9 @@ from lib.menu import *
 user_sections = Menu('User')  # menu for any users: Profile / Logout / Login / Register
 user_menu = user_sections     # back compatibility
 
+user_info_menu = Menu('Info')
+user_sections.append(user_info_menu)
+
 
 @app.pre_process()
 def append_menu(req):

@@ -1,0 +1,132 @@
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+{% if site.this == '/user/addresses' %}
+    {% set addresses = login.data.get('addresses', []) %}
+{% else %}
+    {% set addresses = item.data.get('addresses', []) %}
+{% endif -%}
+
+    <div class="container">
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('Addresses') }} {{ '('+item.email+')' if site.this != '/user/addresses' else '' }}</li>
+
+        <li class="pull-right"><a role="add">{{ _('New address') }}</a></li>
+        <li class="pull-right"><a role="list">{{ _('Address list') }}</a></li>
+      {% if site.this != '/user/addresses' %}
+        <li class="pull-right"><a href="/admin/logins/{{ item.id }}">{{ _('Edit login') }}</a></li>
+        <li class="pull-right"><a href="/admin/logins">{{ _('Login list') }}</a></li>
+      {% endif %}
+      </ul>
+
+      {% include "_popup.html" -%}
+
+      <div id="address_form" class="form-horizontal" role="form">
+        <div class="form-group">
+          <label for="input_type" class="col-sm-offset-2 col-sm-2 control-label">{{ _('Address Type') }}</label>
+          <div class="col-sm-2">
+            <select id="input_type" class="form-control" name="type">
+              <option value="" selected="selected"></option>
+              <option value="home">{{ _('Home') }}</option>
+              <option value="work">{{ _('Work') }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input_name" class="col-sm-offset-2 col-sm-2 control-label">{{ _('Name') }}</label>
+          <div class="col-sm-6">
+            <input type="text" id="input_name" name="name" class="form-control" placeholder="Fox Mulder">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input_address1" class="col-sm-offset-2 col-sm-2 control-label">{{ _('Address line') }}</label>
+          <div class="col-sm-6">
+            <input type="text" id="input_address1" name="address1" class="form-control" placeholder="FBI">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input_address2" class="col-sm-offset-2 col-sm-2 control-label">{{ _('Address line') }}</label>
+          <div class="col-sm-6">
+            <input type="text" id="input_address2" name="address2" class="form-control" placeholder="{{ _('935 Pennsylvania Avenue') }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input_city" class="col-sm-offset-2 col-sm-2 control-label">{{ _('City') }}</label>
+          <div class="col-sm-6">
+            <input type="text" id="input_city" name="city" class="form-control" placeholder="{{ _('Washington') }}">
+          </div>
+        </div>
+
+        <div class="form-group {{ 'hide' if not cfg_region else ''}}">
+          <label for="input_region" class="col-sm-offset-2 col-sm-2 control-label">{{ _('Region') }}</label>
+          <div class="col-sm-6">
+            <input type="text" id="input_region" name="region" class="form-control" placeholder="{{ _('D.C.') }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input_zip" class="col-sm-offset-2 col-sm-2 control-label">{{ _('Zip code') }}</label>
+          <div class="col-sm-2">
+            <input type="text" id="input_zip" name="zip" class="form-control" placeholder="{{ _('20535') }}">
+          </div>
+        </div>
+
+        <div class="form-group {{ 'hide' if not cfg_country else ''}}">
+          <label for="input_coutry" class="col-sm-offset-2 col-sm-2 control-label">{{ _('Country') }}</label>
+          <div class="col-sm-6">
+            <input type="text" id="input_country" name="country" class="form-control" placeholder="{{ _('United States') }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-8 col-sm-2">
+            <button role="cancel" class="btn btn-default btn-block">{{ _('Cancel') }}</button>
+          </div>
+          <div class="col-sm-2">
+            <button role="save" class="btn btn-default btn-block">{{ _('Save') }}</button>
+          </div>
+        </div>
+      </div>{# /form #}
+
+      <div id="list">
+      </div>{# /list #}
+
+    </div>{# /container #}
+
+    <script src="/js/i18n.js"></script>
+    <script src="/js/addresses.js"></script>
+    <script>
+        $.extend(M.locales, {
+          'Edit'        : "{{  _('Edit') }}",
+          'Delete'      : "{{  _('Delete') }}",
+          'Address'     : "{{  _('Address') }}",
+          'Work address': "{{  _('Work address') }}",
+          'Home address': "{{  _('Home address') }}",
+          mla_sure_delete:  "{{ _('Are you sure to delete %s ?') }}",
+        });
+
+        var addresses = [
+          {%- for it in addresses %}
+            { 'type': '{{ it.get('type', '')|e }}',
+              'name': '{{ it.get('name', '')|e }}',
+              'address1': '{{ it.get('address1', '')|e }}',
+              'address2': '{{ it.get('address2', '')}}',
+              'city': '{{ it.get('city', '')}}',
+              'region': '{{ it.get('region', '')}}',
+              'zip': '{{ it.get('zip', '')}}',
+              'country': '{{ it.get('country', '')}}' }{{ ',' if not loop.last else '' }}
+          {% endfor %}
+        ];
+
+        $(document).ready(function() {
+            var addrs = new M.Addresses(addresses, {
+                             'form': '#address_form',
+                             'list': '#list'});
+        });
+    </script>
+
+{% include "_footer.html" %}

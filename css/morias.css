@@ -167,6 +167,28 @@ table tr td[level="8"] { padding-left: 90px; }
     height: 38px;
 }
 
+#list > div {
+    height: 15em;
+}
+
+#list [itemprop=adr] {
+    height: 14em;
+    background-color: #F5F5F5;
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+}
+
+[itemprop=adr] > h3,
+[itemprop=adr] > [itemprop=street-address],
+[itemprop=adr] > [itemprop=locality],
+[itemprop=adr] > [itemprop=region],
+[itemprop=adr] > [itemprop=postal-code],
+[itemprop=adr] > [itemprop=country-name] {
+    padding-left: 15px;
+    clear: both;
+}
+
+
 html, body {
   height: 100%;
 }

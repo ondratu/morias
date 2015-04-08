@@ -1,5 +1,5 @@
 
-import json, re
+import re
 
 from falias.util import uni, nint
 
@@ -54,7 +54,7 @@ class Login(object):
 
     def mod(self, req):
         keys = ['email', 'rights', 'data']
-        vals = [self.email, json.dumps(self.rights), json.dumps(self.data)]
+        vals = [self.email, self.rights, self.data]
         # FIXME!!!
         if self.plain or self.passwd != self.again:     # if passwd was set
             if not self.check_email(): return BAD_EMAIL
@@ -73,7 +73,7 @@ class Login(object):
 
     def pref(self, req):
         keys = ['email', 'data']
-        vals = [self.email, json.dumps(self.data)]
+        vals = [self.email, self.data]
 
         if self.plain or self.passwd != self.again:     # if passwd was set
             if not self.check_email(): return BAD_EMAIL
@@ -102,7 +102,7 @@ class Login(object):
         self.again = sha1_sdigest(form.getfirst('again', '', uni), salt)
         self.rights = form.getlist('rights', uni)
         # json data
-        self.data = ''  # TODO: json dump of dictionary
+        self.data = {} # empty dictionary for now
 
     #enddef
 

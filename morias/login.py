@@ -19,13 +19,14 @@ _check_conf = (
     ('morias', 'register', bool, False),            # if users can register
 )
 
-R_ADMIN = 'users_admin'     # right admin - do anythig with users
+module_right = 'users_admin'    # right admin - do anythig with users
+R_ADMIN = module_right          # back compatibility
 
 rights.update((R_ADMIN,))
 
 system_menu.append(Item('/admin/logins', label="Logins", rights = [R_ADMIN]))
 user_menu.append(Item('/admin', label="Admin", rights = ['admin']))
-user_menu.append(Item('/user/profile', label="Profile", rights = ['user']))
+user_info_menu.append(Item('/user/login', label="Login", rights = ['user']))
 
 @app.route("/test/logins/db")
 def test_db(req):
@@ -158,7 +159,7 @@ def admin_logins_enable(req, id):
     redirect(req, '/admin/logins')
 #enddef
 
-@app.route('/user/profile', state.METHOD_GET_POST)
+@app.route('/user/login', state.METHOD_GET_POST)
 def user_logins_pref(req):
     check_login(req)
 

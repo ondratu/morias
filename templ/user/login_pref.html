@@ -10,7 +10,7 @@
     {% if site.this == '/user/register' -%}
       <h2 class="form-signin-heading">{{ _('Register login') }}
     {% else -%}
-      <h2 class="form-signin-heading">{{ _('Login profile') }}
+      <h2 class="form-signin-heading">{{ _('Login') }}
     {% endif -%}
       </h2>
 
@@ -47,7 +47,7 @@
           <div class="col-sm-4 help-inline" >{% include "admin/_login_error.html" %}</div>
         {% endif %}
         </div>
-        
+
         <div class="form-group">
           <div class="col-sm-offset-3 col-sm-4">
             <button class="btn btn-default" type="submit">{{ _('Save') if site.this == '/user/profile' else _('Register') }}</button></div>

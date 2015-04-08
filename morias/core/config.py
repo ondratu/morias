@@ -22,10 +22,6 @@ class Config:
             p = Options(options)
         #endif
 
-        #dbg.logFile(cfg.get('main','debuglog'))
-        #dbg.logMask(cfg.get('main','debugmask', 'I1E1F3'))
-        #dbg.logBufSize(cfg.getint('main','debugsize', 1024))
-
         #rpcAddress      = cfg.get('rpc', 'address', 'localhost')
         #rpcPort       = cfg.getint('rpc', 'port', 3030)
 

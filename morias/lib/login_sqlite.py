@@ -41,13 +41,30 @@ def add(self, req):
 #enddef
 
 def _mod(self, req, keys, vals):
-    keys = list( '%s = %%s' % k for k in keys )
-    vals.append(self.id)
-
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
 
     try:        # email must be uniq
+        if 'rights' in keys:        # transfer rights to string (driver depend)
+            i = keys.index('rights')
+            vals[i] = json.dumps(vals[i])
+
+        if 'data' in keys:          # data will be merged
+            i = keys.index('data')
+            c.execute("SELECT data FROM logins WHERE login_id = %s", self.id)
+            data = json.loads(c.fetchone()[0])
+
+            data.update(vals[i])            # append / replace keys from vals
+            for k, v in data.items():    # clean empty keys
+                if isinstance(v, dict) and len(v) == 0:
+                    data.pop(k)
+            #endfor
+
+            vals[i] = json.dumps(data)
+        #endif
+
+        keys = list( '%s = %%s' % k for k in keys )
+        vals.append(self.id)
         c.execute("UPDATE logins SET %s WHERE login_id = %%s " % \
                         ', '.join(keys), vals)
     except IntegrityError as e:
@@ -93,20 +110,17 @@ def find(self, req):
 def item_list(req, pager):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT login_id, email, rights, data, enabled "
+    c.execute("SELECT login_id, email, rights, enabled "
                 "FROM logins ORDER BY email LIMIT %s, %s",
                 (pager.offset, pager.limit))
     items = []
-    row = c.fetchone()
-    while row is not None:
+    for row in iter(c.fetchone, None):
         login = Login(row[0])
         login.email = row[1]
         login.rights = json.loads(row[2])
-        login.data = json.loads(row[3])
-        login.enabled = row[4]
+        login.enabled = row[3]
         items.append(login)
-        row = c.fetchone()
-    #endwhile
+    #endfor
 
     c.execute("SELECT count(*) FROM logins")
     pager.total = c.fetchone()[0]

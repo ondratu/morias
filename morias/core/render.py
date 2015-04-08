@@ -142,6 +142,8 @@ def morias_template(req, template, **kwargs):
     kwargs['site'].styles        = req.cfg.site_styles
     kwargs['site'].this          = req.uri
 
+    kwargs['modules'] = req.cfg.modules
+
     kwargs['e'] = sdict()
 
     translations = translation('morias',

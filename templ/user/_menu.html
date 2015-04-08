@@ -14,7 +14,9 @@
 
       <div class="collapse navbar-collapse">
         <ul class="pull-right nav navbar-nav">
-        {% for item in menu -%}              {# TODO: tooltip (title) #}
+        <li {{ 'class="active"' if site.this == '/user' else '' }}>
+                <a href="/user">{{ login.email }}</a></li>
+        {% for item in menu if item.uri -%}              {# TODO: tooltip (title) #}
           <li {{ 'class="active"' if site.this == item.uri else '' }}>
                 <a href="{{ item.uri }}">{{ item.label }}</a></li>
         {%- endfor -%}
