@@ -212,6 +212,21 @@ table tr td[level="8"] { padding-left: 90px; }
     clear: both;
 }
 
+.spinner {
+    position:fixed;
+    left: 48%;
+    top: 45%;
+    font-size: 500%;
+    display: none;
+}
+
+.popup-alert {
+    position: fixed;
+    top: 40%;
+    left: 25%;
+    width: 50%;
+}
+
 html, body {
   height: 100%;
 }
