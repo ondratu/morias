@@ -1,5 +1,6 @@
 from poorwsgi import *
 from falias.parser import Parser, Options
+from falias.util import Paths
 from time import strftime
 
 from login import do_check_login
@@ -7,6 +8,17 @@ from login import do_check_login
 import os
 
 config = None
+
+def option(*args):
+    _len = len(args)
+    if _len < 3:
+        raise RuntimeError('Not enough option definition: %s' % args)
+    sec, opt, cls = args[:3]
+    dfl = args[3] if _len > 3 else None     # default value
+    mod = args[4] if _len > 4 else False    # colud be set via option module
+    com = args[5] if _len > 5 else ''       # documentation for option module
+    return sec, opt, cls, dfl, mod, com
+
 
 class Config:
     def __init__(self, options, req):
@@ -22,13 +34,10 @@ class Config:
             p = Options(options)
         #endif
 
-        #rpcAddress      = cfg.get('rpc', 'address', 'localhost')
-        #rpcPort       = cfg.getint('rpc', 'port', 3030)
-
         self.debug      = p.get('morias', 'debug', False, cls = bool)
 
-        self.templates  = p.get('morias', 'templates', cls = tuple,
-                                                            delimiter = ':')
+        self.templates  = p.get('morias', 'templates', cls = Paths)
+        self.footers    = []    # modules could append path for it's footer
         self.modules    = p.get('morias', 'modules', cls = tuple)
         self.langs      = p.get('morias', 'langs', 'en,cs', cls = list)
         self.locales    = p.get('morias', 'locales', 'locales/')
@@ -38,33 +47,38 @@ class Config:
         self.site_keywords      = p.get('site','keywords', '', cls = tuple)
         self.site_author        = p.get('site','author', '')
         self.site_copyright     = p.get('site','copyright',
-                                        strftime ("%%Y %s" % self.site_author.encode('utf-8')))
+                            strftime ("%%Y %s" % self.site_author.encode('utf-8')))
         self.site_styles        = p.get('site','styles', '', cls = tuple)
+
+        self.options    = {
+            'morias': {
+                #'debug'     : {'morias.core': (False, bool, self.debug )},
+                #'templates' : {'morias.core': (None, Paths, self.templates )},
+                #'modules'   : {'morias.core': (None, tuple, self.modules )},
+                'langs'     : {'morias.core': ('en,cs', list, self.langs, True )},
+                #'locales'   : {'morias.core': ('locales/', unicode, self.locales, True )},
+            },
+            'site'  : {
+                'name'      : {'morias.core': ('Morias', unicode, self.site_name )},
+                'description' : {'morias.core': ('cms', unicode, self.site_description )},
+                'keywords'  : {'morias.core': ('', tuple, self.site_keywords )},
+                'author'    : {'morias.core': ('', unicode, self.site_author )},
+                'copyright' : {'morias.core': ('', unicode, self.site_copyright )},
+                #'styles'    : {'morias.core': ('', tuple, self.site_styles )},
+            }
+        }
 
         for module in self.modules:
             req.log_error('Loading module %s' % module, state.LOG_INFO)
             self.load_module(p, req, module)
 
         """
-        self.tmpPath    = cfg.get('main','tmp', '/tmp')
-        self.origPath   = cfg.get('main','orig')
-        self.pubPath    = cfg.get('main','pub')
-        self.maintanancePath = cfg.get('maintanance','path')
-
         # memcache
         mc_servers = cfg.get('memcache', 'servers')
         mc_servers = map(lambda x: x.strip(), mc_servers.split(','))
         self.mc = Client(mc_servers, debug = cfg.getint('memcache', 'debug', 0))
         self.mcPrefix = cfg.get('memcache', 'prefix', '')
         self.mcExpiry = cfg.getint('memcache', 'expiry', 360) # 60 min
-
-        # photo
-        self.photosizes = cfg.get('photo','sizes')
-        self.thumbsize = cfg.get('photo','thumbsize')
-        self.previewwidth   = cfg.getint('photo','previewwidth')
-        self.defaultsize = cfg.getint('photo','defaultsize')
-        self.photoText = cfg.get('photo','text')
-        self.histogramHeight = cfg.getint('photo','histheight')
         """
     #endef
 
@@ -77,13 +91,22 @@ class Config:
 
         # check and set config values need for module
         else:
-            for (sec, key, cls, dfl) in m._check_conf:
-                var = "%s_%s" % (sec, key)
+            for it in m._check_conf:
+                sec, opt, cls, dfl, mod, com = option(*it)
+                var = "%s_%s" % (sec, opt)
                 if var in self.__dict__ and not isinstance(self.__dict__[var], cls):
                     raise TypeError("Option `%s` is not class instance `%s`",
                                     var, str(cls))
                 if not var in self.__dict__:
-                    self.__dict__[var] = p.get(sec, key, dfl, cls)
+                    self.__dict__[var] = p.get(sec, opt, dfl, cls)
+
+                if not mod:     # option could not be set via option module
+                    continue
+                if not sec in self.options:
+                    self.options[sec] = {}
+                if not opt in self.options[sec]:
+                    self.options[sec][opt] = {}
+                self.options[sec][opt][module] = (dfl, cls, self.__dict__[var], com)
         #endif
 
         if '_call_conf' in m.__dict__:

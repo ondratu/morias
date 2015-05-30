@@ -1,6 +1,6 @@
 from poorwsgi import *
 from falias.smtp import Smtp, Email
-from falias.util import Object, uni
+from falias.util import Object, uni, Paths
 from random import seed, randint
 
 import re
@@ -14,12 +14,12 @@ from user import *
 seed()
 
 _check_conf = (
-    ('morias', 'smtp', Smtp, None),
+    ('morias', 'smtp', Smtp),
 
     ('form', 'web_templates', unicode, 'forms'),    # path to web templates relative to templates
     ('form', 'mail_templates', unicode, 'mail'),    # path to mail templates relative to templates
-    ('form', 'recipient', Email, None),             # default form recipient
-    ('form', 'paths', tuple, None),                 # list of paths
+    ('form', 'recipient', Email),                   # default form recipient
+    ('form', 'paths', Paths),                       # list of paths
 )
 
 def _call_conf(cfg, parser):

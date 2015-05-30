@@ -14,7 +14,7 @@ from lib.page_menu import MenuItem
 from admin import *
 
 _check_conf = (
-    ('morias', 'db', Sql, None),                    # database configuration
+    ('morias', 'db', Sql),                      # database configuration
 )
 
 def _call_conf(cfg, parser):

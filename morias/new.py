@@ -17,7 +17,7 @@ from admin import *
 
 _check_conf = (
     # morias common block
-    ('morias', 'db', Sql, None),
+    ('morias', 'db', Sql),
 )
 
 module_rights = ('news_editor', 'news_author')

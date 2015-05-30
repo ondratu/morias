@@ -1,0 +1,91 @@
+{% set title = _('Admin - Options') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('Options') }}</li>
+        <li class="navbar-text">{{ _('Sections:') }}</li>
+        <li><div class="form-group"><select class="form-control" name="section">
+              <option value="all" {{ 'selected="selected"' if section == 'all' }}>{{ _('All') }}</option>
+            {%- for it in sections|sort %}
+              <option value="{{ it }}" {{ 'selected="selected"' if it == section }}>{{ it }}</option>
+            {%- endfor %}
+            </select></div>
+        </li>
+        <li class="navbar-text">{{ _('Modules:') }}</li>
+        <li><div class="form-group"><select class="form-control" name="module">
+              <option value="all" {{ 'selected="selected"' if module == 'all' }}>{{ _('All') }}</option>
+            {%- for it in modules|sort %}
+              <option value="{{ it }}" {{ 'selected="selected"' if it == module }}>{{ it }}</option>
+            {%- endfor %}
+            </select></div>
+        </li>
+      </ul>
+
+      <table class="table table-hover">
+        <tr><th>{{ _('Section') }}</th>
+            <th>{{ _('Option') }}</th>
+            <th>{{ _('Value') }}</th>
+            <th>{{ _('Modules') }}</th>
+            <th>{{ _('Action') }}</th></tr>
+      {% for item in options %}
+        <tr>
+          <td>{{ item.section }}</td>
+          <td>{{ item.option }}</td>
+          <td><div role="value" class="input-group">{{ item.value }}</div></td>
+          <td>{% for module in item.modules|sort %}{{ module }}<br>{% endfor %}</td>
+          <td>{%- if not (item.section == 'morias' and item.option == 'debug') %}
+            <a edit="/admin/system/options/{{ item.section }}/{{ item.option }}">{{ _('Edit') }}</a>
+            {%- endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+{% include "_pager.html" %}
+{% include "_popup.html" -%}
+      <script src="/js/i18n.js"></script>
+      <script src="/js/options.js"></script>
+      <script>
+        $(document).ready(function() {
+            $.extend(M.locales, {
+                'Edit'        : "{{ _('Edit') }}",
+            });
+
+            location_params = function() {
+               var pairs = window.location.search.substr('1').split('&');
+                if (pairs[0] === "")
+                    return {};
+                var rv = {};
+                for (var i = 0; i < pairs.length; i++) {
+                    var _tmp = pairs[i].split('=');
+                    rv[_tmp[0]] = _tmp[1];
+                }
+                return rv;
+            }
+
+            $('select[name=section]').on('change', function(ev) {
+                var select = ev.target;
+                var search = location_params();
+
+                search['section'] = select[select.selectedIndex].value;
+                if (search.section == "all")
+                    delete search.section;
+                window.location.search = $.param(search);
+            });
+
+            $('select[name=module]').on('change', function(ev) {
+                var select = ev.target;
+                var search = location_params();
+
+                search['module'] = select[select.selectedIndex].value;
+                if (search.module == "all")
+                    delete search.module;
+                window.location.search = $.param(search);
+            });
+
+            var options = new M.Options();
+        });
+      </script>
+</div>
+{% include "_footer.html" %}

@@ -17,8 +17,8 @@ from login import module_right
 from admin import system_menu
 
 _check_conf = (
-    ('login_addresses', 'region', bool, False),
-    ('login_addresses', 'country', bool, False),
+    ('login_addresses', 'region', bool, False, True),
+    ('login_addresses', 'country', bool, False, True),
 )
 
 user_info_menu.append(Item('/user/addresses', label="Addresses", symbol="address",

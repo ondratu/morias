@@ -15,7 +15,7 @@ from lib.jobs import Job, clean_zombie
 from admin import *
 
 _check_conf = (
-    ('morias', 'db', Sql, None),                    # database configuration
+    ('morias', 'db', Sql),                      # database configuration
 )
 
 system_menu.append(Item('/admin/jobs', label="Background Jobs",

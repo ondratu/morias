@@ -14,9 +14,9 @@ from user import *
 from core.errors import *
 
 _check_conf = (
-    ('morias', 'salt', unicode, None),              # salt for passwords
-    ('morias', 'db', Sql, None),                    # database configuration
-    ('morias', 'register', bool, False),            # if users can register
+    ('morias', 'salt', unicode),                    # salt for passwords
+    ('morias', 'db', Sql),                          # database configuration
+    ('morias', 'register', bool, False, True),      # if users can register
 )
 
 module_right = 'users_admin'    # right admin - do anythig with users

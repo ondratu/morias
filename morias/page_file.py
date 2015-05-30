@@ -20,11 +20,11 @@ from admin import *
 
 _check_conf = (
     # morias common block
-    ('morias', 'db', Sql, None),
+    ('morias', 'db', Sql),
 
     # pages block
-    ('pages', 'source', str, None),
-    ('pages', 'out', str, None),
+    ('pages', 'source', str),
+    ('pages', 'out', str),
     ('pages', 'history', str, ''),
     ('pages', 'rights', tuple, '')
 )

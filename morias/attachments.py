@@ -24,10 +24,10 @@ from admin import *
 import login, jobs
 
 _check_conf = (
-    ('morias', 'db', Sql, None),                    # database configuration
-    ('attachments', 'path', str, None),
+    ('morias', 'db', Sql),                              # database configuration
+    ('attachments', 'path', str),
     ('attachments', 'thumb_path', str, ''),
-    ('attachments', 'thumb_size', Size, '320x200')
+    ('attachments', 'thumb_size', Size, '320x200', True)
 )
 
 R_ADMIN = 'attachments_modify'
