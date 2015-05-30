@@ -19,7 +19,7 @@ rights.update(('super', 'admin', 'user', 'guest'))
 
 def do_login(req, obj, ip = False):
     cookie = PoorSession(req, compress = None)
-    # so cookie is not so long, just less then 500 chars 
+    # so cookie is not so long, just less then 500 chars
     cookie.data["data"] = (obj.__class__, obj.__dict__)
     cookie.data["timestamp"] = int(time())
     if ip:

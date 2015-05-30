@@ -114,7 +114,7 @@ def item_list(req, pager, **kwargs):
                 item.count, item.state, data = row
         item.data = json.loads(data)
         items.append(item)
-    #endwhile
+    #endfor
 
     c.execute("SELECT count(*) FROM eshop_store %s" % cond, kwargs.values())
     pager.total = c.fetchone()[0]

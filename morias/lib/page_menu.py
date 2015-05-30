@@ -99,7 +99,6 @@ class MenuItem(Item):
 
             items[row[MenuItem.PARENT]].append(item)
 
-        print items[None].items
         return items[None]
     #enddef
 #endclass

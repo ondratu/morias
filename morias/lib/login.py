@@ -127,7 +127,6 @@ class Login(object):
 
     def find(self, req):
         m = driver(req)
-        print m, type(m)
         return m.find(self, req)
 
     def check(self, req):

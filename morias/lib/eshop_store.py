@@ -50,10 +50,6 @@ class Item(object):
         m = driver(req)
         return m.set_state(self, req, state)
 
-    def set_state(self, req, state):
-        m = driver(req)
-        return m.set_state(self, req, state)
-
     def action(self, req, action):
         m = driver(req)
         return m.action(self, req, action)

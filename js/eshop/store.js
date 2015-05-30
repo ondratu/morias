@@ -1,5 +1,5 @@
 var M = M || {};
-M.Eshop = {};
+M.Eshop = M.Eshop || {};
 
 M.Eshop.Actions = function (item_id, item_price, item_count){
     this.item_id = item_id;
