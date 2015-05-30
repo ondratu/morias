@@ -24,9 +24,10 @@ R_ADMIN = module_right          # back compatibility
 
 rights.update((R_ADMIN,))
 
-system_menu.append(Item('/admin/logins', label="Logins", rights = [R_ADMIN]))
-user_menu.append(Item('/admin', label="Admin", rights = ['admin']))
-user_info_menu.append(Item('/user/login', label="Login", rights = ['user']))
+system_menu.append(Item('/admin/logins', label="Logins", symbol='login',
+                        rights = [R_ADMIN]))
+user_info_menu.append(Item('/user/login', label="Login", symbol='login',
+                        rights = ['user']))
 
 @app.route("/test/logins/db")
 def test_db(req):

@@ -14,11 +14,14 @@
 
       <div class="collapse navbar-collapse">
         <ul class="pull-right nav navbar-nav">
+        {% if login is defined and login != none %}
         <li {{ 'class="active"' if site.this == '/user' else '' }}>
                 <a href="/user">{{ login.email }}</a></li>
+        {% endif %}
         {% for item in menu if item.uri -%}              {# TODO: tooltip (title) #}
           <li {{ 'class="active"' if site.this == item.uri else '' }}>
-                <a href="{{ item.uri }}">{{ item.label }}</a></li>
+            <a href="{{ item.uri }}" {{ 'role="'+item.role+'"' if item.role }} title="{{ item.title or item.label }}">
+              {{ item.label }}</a></li>
         {%- endfor -%}
         {% if login is defined and login != none %}
           <li><a href="/logout">{{ _('Logout') }} {{ login.email.split('@')[0] }}</a></li>

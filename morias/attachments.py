@@ -35,7 +35,7 @@ module_rights = ['attachments_author','attachments_listall', R_ADMIN]
 rights.update(module_rights)
 
 system_menu.append(Item('/admin/attachments', label="Attachments",
-                         rights = module_rights))
+                        symbol = 'attachments', rights = module_rights))
 
 app.set_filter('attachment', r'[\w\.]+', uni)
 

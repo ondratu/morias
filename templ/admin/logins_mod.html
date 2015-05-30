@@ -14,7 +14,7 @@
         <li class="navbar-brand">{{ _('New login') }}</li>
     {% else -%}
         <li class="navbar-brand">{{ _('Edit login') }}</li>
-      {%- if 'morias.login_addresses' in modules %}
+      {%- if 'morias.login_addresses' in site.modules %}
         <li class="pull-right"> <a href="/admin/logins/{{ item.id }}/addresses">{{ _('Addresses') }}</a></li>
       {% endif -%}
         <li class="pull-right"><a href="/admin/logins/add">{{ _('New login') }}</a></li>

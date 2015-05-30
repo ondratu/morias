@@ -23,7 +23,8 @@ _check_conf = (
 module_rights = ('news_editor', 'news_author')
 rights.update(module_rights)
 
-content_menu.append(Item('/admin/news', label="News", rights = module_rights))
+content_menu.append(Item('/admin/news', label="News", symbol="news",
+                    rights = module_rights))
 
 @app.route("/test/news/db")
 def test_db(req):

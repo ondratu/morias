@@ -1,6 +1,6 @@
 from poorwsgi import *
 
-from core.login import check_login, do_check_login
+from core.login import check_login
 from core.render import generate_page
 
 from lib.menu import *

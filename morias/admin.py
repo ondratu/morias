@@ -5,7 +5,7 @@ from core.login import check_login, check_right
 from core.render import generate_page
 
 from lib.menu import *
-from user import user_menu
+from user import user_sections
 
 admin_sections = Menu('Administration')
 admin_menu = admin_sections     # back compatibility
@@ -17,6 +17,9 @@ system_menu = Menu('System')
 admin_menu.append(content_menu)
 admin_menu.append(codebooks_menu)
 admin_menu.append(system_menu)
+
+user_sections.append(Item('/admin', label="Admin", symbol='admin',
+                    rights = ['admin']))
 
 @app.route('/admin')
 def root(req):
@@ -36,3 +39,15 @@ def root(req):
     if len(x_menu) == 1 and len(x_menu[0]) == 1:
         redirect(req, x_menu[0][0].uri)
     return generate_page(req, "admin/admin.html", admin_sections = x_menu)
+
+@app.route('/admin/content')
+def admin_content(req):
+    redirect(req, '/admin#Content')
+
+@app.route('/admin/codebooks')
+def admin_codebooks(req):
+    redirect(req, '/admin#Codebooks')
+
+@app.route('/admin/system')
+def admin_system(req):
+    redirect(req, '/admin#System')

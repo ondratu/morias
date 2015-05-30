@@ -28,5 +28,8 @@
         </pre>
         {% endif %}
     </div>
+    {% for footer in site.footers -%}
+    {% include footer -%}
+    {% endfor -%}
   </body>
 </html>

@@ -40,7 +40,8 @@ def _call_conf(cfg, parser):
 module_rights = ['pages_listall', 'pages_author', 'pages_modify']
 rights.update(module_rights)
 
-content_menu.append(Item('/admin/pages', label="Pages", rights = module_rights))
+content_menu.append(Item('/admin/pages', label="Pages", symbol="files",
+                    rights = module_rights))
 
 @app.route("/test/pages/db")
 def test_db(req):

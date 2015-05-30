@@ -70,7 +70,7 @@ M.page_menu.tr = function(tr, item){
                                                                   M._('Delete'));
     d_span.click( function(){
         M.page_menu.confirm_delete(
-                M._('sure_delete').replace("%s", item.title),
+                M._('mpm_sure_delete').replace("%s", item.title),
                 "/admin/menu/"+item.id+"/delete"
             );
     });
@@ -214,7 +214,7 @@ M.page_menu.stopedit = function (tr){
                                                                   M._('Delete'));
     d_span.click( function(){
         M.page_menu.confirm_delete(
-                M._('sure_delete').replace("%s", $('input[name=title]', tr).attr('orig')),
+                M._('mpm_sure_delete').replace("%s", $('input[name=title]', tr).attr('orig')),
                 "/admin/menu/"+tr.attr('item')+"/delete"
             );
     });
@@ -461,7 +461,7 @@ $(document).ready(function() {
     $('span[edit]').click(M.page_menu.edit);
     $('span[delete]').click( function(){
         M.page_menu.confirm_delete(
-                M._('sure_delete').replace("%s", $(this).attr('data')),
+                M._('mpm_sure_delete').replace("%s", $(this).attr('data')),
                 $(this).attr('delete')
             );
     });

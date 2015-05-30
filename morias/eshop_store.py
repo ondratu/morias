@@ -25,7 +25,7 @@ module_right = 'eshop_store'
 rights.add(module_right)
 
 eshop_menu.append(MenuItem('/admin/eshop/store', label="Store",
-                         rights = [module_right]))
+                            symbol="eshop-store", rights = [module_right]))
 
 
 @app.route('/admin/eshop/store')
@@ -44,6 +44,7 @@ def admin_menu(req):
         kwargs = {}
 
     pager = Pager()
+    pager.bind(req.args)
     items = Item.list(req, pager, **kwargs)
 
     return generate_page(req, "admin/eshop/store.html",

@@ -4,13 +4,14 @@ from sys import getrefcount
 
 class Item(object):
     def __init__(self, uri, label = None, title = None, rights = [],
-            symbol = None, locale = ''):
+            symbol = None, locale = '', role = None):
         self.uri = uri
         self.label = label
         self.title = title
         self.rights = rights
         self.symbol = symbol
         self.locale = locale
+        self.role = role
 
     def __repr__(self):
         return str(self.__dict__)

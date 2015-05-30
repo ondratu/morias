@@ -85,6 +85,8 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
             return MissingUndefined(name = name)
 
         def __unicode__(self):
+            if self._undefined_name is None:
+                return ''
             missing.append(self._undefined_name)
             if kwargs['debug']:
                 return '[Undefined] %s' % self._undefined_name
@@ -134,15 +136,16 @@ def morias_template(req, template, **kwargs):
         kwargs['login'] = req.login
 
     kwargs['site'] = Object()
-    kwargs['site'].name          = req.cfg.site_name
-    kwargs['site'].description   = req.cfg.site_description
-    kwargs['site'].keywords      = req.cfg.site_keywords
-    kwargs['site'].author        = req.cfg.site_author
-    kwargs['site'].copyright     = req.cfg.site_copyright
-    kwargs['site'].styles        = req.cfg.site_styles
-    kwargs['site'].this          = req.uri
+    kwargs['site'].name         = req.cfg.site_name
+    kwargs['site'].description  = req.cfg.site_description
+    kwargs['site'].keywords     = req.cfg.site_keywords
+    kwargs['site'].author       = req.cfg.site_author
+    kwargs['site'].copyright    = req.cfg.site_copyright
+    kwargs['site'].styles       = req.cfg.site_styles
+    kwargs['site'].this         = req.uri
 
-    kwargs['modules'] = req.cfg.modules
+    kwargs['site'].modules      = req.cfg.modules
+    kwargs['site'].footers      = req.cfg.footers
 
     kwargs['e'] = sdict()
 

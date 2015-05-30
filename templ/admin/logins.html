@@ -23,7 +23,7 @@
             <td>
           {% if item.id != login.id -%}
               <a href="/admin/logins/{{ item.id }}">{{ _('Edit') }}</a>
-             {%- if 'morias.login_addresses' in modules %}
+             {%- if 'morias.login_addresses' in site.modules %}
               / <a href="/admin/logins/{{ item.id }}/addresses">{{ _('Addresses') }}</a>
              {% endif -%}
              {%- if item.enabled %}

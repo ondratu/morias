@@ -21,7 +21,8 @@ _check_conf = (
     ('login_addresses', 'country', bool, False),
 )
 
-user_info_menu.append(Item('/user/addresses', label="Addresses", rights = ['user']))
+user_info_menu.append(Item('/user/addresses', label="Addresses", symbol="address",
+                    rights = ['user']))
 
 @app.route('/admin/logins/<id:int>/addresses',
         method = state.METHOD_GET | state.METHOD_PUT)
