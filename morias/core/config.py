@@ -16,8 +16,8 @@ def option(*args):
     sec, opt, cls = args[:3]
     dfl = args[3] if _len > 3 else None     # default value
     mod = args[4] if _len > 4 else False    # colud be set via option module
-    com = args[5] if _len > 5 else ''       # documentation for option module
-    return sec, opt, cls, dfl, mod, com
+    doc = args[5] if _len > 5 else ''       # documentation for option module
+    return sec, opt, cls, dfl, mod, doc
 
 
 class Config:
@@ -92,7 +92,7 @@ class Config:
         # check and set config values need for module
         else:
             for it in m._check_conf:
-                sec, opt, cls, dfl, mod, com = option(*it)
+                sec, opt, cls, dfl, mod, doc = option(*it)
                 var = "%s_%s" % (sec, opt)
                 if var in self.__dict__ and not isinstance(self.__dict__[var], cls):
                     raise TypeError("Option `%s` is not class instance `%s`",
@@ -106,7 +106,7 @@ class Config:
                     self.options[sec] = {}
                 if not opt in self.options[sec]:
                     self.options[sec][opt] = {}
-                self.options[sec][opt][module] = (dfl, cls, self.__dict__[var], com)
+                self.options[sec][opt][module] = (dfl, cls, self.__dict__[var], doc)
         #endif
 
         if '_call_conf' in m.__dict__:

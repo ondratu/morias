@@ -17,12 +17,20 @@ M.Options.prototype._edit = function (ev) {
     var $value = $('div[role=value]', $target.parent().parent())
     var value = $value.text().trim();
 
-    $save = $('<button/>', { type: 'button',
+    var $save = $('<button/>', { type: 'button',
                      'class':'btn btn-default btn-sm',
+                     title: M._('Save'),
                      save: $target.attr('edit') })
         .append($('<i>', { 'class': 'fa fa-save' }))
         .on('click', this._save.bind(this))
         .replaceAll($target);
+    $('<button/>', { type: 'button',
+                     'class':'btn btn-default btn-sm',
+                     title: M._('Cancel'),
+                     save: $target.attr('edit') })
+        .append($('<i>', { 'class': 'fa fa-close' }))
+        .on('click', function(ev) {this._value($value, value, $save)}.bind(this))
+        .appendTo($save.parent());
 
     $value.html(
         $('<input>', { type: 'text', 'class': 'form-control input-sm' })
@@ -39,10 +47,10 @@ M.Options.prototype._edit = function (ev) {
 /* Replace cell value back to value and save button to edit link */
 M.Options.prototype._value = function ($value, value, $save) {
     $value.text(value);
-    $('<a>', { edit: $save.attr('save') })
-        .text(M._('Edit'))
-        .on('click', this._edit.bind(this))
-        .replaceAll($save);
+    $($save.parent()).html(
+        $('<a>', { edit: $save.attr('save') })
+            .text(M._('Edit'))
+            .on('click', this._edit.bind(this)));
 }
 
 M.Options.prototype._save = function (ev) {

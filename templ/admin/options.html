@@ -30,7 +30,7 @@
             <th>{{ _('Modules') }}</th>
             <th>{{ _('Action') }}</th></tr>
       {% for item in options %}
-        <tr>
+        <tr title="{{ item.doc }}">
           <td>{{ item.section }}</td>
           <td>{{ item.option }}</td>
           <td><div role="value" class="input-group">{{ item.value }}</div></td>
@@ -49,7 +49,9 @@
       <script>
         $(document).ready(function() {
             $.extend(M.locales, {
-                'Edit'        : "{{ _('Edit') }}",
+                'Edit'      : "{{ _('Edit') }}",
+                'Save'      : "{{ _('Save') }}",
+                'Cancel'    : "{{ _('Cancel') }}",
             });
 
             location_params = function() {

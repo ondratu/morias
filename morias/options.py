@@ -44,9 +44,9 @@ def admin_options(req):
     check_login(req)
     check_right(req, module_right)
 
-    kwargs = {'onlydefault': True}
     section = req.args.getfirst('section', '', uni)
     module = req.args.getfirst('module', '', uni)
+    kwargs = {}
     if section != 'all':
         kwargs['section'] = section
     if module != 'all':
@@ -62,7 +62,7 @@ def admin_options(req):
                         module = module)
 #enddef
 
-@app.route('/admin/system/options/<session:word>/<option:word>',
+@app.route('/admin/system/options/<session:word>/<option:re:[\w-]+>',
             method = state.METHOD_PUT)
 def admin_options_edit(req, section, option):
     check_login(req)

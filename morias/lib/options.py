@@ -97,7 +97,6 @@ class Option:
         if pager.order not in ('section', 'option'):
             pager.order = 'section'
 
-        onlydefault = kwargs.get('onlydefault', False)
         section = kwargs.get('section', None)
         module  = kwargs.get('module', None)
 
@@ -113,17 +112,17 @@ class Option:
                 item.value = req.cfg.__dict__.get(
                                 "%s_%s" % (sec,opt),    # fallback for core options
                                 req.cfg.__dict__.get("%s" % (opt), None))
+                item.doc = ''
                 if islistable(item.value):
                     item.value = ','.join((str(it) for it in item.value))
 
                 for mod, _mod in _opt.items():
                     if module and mod != module:
                         continue
-                    if onlydefault and _mod[0] is None:
-                        continue
                     item.modules.append(mod)
                     item.defaults.add(_mod[0])
                     item.cls = _mod[1]
+                    item.doc = _mod[3]
 
                 if not item.modules:
                     continue
