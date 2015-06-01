@@ -30,7 +30,7 @@
             <th>{{ _('Modules') }}</th>
             <th>{{ _('Action') }}</th></tr>
       {% for item in options %}
-        <tr title="{{ item.doc }}">
+        <tr title="{{ item.doc }}" index="{{ loop.index0 }}">
           <td>{{ item.section }}</td>
           <td>{{ item.option }}</td>
           <td><div role="value" class="input-group">{{ item.value }}</div></td>
@@ -86,7 +86,13 @@
                 window.location.search = $.param(search);
             });
 
-            var options = new M.Options();
+
+            var defaults = {
+                {%- for it in options %}
+                    {{ loop.index0 }} : { cls: '{{ it.cls.__name__ }}', defaults: {{ it.defaults_json }} }{{ ',' if not loop.last else '' }}
+                {%- endfor %}
+            };
+            var options = new M.Options(defaults);
         });
       </script>
 </div>

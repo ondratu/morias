@@ -52,19 +52,20 @@ class Config:
 
         self.options    = {
             'morias': {
-                #'debug'     : {'morias.core': (False, bool, self.debug )},
-                #'templates' : {'morias.core': (None, Paths, self.templates )},
-                #'modules'   : {'morias.core': (None, tuple, self.modules )},
-                'langs'     : {'morias.core': ('en,cs', list, self.langs, True )},
-                #'locales'   : {'morias.core': ('locales/', unicode, self.locales, True )},
+                'langs' : {'morias.core':
+                        ('en,cs', list, self.langs, True, '')},
             },
             'site'  : {
-                'name'      : {'morias.core': ('Morias', unicode, self.site_name )},
-                'description' : {'morias.core': ('cms', unicode, self.site_description )},
-                'keywords'  : {'morias.core': ('', tuple, self.site_keywords )},
-                'author'    : {'morias.core': ('', unicode, self.site_author )},
-                'copyright' : {'morias.core': ('', unicode, self.site_copyright )},
-                #'styles'    : {'morias.core': ('', tuple, self.site_styles )},
+                'name' : {'morias.core':
+                        ('Morias', unicode, self.site_name, True, '')},
+                'description' : {'morias.core':
+                        ('cms', unicode, self.site_description, True, '')},
+                'keywords' : {'morias.core':
+                        ('', tuple, self.site_keywords, True, '')},
+                'author' : {'morias.core':
+                        ('', unicode, self.site_author, True, '' )},
+                'copyright' : {'morias.core':
+                        ('', unicode, self.site_copyright, True, '' )},
             }
         }
 

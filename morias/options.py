@@ -55,6 +55,8 @@ def admin_options(req):
     pager = Pager()
     pager.bind(req.args)
     options = Option.list(req, pager, **kwargs)
+    for option in options:
+        option.defaults_json = json.dumps(list(option.defaults))
 
     return generate_page(req, "admin/options.html", pager = pager,
                         options = options, sections = Option.sections_list(req),
