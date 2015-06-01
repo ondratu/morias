@@ -17,8 +17,9 @@ from login import module_right
 from admin import system_menu
 
 _check_conf = (
-    ('login_addresses', 'region', bool, False, True),
-    ('login_addresses', 'country', bool, False, True),
+    # common addresses block
+    ('addresses', 'region', bool, False, True),
+    ('addresses', 'country', bool, False, True),
 )
 
 user_info_menu.append(Item('/user/addresses', label="Addresses", symbol="address",
@@ -38,8 +39,8 @@ def admin_login_addresses(req, id):
 
         return generate_page(req, "admin/logins_addresses.html",
                             item = login,
-                            cfg_region = req.cfg.login_addresses_region,
-                            cfg_country = req.cfg.login_addresses_country)
+                            cfg_region = req.cfg.addresses_region,
+                            cfg_country = req.cfg.addresses_country)
 
     # req.method == 'PUT'       # ajax put
     addresses = Addresses.bind(req.json)
@@ -58,8 +59,8 @@ def user_addresses(req):
 
     if req.method == 'GET':
         return generate_page(req, "user/addresses.html",
-                            cfg_region = req.cfg.login_addresses_region,
-                            cfg_country = req.cfg.login_addresses_country)
+                            cfg_region = req.cfg.addresses_region,
+                            cfg_country = req.cfg.addresses_country)
 
     # req.method == 'PUT'       # ajax put
     addresses = Addresses.bind(req.json)
