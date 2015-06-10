@@ -161,7 +161,7 @@ def attachments_view(req, object_type, object_id):
 def attachments_view(req, object_type, object_id):
     check_login(req)
     match_right(req, [R_ADMIN, 'attachments_author'])
-    #check_origin(req)
+    check_origin(req)
     return js_items(req, object_type = object_type, object_id = object_id, NOT = True)
 
 
@@ -172,7 +172,7 @@ def attachments_download(req, path, webid):
 
     req.headers_out.add_header('Content-Disposition',
                                'attachment',
-                               filename=attachment.file_name)
+                               filename=attachment.file_name.encode('ascii','xmlcharrefreplace'))
 
     return send_file(req, req.cfg.attachments_path + '/' + path + '/' + webid,
                           content_type = attachment.mime_type)

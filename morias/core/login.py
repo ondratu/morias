@@ -87,7 +87,15 @@ def do_match_right(req, rights):
 #enddef
 
 def do_check_origin(req):
-    return req.headers_in.get('Origin') == "%s://%s" % (req.scheme, req.hostname)
+    """ Origin Header must be right (which can't be) or Referer must be OK """
+    origin = "%s://%s" % (req.scheme, req.hostname)
+    if 'Origin' in req.headers_in:      # could not be!
+        return req.headers_in.get('Origin') == origin
+    if req.referer is not None:         # referer domain must be same as Host
+        referer = req.referer[:req.referer.find('/', req.referer.find('/') + 2)]
+        return referer == origin
+    return False
+
 
 def check_login(req, redirect_uri = None):
     if req.login is None:       # do_check_login was called averytime
