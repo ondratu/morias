@@ -24,7 +24,7 @@
         {% for item in items %}
         <tr {{ 'class="disabled"' if item.state == 0 else '' }}><td>{{ item.id }}</td>
             <td  >
-                <a href="/eshop/id/{{item.id}}">{{ item.name }}</a>
+                <a href="/eshop/{{item.id}}">{{ item.name }}</a>
             </td>
             <td>{{ item.price }}</td>
             <td>{{ item.count }}</td>
