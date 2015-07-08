@@ -1,0 +1,43 @@
+{% set title = _('Eshop items') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('Eshop items') }}</li>
+
+        <li class="pull-right {{ 'active' if pager.order == "name" }}"><a href="?order=name">{{ _('Dle abecedy') }}</a></li>
+        <li class="pull-right {{ 'active' if pager.order == "price" and pager.sort == "desc" }}"><a  href="?order=price&amp;sort=desc">{{ _('First nejdražší') }}</a></li>
+        <li class="pull-right {{ 'active' if pager.order == "price" and pager.sort == "asc" }}"><a href="?order=price">{{ _('First nejlevnějšího') }}</a></li>
+      </ul>
+
+      <div class="eshop-list">
+      {% for item in items %}
+        <div class="col-md-4">
+          <div class="item">
+            <a href="/eshop/{{ item.id }}"><h4>{{ item.name }}</h4></a>
+            <div class="description">{{ item.description|striptags }}</div>
+            <div class="image"><a href="/eshop/{{ item.id }}">
+              <img class="img-rounded" data-src="/js/holder.js/320x200/text:{{ item.name }}" alt=""></a></div>
+            <div class="buy clearfix">
+              <div class="pull-left price">{{ "%.f"|format(item.price) }} {{ cfg_currency }}</div>
+              <div class="pull-right">
+                <a item-id="{{ item.id }}" role="buyone" class="btn btn-default">{{ _('Buy one') }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      </div>{# /container #}
+
+{% include "_pager.html" %}
+    </div>{# /container #}
+    <script src="/js/holder.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('a[role=buyone]').on('click', function(ev) {
+                M.Eshop.buy($(ev.target).attr('item-id'));
+            });
+        });
+    </script>
+{% include "_footer.html" %}

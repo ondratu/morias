@@ -131,6 +131,11 @@ table tr td[level="8"] { padding-left: 90px; }
   margin-left: -1px;
 }
 
+.in-input {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
 
 /* fix attachment preview tooltip*/
 .tooltip-inner {
@@ -173,6 +178,10 @@ table tr td[level="8"] { padding-left: 90px; }
 
 .red {
     background: red;
+}
+
+.padding15 {
+    padding-left: 15px;
 }
 
 .attachments {
@@ -221,6 +230,80 @@ table tr td[level="8"] { padding-left: 90px; }
 [itemprop=adr] > [itemprop=country-name] {
     padding-left: 15px;
     clear: both;
+}
+
+.eshop-list .item {
+    /*min-height: 19em;*/
+    background-color: #F5F5F5;
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+    margin-bottom: 2em;
+}
+
+.eshop-list .description {
+    min-height: 6em;
+    font-size: 80%;
+    padding: 5px;
+}
+
+.eshop-list .image {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.eshop-list .buy {
+}
+
+.eshop-list .price {
+    color: #CA424C;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.eshop-item .itemlabel {
+    width: 6em;
+    float: left;
+}
+.eshop-item .image {
+    height: 25em;
+    line-height: 25em;
+    padding-bottom: 30px;
+    text-align: center;
+}
+.eshop-item .image img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.eshop-item .price,
+.eshop-item .count
+{
+    font-size: 130%;
+    padding: 5px;
+}
+.eshop-item .price:hover,
+.eshop-item .count:hover {
+    background: #F5F5F5;
+}
+
+.eshop-item .buy {
+    padding: 5px;
+}
+.eshop-item .buy input {
+    width: 6em;
+    margin-right: 1em;
+    float: left;
+}
+
+table[role=cart-items] .price,
+table[role=cart-items] .count {
+    text-align: right;
+}
+table[role=cart-items] .actions {
+    text-align: center;
+}
+table[role=cart-items] td.summary {
+    text-align: right;
+    font-weight: bold;
 }
 
 .spinner {

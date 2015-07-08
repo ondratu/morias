@@ -1,0 +1,141 @@
+{# vim:set softtabstop=2: -#}
+{% set title = 'Admin eShop - orders' -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+{% set states = { 0: _('Storned'),
+                  1: _('Accept'),
+                  2: _('Proccess'),
+                  3: _('Sent'),
+                  4: _('Closed'),
+                  10: _('Wait for paid'),
+                  11: _('Wait for pick up') }
+%}
+
+    <div class="container">
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('Order') }} {{ order.id }}</li>
+        <li class="pull-right"><a href="/admin/eshop/orders">{{ _('Orders list') }}</a></li>
+      </ul>
+
+      <div class="row">
+        <div  class="col-md-6" itemprop="adr">
+          <h4>{{ _('Billing Address') }}:</h4>
+          {%- set addr = order.data.billing_address %}
+          <h3>{{ addr.get('name','')|e }}</h3>
+          <div itemprop="street-address">{{ addr.get('address1','')|e }}</div>
+          <div itemprop="street-address">{{ addr.get('address2','')|e }}</div>
+          <div itemprop="locality">{{ addr.get('city','')|e }}</div>
+        {%- if cfg.addresses_region %}
+          <div itemprop="region">{{ addr.get('region','')|e }}</div>
+        {%- endif %}
+          <div itemprop="postal-code">{{ addr.get('zip','')|e }}</div>
+        {%- if cfg.addresses_country %}
+          <div itemprop="country-name">{{ addr.get('country','')|e }}</div>
+        {%- endif %}
+        </div>
+
+        <div class="col-md-6" itemprop="adr">
+          <h4>{{ _('Shipping Address') }}:</h4>
+          {%- set addr = order.data.shipping_address %}
+          <h3>{{ addr.get('name','')|e }}</h3>
+          <div itemprop="street-address">{{ addr.get('address1','')|e }}</div>
+          <div itemprop="street-address">{{ addr.get('address2','')|e }}</div>
+          <div itemprop="locality">{{ addr.get('city','')|e }}</div>
+        {%- if cfg.addresses_region %}
+          <div itemprop="region">{{ addr.get('region','')|e }}</div>
+        {%- endif %}
+          <div itemprop="postal-code">{{ addr.get('zip','')|e }}</div>
+        {%- if cfg.addresses_country %}
+          <div itemprop="country-name">{{ addr.get('country','')|e }}</div>
+        {%- endif %}
+        </div>
+      </div>{# /row #}
+
+      <div class="row">
+        <div class="col-md-12">
+          <h4>{{ _('Send order status to') }}:</h4>
+          <h3 class="padding15">{{ order.email }} <a href="mailto:{{ order.email }}" title="{{ _('Send email to client') }}">
+              <i class="fa fa-envelope"></i></a></h3>
+        </div>
+      </div>{# /row #}
+
+      {% from "eshop/_tp_methods.html" import tp -%}
+
+      <div class="row">
+        <div class="col-md-12">
+          <h4>{{ _('Ordered items') }}</h4>
+          <table class="table table-hover" role="order-items">
+            <tr><th>#</th>
+                <th>{{ _('Name') }}</th>
+                <th class="price">{{ _('Price') }}</th>
+                <th class="count col-md-1">{{ _('Count') }}</th>
+                <th class="summary">{{ _('Summary' )}}</th>
+            </tr>
+          {% for item_id, item in order.items %}
+            <tr><td>{{ item_id }}</td>
+                <td>{{ item.name }}</td>
+                <td class="price">{{ item.price }} {{cfg.eshop_currency}}</td>
+                <td class="count">{{ item.count }}</td>
+                <td class="price">{{ item.summary }} {{cfg.eshop_currency}}</td>
+            </tr>
+          {% endfor %}
+            <tr class="active summary"><td></td>
+                <td>{{ _('Summary') }}</td>
+                <td></td>
+                <td class="count">{{ order.count }}</td>
+                <td class="summary">{{ order.summary }} {{cfg.eshop_currency}}</td>
+            </tr>
+            <tr><td></td>
+                <td>{{ tp.get('transportation_by_' + order.data.transportation[0], 'transportation_by_' + order.data.transportation[0]) }}</td>
+                <td></td>
+                <td></td>
+                <td class="price">{{ order.data.transportation[1] }} {{cfg.eshop_currency}}</td>
+            </tr>
+            <tr><td></td>
+                <td>{{ tp.get('payment_by_' + order.data.payment[0], 'payment_by_' + order.data.payment[0]) }}</td>
+                <td></td>
+                <td></td>
+                <td class="price">{{ order.data.payment[1] }} {{cfg.eshop_currency}}</td>
+            </tr>
+            <tr class="active summary"><td></td>
+                <td>{{ _('Total') }}</td>
+                <td></td>
+                <td></td>
+                <td class="summary">{{ order.total }} {{cfg.eshop_currency}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>{# /row #}
+
+      <div class="row">
+        <h3>{{ _('State is:') }} {{ states[order.state] }} <small>{{ _('Next state will be') }}:</small></h3>
+      {% if order.state in (1,2,3,10,11) %}
+        <a class="btn btn-danger" post="/admin/eshop/orders/{{ order.id }}/storno">{{ _('Storno') }}</a>
+      {%endif%}
+      {% if order.state == 1 %}
+        <a class="btn btn-warning" post="/admin/eshop/orders/{{ order.id }}/wait_for_paid">{{ _('Wait for paid') }}</a>
+      {%endif%}
+      {% if order.state in (1, 10) %}
+        <a class="btn btn-primary" post="/admin/eshop/orders/{{ order.id }}/proccess">{{ _('Process') }}</a>
+      {%endif%}
+      {% if order.state == 2 %}
+        <a class="btn btn-success" post="/admin/eshop/orders/{{ order.id }}/sent">{{ _('Sent') }}</a>
+        <a class="btn btn-success" post="/admin/eshop/orders/{{ order.id }}/wait_for_pick_up">{{ _('Wait for pick up') }}</a>
+      {%endif%}
+      {% if order.state in (3, 11) %}
+        <a class="btn btn-default" post="/admin/eshop/orders/{{ order.id }}/close">{{ _('Close') }}</a>
+      {%endif%}
+      </div>
+
+      <script>
+        $(document).ready(function() {
+          // send form after click to links with post attribut
+          $('a[post]').click(function() {
+            $('<form/>',{'method':'post','action':$(this).attr('post')})
+                    .appendTo('body').submit();
+          });
+        });
+      </script>
+    </div>
+
+{% include "_footer.html" %}

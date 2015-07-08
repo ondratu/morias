@@ -1,0 +1,354 @@
+{# vim:set softtabstop=2: -#}
+{% set title = _('Sending address') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills">
+        <li class="navbar-brand">{{ _('Shipping address') }}</li>
+
+        <li class="pull-right"><a way="next">{{ _('Continue in Order') }}</a></li>
+        <li class="pull-right"><a way="prev">{{ _('Back to cart') }}</a></li>
+      </ul>
+
+    {%- if error == 'no_billing_address' %}
+      <div class="alert alert-danger">
+        {{ _('Billing address is important to order. Please fill the billing address.') }}
+      </div>
+    {%- elif error == 'no_shipping_address' %}
+      <div class="alert alert-danger">
+        {{ _('Shipping address is important to order. Please fill the shipping address or check the same as billing one.') }}
+      </div>
+    {%- elif error == 'no_transportation' %}
+      <div class="alert alert-danger">
+        {{ _('No transportation method was selected, please select one.') }}
+      </div>
+    {%- elif error == 'no_payment' %}
+      <div class="alert alert-danger">
+        {{ _('No payment method was selected, please select one.') }}
+      </div>
+    {%- elif error == 'no_email' %}
+      <div class="alert alert-danger">
+        {{ _('No or Bad email, please fill the right email address for sendig order state.') }}
+      </div>
+    {%- endif %}
+
+      <form method="post" role="shopping-address">
+        <input type=hidden name="way">
+      <div class="col-md-6">
+        <div id="billing_addr" class="form-horizontal {{ 'has-error' if error == 'no_billing_address'}}" role="form">
+          <h4>{{ _('Billing Address') }}:</h4>
+          {%- set addr = cart.billing_address %}
+
+        {%- if login %}
+          <div class="form-group">
+            <label for="select_billing_addr" class="col-sm-4 control-label">{{ _('Select address') }}</label>
+            <div class="col-sm-4">
+              <select id="select_billing_addr" class="form-control" name="billing_address">
+                <option value="-1" selected="selected"></option>
+              {%- for addr in login.data.get('addresses', []) -%}
+                {% set l = [] -%}
+                {% for it in ['address1', 'address2', 'city', 'region', 'zip', 'country'] -%}
+                  {% do l.append(addr[it]) if addr.get(it, '') -%}
+                {% endfor %}
+                <option value="{{ loop.index0 }}">{{ l|join(',') }}</option>
+              {%- endfor %}
+              </select>
+            </div>
+          </div>
+        {%- endif %}
+
+          <div class="form-group">
+            <label for="billing_name" class="col-sm-4 control-label">{{ _('Name') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="billing_name" name="billing_name" class="form-control" value="{{ addr.get('name', '')|e }}" placeholder="{{ _('Fox Mulder') }}">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="billing_address1" class="col-sm-4 control-label">{{ _('Address line') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="billing_address1" name="billing_address1" class="form-control" value="{{ addr.get('address1', '')|e }}" placeholder="{{ _('FBI') }}">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="billing_address2" class="col-sm-4 control-label">{{ _('Address line') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="billing_address2" name="billing_address2" class="form-control" value="{{ addr.get('address2', '')|e }}" placeholder="{{ _('935 Pennsylvania Avenue') }}">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="billing_city" class="col-sm-4 control-label">{{ _('City') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="billing_city" name="billing_city" class="form-control" value="{{ addr.get('city', '')|e }}" placeholder="{{ _('Washington') }}">
+            </div>
+          </div>
+
+        {%- if cfg.addresses_region %}
+          <div class="form-group">
+            <label for="billing_region" class="col-sm-4 control-label">{{ _('Region') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="billing_region" name="billing_region" class="form-control" value="{{ addr.get('region', '')|e }}" placeholder="{{ _('D.C.') }}">
+            </div>
+          </div>
+        {%- endif %}
+
+          <div class="form-group">
+            <label for="billing_zip" class="col-sm-4 control-label">{{ _('Zip code') }}</label>
+            <div class="col-sm-3">
+              <input type="text" id="billing_zip" name="billing_zip" class="form-control" value="{{ addr.get('zip', '')|e }}" placeholder="{{ _('20535') }}">
+            </div>
+          </div>
+
+        {%- if cfg.addresses_country %}
+          <div class="form-group">
+            <label for="billing_country" class="col-sm-4 control-label">{{ _('Country') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="billing_country" name="billing_country" class="form-control" value="{{ addr.get('country', '')|e }}" placeholder="{{ _('United States') }}">
+            </div>
+          </div>
+        {%- endif %}
+        </div>{# /form #}
+
+        <div id="shipping_addr" class="form-horizontal {{ 'has-error' if error == 'no_shipping_address'}}" role="form">
+          <h4>{{ _('Shipping Address') }}:</h4>
+          {%- set addr = cart.shipping_address %}
+
+          <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-8">
+              <div class="checkbox">
+                <label><input name="same_as_billing" type="checkbox" value="1" {{ 'checked="checked"' if addr.get('same_as_billing', False) else '' }}>{{ _('Same as Billing address') }}</label>
+              </div>
+            </div>
+          </div>
+
+        {%- if login %}
+          <div class="form-group item">
+            <label for="select_shipping_addr" class="col-sm-4 control-label">{{ _('Select address') }}</label>
+            <div class="col-sm-4">
+              <select id="select_shipping_addr" class="form-control" name="shipping_address">
+                <option value="-1" selected="selected"></option>
+              {%- for addr in login.data.get('addresses', []) -%}
+                {% set l = [] -%}
+                {% for it in ['address1', 'address2', 'city', 'region', 'zip', 'country'] -%}
+                  {% do l.append(addr[it]) if addr.get(it, '') -%}
+                {% endfor %}
+                <option value="{{ loop.index0 }}">{{ l|join(',') }}</option>
+              {%- endfor %}
+              </select>
+            </div>
+          </div>
+        {%- endif %}
+
+          <div class="form-group item">
+            <label for="shipping_name" class="col-sm-4 control-label">{{ _('Name') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="shipping_name" name="shipping_name" class="form-control" value="{{ addr.get('name', '')|e }}" placeholder="{{ _('Fox Mulder') }}">
+            </div>
+          </div>
+
+          <div class="form-group item">
+            <label for="shipping_address1" class="col-sm-4 control-label">{{ _('Address line') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="shipping_address1" name="shipping_address1" class="form-control" value="{{ addr.get('address1', '')|e }}" placeholder="{{ _('FBI') }}">
+            </div>
+          </div>
+
+          <div class="form-group item">
+            <label for="shipping_address2" class="col-sm-4 control-label">{{ _('Address line') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="shipping_address2" name="shipping_address2" class="form-control" value="{{ addr.get('address2', '')|e }}" placeholder="{{ _('935 Pennsylvania Avenue') }}">
+            </div>
+          </div>
+
+          <div class="form-group item">
+            <label for="shipping_city" class="col-sm-4 control-label">{{ _('City') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="shipping_city" name="shipping_city" class="form-control" value="{{ addr.get('city', '')|e }}" placeholder="{{ _('Washington') }}">
+            </div>
+          </div>
+
+        {%- if cfg.addresses_region %}
+          <div class="form-group item">
+            <label for="shipping_region" class="col-sm-4 control-label">{{ _('Region') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="shipping_region" name="shipping_region" class="form-control" value="{{ addr.get('region', '')|e }}" placeholder="{{ _('D.C.') }}">
+            </div>
+          </div>
+        {%- endif %}
+
+          <div class="form-group item">
+            <label for="shipping_zip" class="col-sm-4 control-label">{{ _('Zip code') }}</label>
+            <div class="col-sm-3">
+              <input type="text" id="shipping_zip" name="shipping_zip" class="form-control" value="{{ addr.get('zip', '')|e }}" placeholder="{{ _('20535') }}">
+            </div>
+          </div>
+
+        {%- if cfg.addresses_country %}
+          <div class="form-group item">
+            <label for="shipping_country" class="col-sm-4 control-label">{{ _('Country') }}</label>
+            <div class="col-sm-8">
+              <input type="text" id="shipping_country" name="shipping_country" class="form-control" value="{{ addr.get('country', '')|e }}" placeholder="{{ _('United States') }}">
+            </div>
+          </div>
+        {%- endif %}
+        </div>{# /form #}
+      </div>{# /col-md-6 #}
+
+      <div class="col-md-6">
+        <div class="form-horizontal {{ 'has-error' if error == 'no_email'}}" role="form">
+          <h4>{{ _('Send order status to') }}:</h4>
+
+          <div class="form-group item">
+            <label for="email" class="col-sm-2 control-label">{{ _('Email') }}</label>
+            <div class="col-sm-8">
+              <input type="email" id="email" name="email" class="form-control" value="{{ (cart.email or login.email or '')|e }}">
+              <div class="help-block">{{ _('This email was be store for comunication with you about order state.') }}</div>
+            </div>
+          </div>
+        </div>{# /form #}
+
+        <div id="mode-of-transportation" class="form-horizontal {{ 'has-error' if error == 'no_transportation'}}" role="form">
+          <h4>{{ _('Mode of transportation') }}:</h4>
+
+        {%- if cfg.transportation_post >= 0 %}
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <div class="radio">
+                <label><input type="radio" name="transportation" value="post" {{ 'checked="checked"' if cart.transportation[0] == 'post' else '' }}>
+                  {{ _('By post') }}</label>
+              </div>
+            </div>
+            <div class="col-sm-2">{{ cfg.transportation_post }} {{cfg.eshop_currency}}</div>
+          </div>
+        {%- endif %}
+
+        {%- if cfg.transportation_personally >= 0 %}
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <div class="radio">
+                <label><input type="radio" name="transportation" value="personally" {{ 'checked="checked"' if cart.transportation[0] == 'personally' else '' }}>
+                  {{ _('Personally') }}</label>
+              </div>
+            </div>
+            <div class="col-sm-2">{{ cfg.transportation_personally }} {{cfg.eshop_currency}}</div>
+          </div>
+        {%- endif %}
+
+        {%- if cfg.transportation_haulier >= 0 %}
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <div class="radio">
+                <label><input type="radio" name="transportation" value="haulier" {{ 'checked="checked"' if cart.transportation[0] == 'haulier' else '' }}>
+                  {{ _('Haulier') }}</label>
+              </div>
+            </div>
+            <div class="col-sm-2">{{ cfg.transportation_haulier }} {{cfg.eshop_currency}}</div>
+          </div>
+        {%- endif %}
+
+        {%- if cfg.transportation_messenger >= 0 %}
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <div class="radio">
+                <label><input type="radio" name="transportation" value="messenger" {{ 'checked="checked"' if cart.transportation[0] == 'messenger' else '' }}>
+                  {{ _('Messenger') }}</label>
+              </div>
+            </div>
+            <div class="col-sm-2">{{ cfg.transportation_messenger }} {{cfg.eshop_currency}}</div>
+          </div>
+        {%- endif %}
+        </div>{# /form #}
+
+        <div id="payment-type" class="form-horizontal {{ 'has-error' if error == 'no_payment'}}" role="form">
+          <h4>{{ _('Payment type') }}:</h4>
+
+        {%- if cfg.payment_delivery >= 0 %}
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <div class="radio">
+                <label><input type="radio" name="payment" value="delivery" {{ 'checked="checked"' if cart.payment[0] == 'delivery' else '' }}>
+                  {{ _('Cash on delivery') }}</label>
+              </div>
+            </div>
+            <div class="col-sm-2">{{ cfg.payment_delivery }} {{cfg.eshop_currency}}</div>
+          </div>
+        {%- endif %}
+
+        {%- if cfg.payment_pickup >= 0 %}
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <div class="radio">
+                <label><input type="radio" name="payment" value="pickup" {{ 'checked="checked"' if cart.payment[0] == 'pickup' else '' }}>
+                  {{ _('Payment upon pick-up') }}</label>
+              </div>
+            </div>
+            <div class="col-sm-2">{{ cfg.payment_pickup }} {{cfg.eshop_currency}}</div>
+          </div>
+        {%- endif %}
+
+        {%- if cfg.payment_transfer >= 0 %}
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <div class="radio">
+                <label><input type="radio" name="payment" value="transfer" {{ 'checked="checked"' if cart.payment[0] == 'transfer' else '' }}>
+                  {{ _('By bank transfer') }}</label>
+              </div>
+            </div>
+            <div class="col-sm-2">{{ cfg.payment_transfer }} {{cfg.eshop_currency}}</div>
+          </div>
+        {%- endif %}
+
+        {%- if cfg.payment_card >= 0 %}
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <div class="radio">
+                <label><input type="radio" name="payment" value="card" {{ 'checked="checked"' if cart.payment[0] == 'card' else '' }}>
+                  {{ _('By credit card') }}</label>
+              </div>
+            </div>
+            <div class="col-sm-2">{{ cfg.payment_card }} {{cfg.eshop_currency}}</div>
+          </div>
+        {%- endif %}
+
+        {%- if cfg.payment_paypal >= 0 %}
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <div class="radio">
+                <label><input type="radio" name="payment" value="paypal" {{ 'checked="checked"' if cart.payment[0] == 'paypal' else '' }}>
+                  {{ _('By PayPal') }}</label>
+              </div>
+            </div>
+            <div class="col-sm-2">{{ cfg.payment_paypal }} {{cfg.eshop_currency}}</div>
+          </div>
+        {%- endif %}
+        </div>{# /form #}
+      </div>{# /col-md-6 #}
+
+      <div class="row">
+        <a class="btn btn-primary pull-right" way="next">{{ _('Continue in Order') }}</a>
+      </div>
+
+      </form>
+    </div>{# /container #}
+
+    <script src="/js/spinner.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script src="/js/eshop/shopping_address.js"></script>
+    <script>
+      $(document).ready(function(){
+
+        $.extend(M.locales, {
+            'me_error_in_action': "{{ _('There is some error in action you do. We are sorry for that, we are working on fix that.') }}"
+        });
+
+        var address = new M.Eshop.ShoppingAddress(
+            {{ cart.dict()|jsonify }}
+            {% if login != none %}, {{ login.data.get('addresses', [])|jsonify }} {% endif %}
+        );
+      });
+    </script>
+
+{% include "_footer.html" %}
