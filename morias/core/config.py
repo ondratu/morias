@@ -39,7 +39,7 @@ class Config:
         self.templates  = p.get('morias', 'templates', cls = Paths)
         self.footers    = []    # modules could append path for it's footer
         self.modules    = p.get('morias', 'modules', cls = tuple)
-        self.langs      = p.get('morias', 'langs', 'en,cs', cls = list)
+        self.langs      = p.get('morias', 'langs', 'en,cs', cls = tuple)
         self.locales    = p.get('morias', 'locales', 'locales/')
 
         self.site_name          = p.get('site','name', "Morias")
