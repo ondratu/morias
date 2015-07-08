@@ -29,7 +29,7 @@ eshop_menu.append(MenuItem('/admin/eshop/store', label="Store",
 
 
 @app.route('/admin/eshop/store')
-def admin_menu(req):
+def admin_store(req):
     check_login(req)
     check_right(req, module_right)
 
