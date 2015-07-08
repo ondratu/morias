@@ -1,0 +1,115 @@
+{# vim:set softtabstop=2: -#}
+{% set title = _('Check order') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills row">
+        <li class="navbar-brand">{{ _('Order recapitulation') }}</li>
+
+        <li class="pull-right"><a way="next" href="/eshop/cart/pay_and_order">{{ _('Pay and Order') }}</a></li>
+        <li class="pull-right"><a way="prev" href="/eshop/cart/address">{{ _('Back to address') }}</a></li>
+      </ul>
+
+      <div class="row">
+        <div  class="col-md-6" itemprop="adr">
+          <h4>{{ _('Billing Address') }}:</h4>
+          {%- set addr = cart.billing_address %}
+          <h3>{{ addr.get('name','')|e }}</h3>
+          <div itemprop="street-address">{{ addr.get('address1','')|e }}</div>
+          <div itemprop="street-address">{{ addr.get('address2','')|e }}</div>
+          <div itemprop="locality">{{ addr.get('city','')|e }}</div>
+        {%- if cfg.addresses_region %}
+          <div itemprop="region">{{ addr.get('region','')|e }}</div>
+        {%- endif %}
+          <div itemprop="postal-code">{{ addr.get('zip','')|e }}</div>
+        {%- if cfg.addresses_country %}
+          <div itemprop="country-name">{{ addr.get('country','')|e }}</div>
+        {%- endif %}
+        </div>
+
+        <div class="col-md-6" itemprop="adr">
+          <h4>{{ _('Shipping Address') }}:</h4>
+          {%- set addr = cart.shipping_address %}
+          <h3>{{ addr.get('name','')|e }}</h3>
+          <div itemprop="street-address">{{ addr.get('address1','')|e }}</div>
+          <div itemprop="street-address">{{ addr.get('address2','')|e }}</div>
+          <div itemprop="locality">{{ addr.get('city','')|e }}</div>
+        {%- if cfg.addresses_region %}
+          <div itemprop="region">{{ addr.get('region','')|e }}</div>
+        {%- endif %}
+          <div itemprop="postal-code">{{ addr.get('zip','')|e }}</div>
+        {%- if cfg.addresses_country %}
+          <div itemprop="country-name">{{ addr.get('country','')|e }}</div>
+        {%- endif %}
+        </div>
+      </div>{# /row #}
+
+      <div class="row">
+        <div class="col-md-12">
+          <h4>{{ _('Send order status to') }}:</h4>
+          <h3 class="padding15">{{ cart.email }}</h3>
+        </div>
+      </div>{# /row #}
+
+      {% from "eshop/_tp_methods.html" import tp -%}
+
+      <div class="row">
+        <div class="col-md-12">
+          <h4>{{ _('Ordered items') }}</h4>
+          <table class="table table-hover" role="cart-items">
+            <tr><th>#</th>
+                <th>{{ _('Name') }}</th>
+                <th class="price">{{ _('Price') }}</th>
+                <th class="count col-md-1">{{ _('Count') }}</th>
+                <th class="summary">{{ _('Summary' )}}</th>
+            </tr>
+          {% for item_id, item in cart.items %}
+            <tr><td>{{ item_id }}</td>
+                <td>{{ item.name }}</td>
+                <td class="price">{{ item.price }} {{cfg.eshop_currency}}</td>
+                <td class="count">{{ item.count }}</td>
+                <td class="price">{{ item.summary }} {{cfg.eshop_currency}}</td>
+            </tr>
+          {% endfor %}
+            <tr class="active summary"><td></td>
+                <td>{{ _('Summary') }}</td>
+                <td></td>
+                <td class="count">{{ cart.count }}</td>
+                <td class="summary">{{ cart.summary }} {{cfg.eshop_currency}}</td>
+            </tr>
+            <tr><td></td>
+                <td>{{ tp.get('transportation_by_' + cart.transportation[0], 'transportation_by_' + cart.transportation[0]) }}</td>
+                <td></td>
+                <td></td>
+                <td class="price">{{ cart.transportation[1] }} {{cfg.eshop_currency}}</td>
+            </tr>
+            <tr><td></td>
+                <td>{{ tp.get('payment_by_' + cart.payment[0], 'payment_by_' + cart.payment[0]) }}</td>
+                <td></td>
+                <td></td>
+                <td class="price">{{ cart.payment[1] }} {{cfg.eshop_currency}}</td>
+            </tr>
+            <tr class="active summary"><td></td>
+                <td>{{ _('Total') }}</td>
+                <td></td>
+                <td></td>
+                <td class="summary">{{ cart.total }} {{cfg.eshop_currency}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>{# /row #}
+
+      <div class="row">
+        <a class="btn btn-primary pull-right" href="/eshop/cart/pay_and_order">{{ _('Pay and Order') }}</a>
+      </div>
+
+    </div>{# /container #}
+    <script src="/js/spinner.js"></script>
+    <script>
+      $(document).ready(function(){
+
+      });
+    </script>
+
+{% include "_footer.html" %}

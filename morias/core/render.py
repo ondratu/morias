@@ -7,6 +7,7 @@ from falias.util import Object
 from gettext import NullTranslations, translation
 from datetime import datetime
 from time import time
+from json import dumps
 
 from lang import get_lang, get_langs
 from morias.lib.menu import correct_menu
@@ -111,6 +112,10 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     env.globals['ord'] = ord
     env.globals['now'] = time
     env.globals['datetime'] = datetime.fromtimestamp
+    env.globals['jsonify'] = dumps
+
+    env.filters['datetime'] = datetime.fromtimestamp
+    env.filters['jsonify'] = dumps
 
     # morias functionality
     env.globals['check_right'] = check_right

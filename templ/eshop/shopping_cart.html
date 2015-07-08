@@ -1,0 +1,42 @@
+{% set title = _('Shopping cart') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills">
+        <li class="navbar-brand">{{ _('Shopping cart') }}</li>
+
+        <li class="pull-right"><a way="next">{{ _('Continue in Order') }}</a></li>
+        <li class="pull-right"><a role="recalculate">{{ _('Recalculate') }}</a></li>
+      </ul>
+
+      <table class="table table-hover" role="cart-items">
+        <tr role="header"><th>#</th>
+            <th>{{ _('Name') }}</th>
+            <th class="price">{{ _('Price') }}</th>
+            <th class="count col-md-1">{{ _('Count') }}</th>
+            <th class="summary">{{ _('Summary' )}}</th>
+            <th class="actions">{{ _('Action' )}}</th>
+        </tr>
+      </table>
+
+      <div class="row">
+        <a class="btn btn-primary pull-right" way="next">{{ _('Continue in Order') }}</a>
+      </div>
+    </div>{# /container #}
+
+    <script src="/js/spinner.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script src="/js/eshop/shopping_cart.js"></script>
+    <script>
+        $.extend(M.locales, {
+            'Remove'    : '{{ _('Remove') }}',
+            'Summary'   : '{{ _('Summary') }}',
+            'Error in Action'   : "{{ _('Error in Action') }}",
+            'me_error_in_action': "{{ _('There is some error in action you do. We are sorry for that, we are working on fix that.') }}"
+        });
+
+        var cart = new M.Eshop.ShoppingCart({{ cart.dict()|jsonify }}, '{{ cfg_currency }}');
+    </script>
+
+{% include "_footer.html" %}

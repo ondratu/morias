@@ -1,0 +1,67 @@
+{% set title = item.name|e -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container eshop-item">
+      <div class="row">
+        <div class="col-md-6 pull-right">
+          <h1>{{ item.name|e }}</h1>
+          <div class="price"><div class="itemlabel">{{ _('Price') }}:</div> {{ item.price }} {{ cfg_currency }}</div>
+          <div class="count"><div class="itemlabel">{{ _('At store') }}:</div> {{ item.count }} </div>
+          <div class="buy">
+            <input class="form-control" type="number" name="count" value="1">
+            <a class="btn btn-primary" role="buy" item-id="{{ item.id }}">{{ _('Buy') }}</a>
+          </div>
+        </div>
+        <div class="col-md-6 pull-left">
+          <div class="image">
+            <img class="img-rounded" data-src="/js/holder.js/550x330/text:{{ item.name }}" alt="">
+          <div>
+        </div>
+      </div>{# /row #}
+      <div class="row">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#description" data-toggle="tab">{{ _('Description') }}</a></li>
+          <li><a href="#attachments" data-toggle="tab">{{ _('Attachments') }}</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div class="tab-pane active" id="description">
+            {{ item.description }}
+          </div>
+          <div class="tab-pane" id="attachments">
+          </div>
+        </div>
+      </div>{# /row #}
+
+      <h2></h2>
+
+    </div>{# /container #}
+
+
+    <script src="/js/holder.js"></script>
+    <script src="/js/spinner.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script src="/js/eshop/shopping.js"></script>
+    <script>
+        $.extend(M.locales, {
+            'Error in Action'   : "{{ _('Error in Action') }}",
+            'me_error_in_action': "{{ _('There is some error in action you do. We are sorry for that, we are working on fix that.') }}"
+        });
+
+        $(document).ready(function() {
+            $('a[role=buy]').on('click', function(ev) {
+                var $count = $('input[name=count]');
+                var count = Number($count.val());
+                if (count < 1)
+                    return;
+
+                M.Eshop.buy($(ev.target).attr('item-id'), count, function(){
+                        $count.val(1);
+                    });
+            });
+        });
+    </script>
+{% include "_footer.html" %}
