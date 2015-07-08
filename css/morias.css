@@ -91,6 +91,17 @@ table tr td[level="8"] { padding-left: 90px; }
     font-family: monospace, serif;
 }
 
+.form-control::-moz-placeholder {
+  color: #ccc;
+  opacity: 1;
+}
+.form-control:-ms-input-placeholder {
+  color: #ccc;
+}
+.form-control::-webkit-input-placeholder {
+  color: #ccc;
+}
+
 .btn-add > .fa:before {
     content: "\f067";
 }
