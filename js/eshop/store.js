@@ -151,7 +151,9 @@ M.Eshop.Actions.prototype._view = function(data){
             tr.append($('<td>').append(it.data.price));
         else
             tr.append($('<td>').append(it.data.count));
-        tr.append($('<td>').append(it.data.note)); //FIXME: escape
+        tr.append($('<td>')
+            .text((it.data.order) ? '' : it.data.note)
+            .append((it.data.order) ? $('<a>', {'href': '/admin/eshop/orders/'+it.data.order}).text(M._('Order')+': '+it.data.order) : '') );
 
         ch.append(tr);
     }
