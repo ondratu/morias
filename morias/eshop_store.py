@@ -43,7 +43,7 @@ def admin_store(req):
     else:
         kwargs = {}
 
-    pager = Pager()
+    pager = Pager(sort = 'desc')
     pager.bind(req.args)
     items = Item.list(req, pager, **kwargs)
 
