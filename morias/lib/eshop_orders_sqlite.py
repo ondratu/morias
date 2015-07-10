@@ -46,10 +46,7 @@ def get(self, req):
     return self
 #enddef
 
-def add(self, req):
-    tran = req.db.transaction(req.logger)
-    c = tran.cursor()
-
+def _add (self, c):
     c.execute("INSERT INTO eshop_orders (client_id, email, create_date, "
                     "modify_date, state, items, history, data) "
                 "VALUES (%s, %s, strftime('%%s','now')*1, strftime('%%s','now')*1, "
@@ -57,8 +54,6 @@ def add(self, req):
                 (self.client_id, self.email, self.state, json.dumps(self.items),
                  json.dumps(self.history), json.dumps(self.data) ) )
     self.id = c.lastrowid
-    tran.commit()
-    return self
 #enddef
 
 def _mod(self, c):

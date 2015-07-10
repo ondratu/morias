@@ -294,12 +294,18 @@ table tr td[level="8"] { padding-left: 90px; }
     float: left;
 }
 
+table[role=cart-items] .error {
+    color: #b94a48;
+}
 table[role=cart-items] .price,
 table[role=cart-items] .count {
     text-align: right;
 }
 table[role=cart-items] .actions {
-    text-align: center;
+    text-align: right;
+}
+table[role=cart-items] .fa-warning {
+    margin-right: 5px;
 }
 table[role=cart-items] td.summary {
     text-align: right;

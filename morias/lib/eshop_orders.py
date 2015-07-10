@@ -5,6 +5,8 @@ from poorwsgi import state
 from collections import OrderedDict
 from time import time
 
+from eshop_store import Item, Action
+
 # states
 STATE_STORNED   = 0
 STATE_ACCEPT    = 1
@@ -15,6 +17,9 @@ STATE_CLOSED    = 4
 STATE_WAIT_FOR_PAID     = 10
 STATE_WAIT_FOR_PICK_UP  = 11
 
+EMPTY_EMAIL         = 1
+EMPTY_ITEMS         = 2
+NOT_ENOUGH_ITEMS    = 3
 
 _drivers = ("sqlite",)
 
@@ -72,11 +77,21 @@ class ShoppingCart(object):
                 tmp[item_id]['count'] += item['count']
                 if tmp[item_id]['count'] <= 0:
                     tmp.pop(item_id)   # remove zero less count items
+                elif item['count'] < 0:
+                    tmp[item_id].pop('not_enough', False)
             else:
                 tmp[item_id] = item
         #endfor
 
         self.items = tmp.items()
+    #enddef
+
+    def set_not_enought(self, ids):
+        for item_id, item in self.items:
+            if item_id in ids:
+                item['not_enough'] = True
+            else:
+                item['not_enough'] = False
     #enddef
 
     def store(self, req ):
@@ -187,11 +202,29 @@ class Order(object):
         return m.get(self, req)
 
     def add(self, req):
-        if not self.email: return EMPTY_EMAIL
-        if not self.items: return EMPTY_ITEMS
+        if not self.items: return (EMPTY_ITEMS, 0)
 
         m = driver(req)
-        return m.add(self, req)
+        c = m._lock(req)                        # lock database first
+        not_enought_items = []
+        try:
+            m._add(self, c)                     # get id
+            for item_id, it in self.items:   # record to store
+                item = Item(item_id)
+                action = Action.from_order(self.id, it['count'])
+                try:
+                    if item._action(req, c, action) is None:
+                        raise RuntimeError('Item not found')    # TODO: a co vyprodane !!
+                except ValueError as e:
+                    not_enought_items.append(e.args[1])
+            if not_enought_items:
+                m._rollback(c)
+                return (NOT_ENOUGH_ITEMS, not_enought_items)
+        except BaseException as e:
+            m._rollback(c)
+            return None
+        m._commit(c)
+        return self
     #enddef
 
     def mod(self, req, note = ''):
