@@ -214,7 +214,7 @@ class Order(object):
                 action = Action.from_order(self.id, it['count'])
                 try:
                     if item._action(req, c, action) is None:
-                        raise RuntimeError('Item not found')    # TODO: a co vyprodane !!
+                        raise RuntimeError('Item not found')
                 except ValueError as e:
                     not_enought_items.append(e.args[1])
             if not_enought_items:
@@ -283,6 +283,12 @@ class Order(object):
 
             if m._mod(self, c) is None:
                 raise LookupError('not found in backend')
+
+            for item_id, it in self.items:   # record to store
+                item = Item(item_id)
+                action = Action.from_order(self.id, -it['count'])
+                if item._action(req, c, action) is None:
+                    raise RuntimeError('Item not found')
 
         except Exception as e:
             req.log_error(str(e))
