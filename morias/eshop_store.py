@@ -158,8 +158,7 @@ def admin_item_incdec(req, id):
     else:
         raise RuntimeError('Unknow action')
 
-    action = Action()
-    action.bind(req.form, action_type)
+    action = Action.bind(req.form, action_type)
 
     item = Item(id)
     if not item.action(req, action) or not item.get(req):

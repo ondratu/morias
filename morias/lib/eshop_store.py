@@ -50,6 +50,10 @@ class Item(object):
         m = driver(req)
         return m.set_state(self, req, state)
 
+    def _action(self, req, c, action):
+        m = driver(req)
+        return m._action(self, c, action)
+
     def action(self, req, action):
         m = driver(req)
         return m.action(self, req, action)
@@ -74,13 +78,28 @@ class Item(object):
 #endclass
 
 class Action(object):
-    def bind(self, form, action_type):
-        self.action_type = action_type
-        self.data = {'note': form.getfirst('note', '', uni)}
+    @staticmethod
+    def bind(form, action_type):
+        action = Action()
+        action.action_type = action_type
+        action.data = {'note': form.getfirst('note', '', uni)}
         if action_type in (ACTION_INC, ACTION_DEC):
-            self.data['count'] = form.getfirst('count', 0, int)
+            action.data['count'] = form.getfirst('count', 0, int)
         if action_type == ACTION_PRI:
-            self.data['price'] = form.getfirst('price', 0, float)
+            action.data['price'] = form.getfirst('price', 0, float)
+        return action
+    #enddef
+
+    @staticmethod
+    def from_order(order_id, count):
+        action = Action()
+        action.action_type = ACTION_DEC
+        action.data = {
+                'count' : count,
+                'order' : order_id,
+                'note'  : '@ordered'
+            }
+        return action
     #enddef
 
     @staticmethod

@@ -20,7 +20,8 @@ from lib.pager import Pager
 from lib.login import re_email
 from lib.eshop_orders import ShoppingCart, Address, Order, \
             STATE_STORNED, STATE_ACCEPT, STATE_PROCESS, STATE_SENT, STATE_CLOSED, \
-            STATE_WAIT_FOR_PAID, STATE_WAIT_FOR_PICK_UP
+            STATE_WAIT_FOR_PAID, STATE_WAIT_FOR_PICK_UP, \
+            EMPTY_ITEMS, NOT_ENOUGH_ITEMS
 from lib.eshop_store import Item, STATE_VISIBLE
 
 from eshop import eshop_menu
@@ -237,11 +238,19 @@ def eshop_cart_pay_and_order(req):
     cart = ShoppingCart(req)
     #TODO: payment page if could be (paypal, card, transfer)
     order = Order.from_cart(cart)
+    if not order:
+        redirect(req, '/eshop')
     order.client_id = req.login.id if req.login else None
-    if order.add(req):
+    retval = order.add(req)
+    if retval == order:
         cart.clean(req)
-        #TODO: record to store !
-    redirect(req, '/eshop')
+        redirect(req, '/eshop')
+    if retval[0] == EMPTY_ITEMS:
+        redirect(req, '/eshop')
+    if retval[0] == NOT_ENOUGH_ITEMS:
+        cart.set_not_enought(retval[1])
+        cart.store(req)
+        redirect(req, '/eshop/cart')
 #enddef /eshop/cart/pay_and_order
 
 @app.route('/eshop')

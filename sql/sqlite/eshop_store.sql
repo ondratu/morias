@@ -25,7 +25,7 @@ create index if not exists
 -- count trigger
 create trigger eshop_store_count_tg update of count on eshop_store when new.count < 0
     begin
-        select raise(ABORT, "Can' t be count less then zero!");
+        select raise(ABORT, "@less_then_zero: Can't be count less then zero!");
     end;
 
 -- incrase/decrase/price modification

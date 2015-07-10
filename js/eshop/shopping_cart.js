@@ -33,8 +33,12 @@ M.Eshop.ShoppingCart.prototype.refresh = function() {
         item_id = Number(item_id);  //XXX: need to convert to number, do't know why
         var item = this.items[item_id];
         var $tr = $('<tr>');
+        if (item.not_enough)
+            $tr.addClass('error');
         $('<td>').text(item_id).appendTo($tr);
-        $('<td>').text(item.name).appendTo($tr);
+        $('<td>')
+            .append($('<a>', {'href': '/eshop/'+item_id}).text(item.name))
+            .appendTo($tr);
         $('<td>', {'class': 'price'})
             .text(item.price.toFixed(1) + ' ' + this.currency)
             .appendTo($tr);
@@ -47,6 +51,7 @@ M.Eshop.ShoppingCart.prototype.refresh = function() {
             .text(item.summary.toFixed(1) + ' ' + this.currency)
             .appendTo($tr);
         $('<td>', {'class': 'actions'})
+            .append((item.not_enough) ? $('<i>', {'class': 'fa fa-warning', 'title': M._('Not enough items at store')}) : '')
             .append($('<a>')
                         .text(M._('Remove'))
                         .on('click', this.on_remove.bind(this, item_id)))

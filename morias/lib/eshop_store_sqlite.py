@@ -1,5 +1,6 @@
 
 from falias.util import islistable
+from sqlite3 import IntegrityError
 
 import json
 
@@ -66,23 +67,29 @@ def set_state(self, req, state):
     return self
 #enddef
 
-
-def action(self, req, action):
-    tran = req.db.transaction(req.logger)
-    c = tran.cursor()
-
+def _action(self, c, action):
     c.execute("INSERT INTO eshop_store_action "
                     "(item_id, timestamp, action_type, data) "
                 "VALUES (%d, strftime('%%s','now')*1, %d, %s)",
                 (self.id, action.action_type, json.dumps(action.data)) )
     if action.action_type == ACTION_INC:
-        c.execute("UPDATE eshop_store SET count = count + %d, "
-                    "modify_date = strftime('%%s','now')*1 WHERE item_id = %d",
-                    (action.data['count'], self.id))
+        try:
+            c.execute("UPDATE eshop_store SET count = count + %d, "
+                        "modify_date = strftime('%%s','now')*1 WHERE item_id = %d",
+                        (action.data['count'], self.id))
+        except IntegrityError as e:
+            if e.message.startswith('@less_then_zero:'):
+                raise ValueError(e.message[17:], self.id)   # must be user like
+            raise e
     elif action.action_type == ACTION_DEC:
-        c.execute("UPDATE eshop_store SET count = count - %d, "
-                    "modify_date = strftime('%%s','now')*1 WHERE item_id = %d",
-                    (action.data['count'], self.id))
+        try:
+            c.execute("UPDATE eshop_store SET count = count - %d, "
+                        "modify_date = strftime('%%s','now')*1 WHERE item_id = %d",
+                        (action.data['count'], self.id))
+        except IntegrityError as e:
+            if e.message.startswith('@less_then_zero:'):
+                raise ValueError(e.message[17:], self.id)   # must be user like
+            raise e
     elif action.action_type == ACTION_PRI:
         c.execute("UPDATE eshop_store SET price = %f, "
                     "modify_date = strftime('%%s','now')*1 WHERE item_id = %d",
@@ -91,9 +98,15 @@ def action(self, req, action):
             return None
     else:
         raise RuntimeError("Unknown action_type")
-
-    tran.commit()
     return self
+#enddef
+
+def action(self, req, action):
+    tran = req.db.transaction(req.logger)
+    c = tran.cursor()
+    rv = _action(self, c, action)
+    tran.commit()
+    return rv
 #enddef
 
 def item_list(req, pager, **kwargs):
