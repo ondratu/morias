@@ -16,7 +16,7 @@
 {%- from "_orderby.html" import orderby with context %}
       <table class="table table-hover">
         <tr><th>#</th>
-            <th>{{ orderby(_('Email'), 'email', 'desc') }}</th>
+            <th>{{ orderby(_('Email'), 'email', 'asc') }}</th>
             <th>{{ _('Action' )}}</th></tr>
         {% for item in rows -%}
         <tr><td>{{ item.id }}</td>
