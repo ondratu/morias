@@ -57,7 +57,7 @@ class New():
 
     @staticmethod
     def list(req, pager, body = False, **kwargs):
-        if pager.order not in ('create_date', 'title', 'locale'):
+        if pager.order not in ('create_date', 'public_date', 'title', 'locale'):
             pager.order = 'create_date'
 
         m = driver(req)

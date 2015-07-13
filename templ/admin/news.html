@@ -14,13 +14,14 @@
       {% endif -%}
       </ul>
 
+{%- from "_orderby.html" import orderby with context %}
       <table class="table table-hover">
         <tr><th>#</th>
-            <th>{{ _('Title') }}</th>
+            <th>{{ orderby(_('Title'), 'title', 'asc') }}</th>
             <th>{{ _('Author') }}</th>
-            <th>{{ _('Locale') }}</th>
-            <th>{{ _('Create time') }}</th>
-            <th>{{ _('Publicated') }}</th>
+            <th>{{ orderby(_('Locale'), 'locale', 'asc') }}</th>
+            <th>{{ orderby(_('Create time'), 'create_date', 'desc') }}</th>
+            <th>{{ orderby(_('Publicated'), 'public_date', 'desc') }}</th>
             <th>{{ _('Action' )}}</th></tr>
         {% for new in rows %}
         <tr {{ 'class="disabled"' if new.state == 0 else '' }}><td>{{ new.id }}</td>
