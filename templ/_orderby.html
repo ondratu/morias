@@ -12,10 +12,10 @@
 {%- macro orderby(label, order, sort = none ) -%}
   {%- if sort %}{#     first sort by default, link another way -#}
     {%- if pager.order != order -%}
-      <a href="?{{ params }}order={{ order }}&amp;sort={{ sort }}">{{ arrow(sort) }} {{ label }}</a>
+      <a href="?{{ params }}order={{ order }}&amp;sort={{ sort }}">{{ label }}</a>
     {%- else -%}
       {%- set sort = 'asc' if pager.sort == 'desc' else 'desc' -%}
-      <a href="?{{ params }}order={{ order }}&amp;sort={{ sort }}">{{ arrow(sort) }} {{ label }}</a>
+      <a href="?{{ params }}order={{ order }}&amp;sort={{ sort }}">{{ label }} {{ arrow(sort) }}</a>
     {%- endif -%}
   {%- else %}{#     sort not set, default by pager in code -#}
     {%- if pager.order != order -%}
