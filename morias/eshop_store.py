@@ -33,18 +33,22 @@ def admin_store(req):
     check_login(req)
     check_right(req, module_right)
 
+    pager = Pager(sort = 'desc')
+    pager.bind(req.args)
+
     show = req.args.getfirst('show', '', uni)
     if show == 'visible':
         kwargs = {'state': STATE_VISIBLE}
+        pager.set_params(show = show)
     elif show == 'hidden':
         kwargs = {'state': STATE_HIDDEN}
+        pager.set_params(show = show)
     elif show == 'disabled':
         kwargs = {'state': STATE_DISABLED}
+        pager.set_params(show = show)
     else:
         kwargs = {}
 
-    pager = Pager(sort = 'desc')
-    pager.bind(req.args)
     items = Item.list(req, pager, **kwargs)
 
     return generate_page(req, "admin/eshop/store.html",
@@ -134,7 +138,7 @@ def admin_item_state(req, id):
     else:
         item.set_state(req, STATE_DISABLED)
 
-    redirect(req, '/admin/eshop/store')
+    redirect(req, req.referer)
 #enddef
 
 #@app.route('/admin/eshop/store/<id:int>/dec', method = state.METHOD_POST)

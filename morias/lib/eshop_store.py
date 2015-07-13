@@ -65,7 +65,7 @@ class Item(object):
 
     @staticmethod
     def list(req, pager, **kwargs):
-        if pager.order not in ('modify_date', 'name', 'price', 'state'):
+        if pager.order not in ('modify_date', 'name', 'count', 'price'):
             pager.order = 'modify_date'
 
         m = driver(req)
