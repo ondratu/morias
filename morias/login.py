@@ -86,7 +86,7 @@ def admin_logins(req):
 
     error = req.args.getfirst('error', 0, int)
 
-    pager = Pager()
+    pager = Pager(sort = 'desc')
     pager.bind(req.args)
 
     rows = Login.list(req, pager)

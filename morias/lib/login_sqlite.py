@@ -111,7 +111,7 @@ def item_list(req, pager):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
     c.execute("SELECT login_id, email, rights, enabled "
-                "FROM logins ORDER BY email LIMIT %s, %s",
+                "FROM logins ORDER BY email %s LIMIT %%d, %%d" % pager.sort,
                 (pager.offset, pager.limit))
     items = []
     for row in iter(c.fetchone, None):
