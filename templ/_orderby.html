@@ -1,0 +1,27 @@
+{# vim:set softtabstop=2: -#}
+{%- set params = pager.params + '&amp;' if length(pager.params) else '' -%}
+
+{%- macro arrow(sort) -%}
+  {%- if sort == 'asc' -%}
+    <i class="fa fa-caret-down" title="{{ _('asc') }}"></i>
+  {%- else -%}
+    <i class="fa fa-caret-up" title="{{ _('desc') }}"></i>
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro orderby(label, order, sort = none ) -%}
+  {%- if sort %}{#     first sort by default, link another way -#}
+    {%- if pager.order != order -%}
+      <a href="?{{ params }}order={{ order }}&amp;sort={{ sort }}">{{ arrow(sort) }} {{ label }}</a>
+    {%- else -%}
+      {%- set sort = 'asc' if pager.sort == 'desc' else 'desc' -%}
+      <a href="?{{ params }}order={{ order }}&amp;sort={{ sort }}">{{ arrow(sort) }} {{ label }}</a>
+    {%- endif -%}
+  {%- else %}{#     sort not set, default by pager in code -#}
+    {%- if pager.order != order -%}
+      <a href="?{{ params }}order={{ order }}">{{ label }}</a>
+    {%- else -%}
+      {{ label }}
+    {%- endif -%}
+  {%- endif -%}
+{%- endmacro -%}
