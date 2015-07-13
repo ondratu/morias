@@ -32,10 +32,11 @@
         </div> <!-- /.modal-dialog -->
       </div> <!-- /.modal -->
 
+{%- from "_orderby.html" import orderby with context %}
       <table class="table table-hover">
-        <tr><th>{{ _('File name') }}</th>
-            <th>{{ _('Title') }}</th>
-            <th>{{ _('Locale') }}</th>
+        <tr><th>{{ orderby(_('File name'), 'name', 'asc') }}</th>
+            <th>{{ orderby(_('Title'), 'title', 'asc') }}</th>
+            <th>{{ orderby(_('Locale'), 'locale', 'asc') }}</th>
             <th>{{ _('Last modify') }}</th>
             <th>{{ _('Action' )}}</th></tr>
         {% for page in rows %}

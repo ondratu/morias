@@ -122,7 +122,8 @@ def item_list(req, pager, **kwargs):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
     c.execute("SELECT page_id, author_id, name, title, locale, editor_rights "
-                "FROM page_files %s ORDER BY name LIMIT %%s, %%s" % cond,
+                "FROM page_files %s ORDER BY %s %s LIMIT %%s, %%s" % \
+                (cond, pager.order, pager.sort),
                 tuple(kwargs.values()) + (pager.offset, pager.limit))
     items = []
     for row in iter(c.fetchone, None):

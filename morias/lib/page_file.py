@@ -144,6 +144,9 @@ class Page():
 
     @staticmethod
     def list(req, pager, **kwargs):
+        if pager.order not in ('name', 'title', 'locale'):
+            pager.order = 'name'
+
         m = driver(req)
         return m.item_list(req, pager, **kwargs)
 
