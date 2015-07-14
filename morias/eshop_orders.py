@@ -294,7 +294,7 @@ def admin_orders(req):
     if client:
         kwargs['client'] = client
 
-    pager = Pager()
+    pager = Pager(sort = 'desc')
     items = Order.list(req, pager, **kwargs)
 
     return generate_page(req, "admin/eshop/orders.html",
