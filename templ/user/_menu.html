@@ -14,15 +14,29 @@
 
       <div class="collapse navbar-collapse">
         <ul class="pull-right nav navbar-nav">
-        {% if login is defined and login != none -%}
-        <li {{ 'class="active"' if site.this == '/user' else '' }}>
+        {%- if login is defined and login != none %}
+          <li {{ 'class="active"' if site.this == '/user' else '' }}>{# -#}
             <a href="/user">{{ login.email }}</a></li>
-        {% endif -%}
-        {%- for item in menu if item.uri -%}              {# TODO: tooltip (title) -#}
-          <li {{ 'class="active"' if site.this == item.uri else '' }}>
-            <a href="{{ item.uri }}" {{ 'role="'+item.role+'"' if item.role }} title="{{ item.title or item.label }}">
-              {{ item.label }}</a></li>
-        {%- endfor -%}
+        {%- endif %}
+        {#-%- for item in menu if item.uri -%#}              {# TODO: tooltip (title) -#}
+        {%- for item in menu -%}
+          {%- if item.locale not in (lang, '') %}{% continue %}{% endif %}
+          {%- if item.items %}
+            {%- if item.role != 'static-menu' %}{% continue %}{% endif %}
+          <li class="dropdown">
+            <a class="btn-link dropdown-toggle" data-toggle="dropdown" title="{{ (item.title or item.label)|e }}"> {{ item.label|e }} <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              {%- for it in item.items %}
+              <li {{ 'class="active"' if site.this == it.uri else '' }}>{# -#}
+                <a href="{{ it.uri }}" {{ 'role="'+it.role+'"' if it.role }} title="{{ (it.title or it.label)|e }}">{{ it.label|e }}</a></li>
+              {%- endfor %}
+            </ul></li>
+          {%- else %}
+          <li {{ 'class="active"' if site.this == item.uri else '' }}>{# -#}
+            <a href="{{ item.uri }}" {{ 'role="'+item.role+'"' if item.role }} title="{{ (item.title or item.label)|e }}">{# -#}
+              {{ item.label|e }}</a></li>
+          {%- endif %}
+        {%- endfor %}
         {% if login is defined and login != none -%}
           <li><a href="/logout">{{ _('Logout') }} {{ login.email.split('@')[0] }}</a></li>
         {% else -%}

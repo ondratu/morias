@@ -172,6 +172,7 @@ def generate_page(req, template, **kwargs):
 
     if not 'menu' in kwargs:
         kwargs['menu'] = correct_menu(req, req.menu)
+        correct_menu(req, req.static_menu, kwargs['menu'])
 
     return morias_template(req, template, **kwargs)
 #enddef

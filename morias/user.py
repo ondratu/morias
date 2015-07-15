@@ -5,7 +5,8 @@ from core.render import generate_page
 
 from lib.menu import *
 
-user_sections = Menu('User')  # menu for any users: Profile / Logout / Login / Register
+# menu for any users: Profile / Logout / Login / Register
+user_sections = Menu('User', role='user-menu')
 user_menu = user_sections     # back compatibility
 
 user_info_menu = Menu('Info')
@@ -15,6 +16,7 @@ user_sections.append(user_info_menu)
 @app.pre_process()
 def append_menu(req):
     req.menu = user_menu
+    req.static_menu = Menu('Menu')      # static menu (from DB for example)
 
 @app.route('/user')
 def root(req):
