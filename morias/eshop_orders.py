@@ -32,12 +32,12 @@ _check_conf = (
     # morias common block
     ('morias', 'db', Sql, None),
     # common addresses block
-    ('addresses', 'region', bool, False, True),
-    ('addresses', 'country', bool, False, True),
+    ('addresses', 'region',     bool, False, True),
+    ('addresses', 'country',    bool, False, True),
     # eshop block
     ('eshop', 'currency', unicode, '', True),
-    ('eshop', 'eshop_in_menu', bool, True),
-    ('eshop', 'cart_in_menu', bool, True),
+    ('eshop', 'eshop_in_menu',  bool, True),
+    ('eshop', 'cart_in_menu',   bool, True),
     # transportation block (-1 to disable)
     ('eshop', 'transportation_post',        int, 0, True, _fee_doc),
     ('eshop', 'transportation_personally',  int, 0, True, _fee_doc),
@@ -53,9 +53,9 @@ _check_conf = (
 
 def _call_conf(cfg, parser):
     cfg.footers.append('eshop/_footer.html')
-    if 'eshop_eshop_in_menu':
+    if cfg.eshop_eshop_in_menu:
         user_menu.append(MenuItem('/eshop', label="Eshop"))
-    if 'eshop_cart_in_menu':
+    if cfg.eshop_cart_in_menu:
         user_menu.append(MenuItem('/eshop/cart', label="Shopping Cart",
                         symbol="shopping-cart", role="shopping-cart"))
 #enddef
