@@ -21,6 +21,11 @@ admin_menu.append(system_menu)
 user_sections.append(Item('/admin', label="Admin", symbol='admin',
                     rights = ['admin']))
 
+def _call_conf(cfg, parser):
+    if cfg.debug:
+        system_menu.append(Item('/debug-info', label="PoorWSGi debug",
+                    symbol='debug'))
+
 @app.route('/admin')
 def root(req):
     check_login(req)
