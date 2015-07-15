@@ -13,12 +13,18 @@ from lib.menu import Item
 from lib.pager import Pager
 from lib.new import New
 
+from user import user_sections
 from admin import *
 
 _check_conf = (
     # morias common block
     ('morias', 'db', Sql),
+    ('news', 'in_menu',  bool, True),
 )
+
+def _call_conf(cfg, parser):
+    if cfg.news_in_menu:
+        user_sections.append(Item('/news', label="News"))
 
 module_rights = ('news_editor', 'news_author')
 rights.update(module_rights)
