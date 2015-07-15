@@ -25,7 +25,7 @@
       </ul>
 
       <form class="form-horizontal" role="form" method="post">
-       <div id="page_panel">
+       {% if site.this != '/admin/pages/add' %}<div id="page_panel">{% endif %}
         <div class="form-group">
           <label for="input_filename" class="col-sm-2 control-label">{{ _('File name') }}</label>
           <div class="col-sm-5 {{ 'has-error' if error is defined else '' }}">
@@ -39,6 +39,7 @@
           </div>
         </div>
 
+      {% if site.this == '/admin/pages/add' %}<div id="page_panel">{% endif %}
         <div class="form-group">
             <label class="col-sm-1 control-label">{{ _('Rights') }}</label>
             <label style="text-align: center;" class="col-sm-5 control-label">{{ _('Possilbe rights') }}</label>
@@ -53,7 +54,7 @@
             <div class="col-sm-1"></div>
           {% endfor %}
           </div>
-          <div id="attache_rights" class="col-sm-5">    
+          <div id="attache_rights" class="col-sm-5">
           {% for right in page.rights|sort -%}
             <a class="col-sm-5 btn btn-default btn-remove" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
@@ -85,16 +86,15 @@
           <div class="col-sm-12">
             <button class="col-sm-2 btn btn-default pull-right" type="submit">{{ _('Save') }}</button></div></div>
       </form>
+{%- if site.this != '/admin/pages/add' -%}
   {% set attachments_object_type = 'page' %}
   {% set attachments_object_id = page.id %}
   {% include "admin/_attachments_upload.html" %}
-
+{%- endif %}
     </div>
-  {% if site.this != '/admin/pages/add' -%}
     <script>
         var btn = $('.swittcher');
         M.hiddener.close(btn, 0);
     </script>
-  {% endif -%}
 
 {% include "_footer.html" %}
