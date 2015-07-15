@@ -9,12 +9,15 @@ from core.login import rights, check_login, check_right, check_referer
 from core.render import generate_page
 
 from lib.pager import Pager
+from lib.timestamp import check_timestamp
 from lib.page_menu import MenuItem
 
 from admin import *
 
 _check_conf = (
     ('morias', 'db', Sql),                      # database configuration
+    ('morias', 'static_menu', bool, True, True, "If static menu is append to menu"),
+    ('page_menu', 'timestamp', unicode, 'tmp/page_menu.timestamp'),
 )
 
 def _call_conf(cfg, parser):
@@ -24,6 +27,27 @@ module_right = 'menu_modify'
 rights.add(module_right)
 
 content_menu.append(Item('/admin/menu', label="Menu", rights = [module_right]))
+
+static_menu = None
+timestamp = -1
+
+@app.pre_process()
+def load_static_menu(req):
+    if not req.cfg.morias_static_menu:
+        return          # only when morias.statci_menu is True (default)
+
+    global timestamp
+    global static_menu
+
+    check = check_timestamp(req, req.cfg.page_menu_timestamp)
+    if check > timestamp:       # if last load was in past to timestamp file
+        req.log_error("file timestamp is older, loading menu from DB...",
+                        state.LOG_INFO)
+        static_menu = MenuItem.get_menu(req)
+        timestamp = check
+
+    req.static_menu.extend(static_menu)
+#enddef
 
 def js_items(req):
     pager = Pager(limit = -1)

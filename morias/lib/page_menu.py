@@ -5,8 +5,9 @@ from hashlib import md5
 import json
 
 from lib.tree import Item
+from lib.timestamp import write_timestamp
 
-from lib import menu
+from morias.lib import menu # fucknig name space for isinstance in correct_menu
 
 class MenuItem(Item):
     """ MenuItem from sql have this structure:
@@ -39,16 +40,42 @@ class MenuItem(Item):
     #enddef
 
     def add(self, req):
-        return super(MenuItem, self).add(req, title = self.title,
+        rv = super(MenuItem, self).add(req, title = self.title,
                 link = self.link, locale = self.locale, state = 1)
+        write_timestamp(req, req.cfg.page_menu_timestamp)
+        return rv
 
     def mod(self, req):
-        return super(MenuItem, self).mod(req, title = self.title,
+        rv = super(MenuItem, self).mod(req, title = self.title,
                 link = self.link, locale = self.locale)
+        write_timestamp(req, req.cfg.page_menu_timestamp)
+        return rv
 
     def enabled(self, req, enabled = True):
         self.state = int(enabled)
-        return super(MenuItem.self).mod(req, state = state)
+        rv = super(MenuItem, self).mod(req, state = state)
+        write_timestamp(req, req.cfg.page_menu_timestamp)
+        return rv
+
+    def delete(self, req):
+        rv = super(MenuItem, self).delete(req)
+        write_timestamp(req, req.cfg.page_menu_timestamp)
+        return rv
+
+    def move(self, req):
+        rv = super(MenuItem, self).move(req)
+        write_timestamp(req, req.cfg.page_menu_timestamp)
+        return rv
+
+    def to_child(self, req):
+        rv = super(MenuItem, self).to_child(req)
+        write_timestamp(req, req.cfg.page_menu_timestamp)
+        return rv
+
+    def to_parent(self, req):
+        rv = super(MenuItem, self).to_parent(req)
+        write_timestamp(req, req.cfg.page_menu_timestamp)
+        return rv
 
     def bind(self, form):
         super(MenuItem, self).bind(form)
@@ -88,12 +115,13 @@ class MenuItem(Item):
         items = { None: menu.Menu('') }
         for row in rows:
             if row[MenuItem.PARENT]:
-                items[row[MenuItem.PARENT]] = menu.Menu('')
+                items[row[MenuItem.PARENT]] = menu.Menu('', role='static-menu')
 
         for row in rows:
             if row['state'] == 0:
                 continue            # only active items
-            item = items.get(row[MenuItem.ID], menu.Item(row['link']))
+            item = items.get(row[MenuItem.ID],
+                             menu.Item(row['link'], role='static-link'))
             item.label = row['title']
             item.locale = row['locale']
 
