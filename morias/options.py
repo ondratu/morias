@@ -9,7 +9,8 @@ from core.login import check_login, check_right
 
 from lib.menu import Item
 from lib.pager import Pager
-from lib.options import Option, check_timestamp, load_options
+from lib.timestamp import check_timestamp
+from lib.options import Option, load_options
 
 from admin import system_menu
 
@@ -24,14 +25,13 @@ module_right = 'admin'
 system_menu.append(Item('/admin/system/options', label="Options",
                         symbol="options", rights = [module_right]))
 
-
 timestamp = -1
 
 @app.pre_process()
 def check_options(req):
     global timestamp
 
-    check = check_timestamp(req)
+    check = check_timestamp(req, req.cfg.options_timestamp)
     if check > timestamp:       # if last load was in past to timestamp file
         req.log_error("file timestamp is older, loading options from DB...",
                         state.LOG_INFO)

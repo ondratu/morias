@@ -7,10 +7,8 @@
 from poorwsgi import state
 
 from falias.parser import smart_get
-from falias.util import uni, nuni, islistable
+from falias.util import islistable
 from operator import attrgetter
-from os import makedirs, fstat
-from os.path import dirname, exists
 from sys import exc_info
 from traceback import format_exception
 
@@ -54,7 +52,7 @@ class Option:
         if not self.value: return EMPTY_VALUE
         m = driver(req)
         m.add(self, req)
-        write_timestamp(req)
+        write_timestamp(req, req.cfg.options_timestamp)
     #enddef
 
     def mod(self, req):
@@ -63,7 +61,7 @@ class Option:
         if not self.value: return EMPTY_VALUE
         m = driver(req)
         rv = m.mod(self, req)
-        write_timestamp(req)
+        write_timestamp(req, req.cfg.options_timestamp)
         return rv
     #enddef
 
@@ -82,14 +80,14 @@ class Option:
 
         m = driver(req)
         rv = m.option_set(self, req)
-        write_timestamp(req)
+        write_timestamp(req, req.cfg.options_timestamp)
         return rv
     #enddef
 
     def delete(self, req):
         m = driver(req)
         rv = m.delete(self, req)
-        write_timestamp(req)
+        write_timestamp(req, req.cfg.options_timestamp)
         return rv
 
     @staticmethod
@@ -182,31 +180,4 @@ def load_options(req):
                 req.log_error("Failed to load cfg.%s from options DB:" % var,
                                 state.LOG_ERR)
                 req.log_error(traceback, state.LOG_ERR)
-#enddef
-
-def check_timestamp(req):
-    """ read timestamp file and returns it's modification time """
-    if not exists (req.cfg.options_timestamp):
-        return write_timestamp(req)         # create file for next right read
-
-    with open(req.cfg.options_timestamp, 'rb') as f:
-        return fstat(f.fileno()).st_mtime
-#enddef
-
-def write_timestamp(req):
-    try:
-        if not exists (dirname(req.cfg.options_timestamp)):
-            makedirs(dirname(req.cfg.options_timestamp))
-        with open(req.cfg.options_timestamp, 'wb') as f:
-            return fstat(f.fileno()).st_mtime
-    except:
-        exc_type, exc_value, exc_traceback = exc_info()
-        traceback = format_exception(exc_type,
-                                     exc_value,
-                                     exc_traceback)
-        traceback = ''.join(traceback)
-        req.log_error("Options timestamp file %s could not be write:" % \
-                        req.cfg.options_timestamp, state.LOG_ERR)
-        req.log_error(traceback, state.LOG_ERR)
-        return 0
 #enddef
