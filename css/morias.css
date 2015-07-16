@@ -167,14 +167,15 @@ table tr td[level="8"] { padding-left: 90px; }
 
 .menu-symbol { padding-right: 1.3em; }
 .menu-symbol.fa { padding-right: 0.3em; }
-.menu-symbol[class^=fa]:before {content: "\f500";}  /* looks like space */
-.menu-symbol.fa-login:before {content: "\f1fa";}    /*fa-at*/
-.menu-symbol.fa-admin:before {content: "\f085";}    /*fa-gears*/
-.menu-symbol.fa-address:before {content: "\f003";}  /*fa-envelop-o*/
-.menu-symbol.fa-files:before {content: "\f0c5";}    /*fa-files-o*/
-.menu-symbol.fa-news:before {content: "\f1ea";}     /*fa-newspaper-o*/
+.menu-symbol.fa-none:before { content: "\f500";}        /* looks like space */
+.menu-symbol.fa-login:before {content: "\f1fa";}        /*fa-at*/
+.menu-symbol.fa-admin:before {content: "\f085";}        /*fa-gears*/
+.menu-symbol.fa-address:before {content: "\f003";}      /*fa-envelop-o*/
+.menu-symbol.fa-files:before {content: "\f0c5";}        /*fa-files-o*/
+.menu-symbol.fa-news:before {content: "\f1ea";}         /*fa-newspaper-o*/
 .menu-symbol.fa-attachments:before {content: "\f0c6";}  /*fa-paperclip-o*/
-.menu-symbol.fa-options:before {content: "\f085";}  /*fa-gears-o*/
+.menu-symbol.fa-options:before {content: "\f085";}      /*fa-gears-o*/
+.menu-symbol.fa-debug:before {content: "\f0f1";}        /*fa-stethoscope*/
 
 .red {
     background: red;

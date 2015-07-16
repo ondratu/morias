@@ -3,21 +3,21 @@
 {% include "user/_menu.html" %}
 
     <div class="container">
-    {%- for submenu in user_sections if length(submenu) > 0 -%}
+    {%- for submenu in user_sections if length(submenu) > 0 %}
       <h2><a name="{{ submenu.label }}"></a>{{ submenu.label }}</h2>
-        <div class="row">
-      {%- for item in submenu -%}
+      <div class="row">
+      {%- for item in submenu %}
         <div class="col-md-4"><div class="well">
-          <a href="{{ item.uri }}" title="{{ item.title or item.label }}"><h2>
+          <a href="{{ item.uri }}" title="{{ (item.title or item.label)|e }}"><h2>
           {%- if item.symbol %}
             <i class="fa fa-{{item.symbol}} menu-symbol"></i>
           {%- else %}
-            <i class="menu-symbol"></i>
-          {% endif -%}
-          {{ item.label or item.title }}</h2></a>
+            <i class="fa fa-none menu-symbol"></i>
+          {%- endif -%}
+          {{ (item.label or item.title)|e }}</h2></a>
         </div></div>
       {%- endfor %}
-        </div><!-- /row -->
+        </div>{# /row #}
     {%- endfor %}
     </div>
 {% include "_footer.html" %}
