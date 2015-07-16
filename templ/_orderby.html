@@ -3,9 +3,9 @@
 
 {%- macro arrow(sort) -%}
   {%- if sort == 'asc' -%}
-    <i class="fa fa-caret-down" title="{{ _('asc') }}"></i>
+    <i class="fa fa-sort-asc" title="{{ _('asc') }}"></i>
   {%- else -%}
-    <i class="fa fa-caret-up" title="{{ _('desc') }}"></i>
+    <i class="fa fa-sort-desc" title="{{ _('desc') }}"></i>
   {%- endif -%}
 {%- endmacro -%}
 
