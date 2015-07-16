@@ -13,6 +13,7 @@ from core.errors import SUCCESS
 
 from lib.menu import Item
 from lib.pager import Pager
+from lib.timestamp import check_timestamp
 from lib.page_file import Page
 
 from admin import *
@@ -24,9 +25,13 @@ _check_conf = (
 
     # pages block
     ('pages', 'source', str),
-    ('pages', 'out', str),
+    ('pages', 'out', str, ''),
     ('pages', 'history', str, ''),
-    ('pages', 'rights', tuple, '')
+    ('pages', 'rights', tuple, '', True,
+              "User rights, which could be use for page editing."),
+    ('pages', 'redirect_to_index', bool, True),
+    ('pages', 'runtime', bool, False),
+    ('pages', 'runtime_without_html', bool, False)      # danger !
 )
 
 def _call_conf(cfg, parser):
@@ -34,7 +39,12 @@ def _call_conf(cfg, parser):
         return ()
 
     rights.update(cfg.pages_rights)
-    if 'get_static_menu' not in cfg.__dict__: cfg.get_static_menu = empty
+    if 'get_static_menu' not in cfg.__dict__:
+        cfg.get_static_menu = empty             # set empty static menu
+    if not cfg.pages_out:
+        cfg.pages_runtime = True                # fallback for dynamic page
+    if cfg.pages_redirect_to_index and not cfg.pages_runtime:
+        app.set_route('/', root)                # redirect from / to index.html
 #enddef
 
 module_rights = ['pages_listall', 'pages_author', 'pages_modify']
@@ -42,6 +52,29 @@ rights.update(module_rights)
 
 content_menu.append(Item('/admin/pages', label="Pages", symbol="files",
                     rights = module_rights))
+
+# FIXME: pages_url could be load once
+runtime_files_registered = False
+
+@app.pre_process()
+def register_runtime_files(req):
+    global runtime_files_registered
+
+    if req.cfg.pages_runtime and not runtime_files_registered:
+        if req.cfg.pages_redirect_to_index:
+            app.set_route('/', runtime_file)                # / will be index
+        if req.cfg.pages_runtime_without_html:
+            for it in Page.list(req, Pager()):
+                if it.name[:-5] in ('admin', 'user', 'login', 'logout'):
+                    req.log_error('Denied runtime file uri: %s' % it.name[:-5],
+                                  state.LOG_ERR)
+                    continue
+                app.set_route('/'+it.name[:-5], runtime_file)   # without .html
+        else:
+            for it in Page.list(req, Pager()):
+                app.set_route('/'+it.name, runtime_file)
+        runtime_files_registered = True
+#enddef
 
 @app.route("/test/pages/db")
 def test_db(req):
@@ -71,7 +104,8 @@ def test_dirs(req):
     def write_access(d):
         return access(d, W_OK)
 
-    dirs = [req.cfg.pages_source, req.cfg.pages_out]
+    dirs = [req.cfg.pages_source]
+    if not req.pages_runtime: dirs.append(req.cfg.pages_out)
     if req.cfg.pages_history: dirs.append(req.cfg.pages_history)
 
     for d in dirs:
@@ -86,9 +120,23 @@ def test_dirs(req):
     return retval
 #enddef
 
-@app.route('/')
 def root(req):
     redirect(req, '/index.html', text="static index");
+
+def runtime_file(req):
+    text = None
+    if req.uri == '/':
+        text = Page.text_by_name(req, 'index.html')
+    elif req.uri.endswith('.html'):
+        text = Page.text_by_name(req, req.uri[req.uri.rfind('/')+1:])
+    else:       # without .html
+        text = Page.text_by_name(req, req.uri[req.uri.rfind('/')+1:]+'.html')
+
+    if text is None:
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+
+    return generate_page(req, 'runtime_file.html', text = text, runtime = True)
+#enddef
 
 @app.route('/admin/pages')
 def admin_pages(req):

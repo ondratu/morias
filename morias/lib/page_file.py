@@ -1,12 +1,13 @@
 
-import json, re
-
 from os import rename, remove
 from os.path import exists
 from datetime import datetime
 from shutil import copyfile
 
 from falias.util import uni, nint
+from poorwsgi import state
+
+import json, re
 
 from core.render import generate_page
 from core.login import do_match_right, do_check_right
@@ -39,6 +40,16 @@ class Page():
                 self.text = f.read().decode('utf-8')
             return self
         return None
+    #enddef
+
+    @staticmethod
+    def text_by_name(req, name):
+        try:
+            with open (req.cfg.pages_source + '/' + name, 'r') as f:
+                return f.read().decode('utf-8')
+        except IOError as e:
+            req.log_error(str(e), state.LOG_ERR)
+            return None
     #enddef
 
     def add(self, req):
@@ -83,6 +94,8 @@ class Page():
             copyfile(source, backup + '.' + datetime.now().isoformat())
         rename(source + '.tmp', source)
 
+        if req.cfg.pages_runtime:
+            return              # not need when paeges are runtime generated
         target = req.cfg.pages_out + '/' + self.name
         with open (target + '.tmp', 'w+') as tmp:
             tmp.write(generate_page(req,
@@ -106,11 +119,13 @@ class Page():
             rename(source, backup + '.' + datetime.now().isoformat())
 
         target = req.cfg.pages_out + '/' + self.name
-        if exists(target):      # delete output file
+        if req.cfg.pages_out and exists(target):    # delete output file
             remove(target)
     #enddef
 
     def regenerate(self, req):
+        if req.cfg.pages_runtime:
+            return              # not need where runtime is True
         with open (req.cfg.pages_source + '/' + self.name, 'r') as f:
             self.text = f.read().decode('utf-8')
 
