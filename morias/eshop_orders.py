@@ -64,7 +64,7 @@ module_right = 'eshop_orders'
 rights.add(module_right)
 
 eshop_menu.append(MenuItem('/admin/eshop/orders', label="Orders",
-                        rights = [module_right]))
+                        symbol="eshop-orders", rights = [module_right]))
 
 
 @app.route('/eshop/cart', method = state.METHOD_GET | state.METHOD_PATCH)

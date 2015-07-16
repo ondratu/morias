@@ -176,6 +176,8 @@ table tr td[level="8"] { padding-left: 90px; }
 .menu-symbol.fa-attachments:before {content: "\f0c6";}  /*fa-paperclip-o*/
 .menu-symbol.fa-options:before {content: "\f085";}      /*fa-gears-o*/
 .menu-symbol.fa-debug:before {content: "\f0f1";}        /*fa-stethoscope*/
+.menu-symbol.fa-eshop-orders:before {content: "\f16b";} /*fa-dropbox*/
+.menu-symbol.fa-eshop-store:before {content: "\f1b3";}  /*fa-cubes*/
 
 .red {
     background: red;
