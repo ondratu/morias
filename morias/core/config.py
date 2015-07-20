@@ -139,5 +139,8 @@ def load_config(req):
         req.log_error(msg, state.LOG_INFO)
     req.logger = logger
 
+    if req.uri_rule in ('_debug_info_', '_send_file_', '_directory_index_') \
+            or 'no_check_login' in req.uri_handler.__dict__:
+        return          # do not call do_check_login before some handlers
     do_check_login(req)                     # load login cookie avery time
 #enddef
