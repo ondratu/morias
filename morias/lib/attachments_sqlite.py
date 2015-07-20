@@ -107,9 +107,10 @@ def item_list(req, pager, **kwargs):
 def item_list_images(req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT "
+    c.execute(
+        "SELECT "
             "attachment_id, uploader_id, timestamp, mime_type, file_name, data "
-            "FROM attachments WHERE mime_type LIKE 'image%%'")
+        "FROM attachments WHERE mime_type %s LIKE 'image%%' ")
     items = []
     for row in iter(c.fetchone, None):
         item = Attachment()

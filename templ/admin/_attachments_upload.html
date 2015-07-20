@@ -23,19 +23,15 @@
       });
 
       $(document).ready(function(){
-        var ao = new M.AttachmensObject(
-                                    '#attachments_object',
-                                    '{{ attachments_object_type }}',
-                                    {{ attachments_object_id }});
+        var ao = new M.AttachmensObject('{{ attachments_object_type }}',
+                                        {{ attachments_object_id }},
+                                        {'thumb_size': '60x38'});
 
-        var as = new M.AttachmensServer(
-                                    '#attachments_server',
-                                    '{{ attachments_object_type }}',
-                                    {{ attachments_object_id }});
+        var as = new M.AttachmensServer('{{ attachments_object_type }}',
+                                        {{ attachments_object_id }},
+                                        {'thumb_size': '60x38'});
 
-        var up = new M.AttachmensUploader(
-                                    '#attachments_upload',
-                                    '{{ attachments_object_type }}',
-                                    {{ attachments_object_id }});
+        var up = new M.AttachmensUploader('{{ attachments_object_type }}',
+                                        {{ attachments_object_id }});
     });
     </script>

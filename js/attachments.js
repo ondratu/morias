@@ -8,8 +8,9 @@ M.ajax_upload_progress = function() {
 /* ------------------------------------------------------------------------ *
  *                              AttachmensUploader                          *
  * ------------------------------------------------------------------------ */
-M.AttachmensUploader = function(tab, object_type, object_id){
-    this.$tab = $(tab);
+M.AttachmensUploader = function(object_type, object_id, params){
+    params = params || {};
+    this.$tab = $('tab' in params ? params['tab'] : '#attachments_upload');
     this.$select = $('[action=select]', this.$tab);
     this.$upload = $('[action=upload]', this.$tab);
 
@@ -162,20 +163,24 @@ M.AttachmensUploader.prototype._complete = function(){
 /* ------------------------------------------------------------------------ *
  *                              AttachmensObject                            *
  * ------------------------------------------------------------------------ */
-M.AttachmensObject = function(view, object_type, object_id){
-    this.view = view;
-    this.$view = $(view);
+M.AttachmensObject = function(object_type, object_id, params){
+    params = params || {};
+    tab = 'tab' in params ? params['tab'] : '#attachments_object';
+    this.thumb_size = 'thumb_size' in params ? params['thumb_size'] : '320x200';
+
+    this.$tab = $(tab);
 
     this.object_type = object_type;
     this.object_id = object_id;
 
     this.update();
-    $('a[data-toggle="tab"][href="'+view+'"]').on('show.bs.tab',
+    $('a[data-toggle="tab"][href="'+tab+'"]').on('show.bs.tab',
                                                   this.update.bind(this) );
 }
 
 M.AttachmensObject.prototype.update = function(){
-    $.ajax({ url: "/admin/attachments/"+this.object_type+'/'+this.object_id,
+    $.ajax({ url: "/admin/attachments/"+this.object_type+'/'+this.object_id
+                 +"?thumb_size="+this.thumb_size,
              type: 'get',
              accepts : {json: 'application/json', html: 'text/html'},
              dataType: 'json',
@@ -188,13 +193,13 @@ M.AttachmensObject.prototype._remove = function (ev){
     var $target = $(ev.target);
     $.ajax({ url: '/admin/attachments/'+$target.attr('object-type')
                  +'/'+$target.attr('object-id')+'/'+$target.attr('webname')
-                 +'/detach',
+                 +'/detach?thumb_size='+this.thumb_size,
              type: 'post',
              accepts : {json: 'application/json', html: 'text/html'},
              dataType: 'json',
              context: this,
              success: function(data){
-                    this.$view.children().remove();
+                    this.$tab.children().remove();
                     this._view(data);
              },
              error: function(xhr, status, http_status){
@@ -205,7 +210,7 @@ M.AttachmensObject.prototype._remove = function (ev){
 }
 
 M.AttachmensObject.prototype._view = function(data){
-    this.$view.html('');
+    this.$tab.html('');
     for (var i = 0; i < data.items.length; i++){
         var it = data.items[i];
         var preview = '';
@@ -218,7 +223,8 @@ M.AttachmensObject.prototype._view = function(data){
             });
         } else if (it.mime_type.search('image/') == 0){
             preview = $('<div>', {
-                style: "background-image: url('/attachments/thumb/"+it.webname+"');"
+                style: "background-image: url('/attachments/"+it.webname+"/"
+                                                +this.thumb_size+"?hash="+it.resize_hash+"');"
                      + "background-repeat: no-repeat;"
                      + "background-size: 100%;"
                      + "background-position: 50% 50%;"
@@ -233,7 +239,7 @@ M.AttachmensObject.prototype._view = function(data){
                         .append($('<div>', {'class': 'col-md-2 preview'}).html(preview))
                         .append($('<div>', {'class': 'col-md-3 text'}).html(it.mime_type))
                         .append($('<div>', {'class': 'col-md-2 text'}).append(remove) );
-        row.appendTo(this.$view);
+        row.appendTo(this.$tab);
     };
 }
 
@@ -241,9 +247,10 @@ M.AttachmensObject.prototype._view = function(data){
 /* ------------------------------------------------------------------------ *
  *                              AttachmensServer                            *
  * ------------------------------------------------------------------------ */
-M.AttachmensServer = function(view, object_type, object_id){
-    this.view = view;
-    this.$view = $(view);
+M.AttachmensServer = function(object_type, object_id, params){
+    params = params || {};
+    this.$tab = $('tab' in params ? params['tab'] : '#attachments_server');
+    this.thumb_size = 'thumb_size' in params ? params['thumb_size'] : '320x200';
 
     this.object_type = object_type;
     this.object_id = object_id;
@@ -252,7 +259,8 @@ M.AttachmensServer = function(view, object_type, object_id){
 }
 
 M.AttachmensServer.prototype.update = function(){
-    $.ajax({ url: "/admin/attachments/"+this.object_type+'/'+this.object_id+'/not',
+    $.ajax({ url: "/admin/attachments/"+this.object_type+'/'+this.object_id
+                 +"/not?thumb_size="+this.thumb_size,
              type: 'get',
              accepts : {json: 'application/json', html: 'text/html'},
              dataType: 'json',
@@ -265,22 +273,12 @@ M.AttachmensServer.prototype._view = function(data){
     for (var i = 0; i < data.items.length; i++){
         var it = data.items[i];
         var preview = '';
-        /*if (it.mime_type.search('image/') == 0){
-            preview = $('<img>', {src: "/attachments/thumb/" + it.webname,
-                                  style: "max-width: 100%;",
-                                  alt: "{{ _('preview') }}"
-                                  });
-        }*/
-        if (it.mime_type.search('image/svg') == 0 ) {
+
+        if (it.mime_type.search('image/') == 0){
             preview = $('<div>', {
-                style: "background-image: url('/attachments/data/"+it.webname+"');"
-                     + "background-repeat: no-repeat;"
-                     + "background-size: 100%;"
-                     + "background-position: 50% 50%;"
-            });
-        } else if (it.mime_type.search('image/') == 0){
-            preview = $('<div>', {
-                style: "background-image: url('/attachments/thumb/"+it.webname+"');"
+                style: "background-image: url('/attachments/"+it.webname+"/"
+                                             +this.thumb_size+"?hash="
+                                             +it.resize_hash+"');"
                      + "background-repeat: no-repeat;"
                      + "background-size: 100%;"
                      + "background-position: 50% 50%;"
@@ -292,6 +290,6 @@ M.AttachmensServer.prototype._view = function(data){
                         .append($('<div>', {'class': 'col-md-2 preview'}).html(preview))
                         .append($('<div>', {'class': 'col-md-3 text'}).html(it.mime_type))
                         .append($('<div>', {'class': 'col-md-2 text'}).html(actions));
-        row.appendTo(this.$view);
+        row.appendTo(this.$tab);
     };
 }

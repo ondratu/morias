@@ -1,14 +1,15 @@
 
-from hashlib import md5
+from falias.util import uni
+from PythonMagick import Image, Blob
+from PythonMagick._PythonMagick import Geometry
+
+from hashlib import md5, sha512
 from random import random, seed
 from time import time
 from mimetypes import guess_extension
 from os import makedirs, rename, remove
-from os.path import dirname, exists
-
-from falias.util import uni
-from PythonMagick import Image
-from PythonMagick._PythonMagick import Geometry
+from os.path import dirname, exists, getmtime
+from datetime import datetime
 
 # errors
 NO_FILE             = 1
@@ -92,6 +93,15 @@ class Attachment(object):
         return "%s/%s_%s%s" % (hex_id[:-3], hex_id, self.data['md5'][:6],
                                 guess_extension(self.mime_type) or '')
 
+    def check_md5(self, webname):
+        try:
+            return webname.split('_')[1] == self.data['md5'][:6]
+        except:
+            return False
+
+    def resize_hash(self, size):
+        return sha512(self.data['md5']+size).hexdigest()[20:40]
+
     @staticmethod
     def web_to_id(webname):
         return int(webname.split('_')[0], 16)
@@ -138,9 +148,41 @@ class Attachment(object):
             img.write(thumb_path.encode('utf-8'))
     #enddef
 
+    def resize(self, req, width, height):
+        if self.mime_type.startswith('image') \
+            and guess_extension(self.mime_type) in _image_exts:
+
+            file_path = req.cfg.attachments_path + '/' + self.webname()
+            img = Image(file_path.encode('utf-8'))
+            img.fileName('image.'+self.file_name.encode('utf-8').split('.')[-1])
+            size = img.size()
+
+            blob = Blob()
+            if width > size.width() and height > size.height():
+                img.write(blob)
+            else:
+                img.scale(Geometry(width, height))
+                img.write(blob)
+            return blob.data
+        else:
+            return None
+    #enddef
+
+    @staticmethod
+    def last_modified(req, webname):
+        try:
+            file_path = req.cfg.attachments_path + '/' + \
+                        webname.split('_')[0][:-3] + '/' + webname
+            return datetime.utcfromtimestamp(int(getmtime(file_path)))
+        except OSError as e:
+            req.log_error(e)
+            return None
+    #enddef
+
     def __del__(self):
         if 'file' in self.__dict__ and not self.file.closed:
             self.file.close()
+
 
     @staticmethod
     def list(req, pager, **kwargs):

@@ -21,7 +21,7 @@
             <th>{{ _('Action' )}}</th></tr>
         {% for item in rows %}
         <tr><td>{{ item.id }}</td>
-            <td {%- if item.mime_type.startswith('image') %} webname="{{ item.webname() }}" {%- endif -%}>
+            <td {%- if item.mime_type.startswith('image') %} preview="/attachments/{{ item.webname() }}/320x200?hash={{ item.resize_hash('320x200') }}" {%- endif -%}>
                 <a href="/attachments/{{ item.webname() }}/realname" title="{{ _('Download') }}">{{ item.file_name|e }}</a>
             </td>
             <td>{{ item.author|e or '' }}</td>
@@ -47,13 +47,13 @@
             $('<form/>',{'method':'post','action':$(this).attr('post')}).submit();
           });
           $('a[title]').tooltip({container: 'body', placement: 'bottom'});
-          $('td[webname]').tooltip({
+          $('td[preview]').tooltip({
                 html: true,
                 container: 'body',
                 placement: 'right',
                 title: function(){
                     return $('<img>', {
-                            src: "/attachments/thumb/" + $(this).attr('webname'),
+                            src: $(this).attr('preview'),
                             alt: "{{ _('preview') }}"
                         });
                 }

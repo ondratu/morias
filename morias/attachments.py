@@ -4,8 +4,10 @@ from poorwsgi import *
 from falias.sql import Sql
 from falias.util import Size, uni
 
+from datetime import datetime
 from sys import stderr, stdout
 from time import sleep
+from hashlib import sha512
 
 import json
 
@@ -38,6 +40,7 @@ system_menu.append(Item('/admin/attachments', label="Attachments",
                         symbol = 'attachments', rights = module_rights))
 
 app.set_filter('attachment', r'[\w\.]+', uni)
+time_format = "%a, %d %b %Y %X GMT"
 
 # TODO: core.test.sql.count (table)
 #                    .data ()        # none, number, float, string, unicode
@@ -46,10 +49,13 @@ app.set_filter('attachment', r'[\w\.]+', uni)
 
 
 def js_items(req, **kwargs):
+    # size of thumb could be set from request
+    thumb_size = req.args.getfirst('thumb_size', '320x200', str)
     pager = Pager(limit = -1)
     items = []
     for item in Attachment.list(req, pager, **kwargs):
         item.webname = item.webname()
+        item.resize_hash = item.resize_hash(thumb_size)
         items.append(item.__dict__)
     req.content_type = 'application/json'
     return json.dumps({'items': items})
@@ -96,7 +102,8 @@ def admin_attachments_add_update(req, id = None):
     return json.dumps({'attachment': attachment.dumps()})
 #enddef
 
-@app.route('/admin/attachments/<object_type:word>/<object_id:int>/<path:word>/<webid:attachment>/detach', method = state.METHOD_POST)
+@app.route('/admin/attachments/<object_type:word>/<object_id:int>/<path:word>/<webid:attachment>/detach',
+        method = state.METHOD_POST)
 def attachments_detach(req, object_type, object_id, path, webid):
     check_login(req)
     match_right(req, [R_ADMIN, 'attachments_author'])
@@ -172,8 +179,43 @@ def attachments_download(req, path, webid):
 
     req.headers_out.add_header('Content-Disposition',
                                'attachment',
-                               filename=attachment.file_name.encode('ascii','xmlcharrefreplace'))
+                               #filename=attachment.file_name.encode('ascii','xmlcharrefreplace'))
+                               filename=attachment.file_name.encode('ascii','backslashreplace'))
 
     return send_file(req, req.cfg.attachments_path + '/' + path + '/' + webid,
                           content_type = attachment.mime_type)
 #enddef
+
+@app.route('/attachments/<path:word>/<webid:attachment>/<width:int>x<height:int>')
+def attachments_resize(req, path, webid, width, height):
+    attachment = Attachment(Attachment.web_to_id(webid))
+    last_modified = Attachment.last_modified(req, webid)
+
+    if last_modified is None:                   # file not found
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+
+    if 'If-Modified-Since' in req.headers_in:   # check cache header
+        hdt = datetime.strptime(req.headers_in['If-Modified-Since'], time_format)
+        if last_modified <= hdt:
+            req.headers_out.add_header(
+                                'Last-Modified',
+                                last_modified.strftime(time_format))
+            req.headers_out.add_header(
+                                'Date',
+                                datetime.utcnow().strftime(time_format))
+            raise SERVER_RETURN(state.HTTP_NOT_MODIFIED)
+
+    attachment.get(req)                         # check resize hash
+    if req.args.get('hash', '') != attachment.resize_hash("%dx%d" % (width, height)):
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
+
+    retval = attachment.resize(req, width, height)
+    if retval is None:                          # it is not image
+        raise SERVER_RETURN(state.HTTP_BAD_REQUEST)
+
+    req.content_type = attachment.mime_type
+    req.clength = len(retval)
+    req.headers_out.add_header('Last-Modified',
+                                last_modified.strftime(time_format))
+    return retval
+# enddef
