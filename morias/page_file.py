@@ -45,36 +45,27 @@ def _call_conf(cfg, parser):
         cfg.pages_runtime = True                # fallback for dynamic page
     if cfg.pages_redirect_to_index and not cfg.pages_runtime:
         app.set_route('/', root)                # redirect from / to index.html
-#enddef
+
+    if cfg.pages_runtime:                    # auto register pages url
+        if cfg.pages_redirect_to_index:
+            app.set_route('/', runtime_file)                # / will be index
+        if cfg.pages_runtime_without_html:
+            for it in Page.list(cfg, Pager()):
+                if it.name[:-5] in ('admin', 'user', 'login', 'logout'):
+                    cfg.log_error('Denied runtime file uri: %s' % it.name[:-5],
+                                      state.LOG_ERR)
+                    continue
+                app.set_route('/'+it.name[:-5], runtime_file)   # without .html
+        else:
+            for it in Page.list(cfg, Pager()):
+                app.set_route('/'+it.name, runtime_file)
+#enddef _call_conf
 
 module_rights = ['pages_listall', 'pages_author', 'pages_modify']
 rights.update(module_rights)
 
 content_menu.append(Item('/admin/pages', label="Pages", symbol="files",
                     rights = module_rights))
-
-# FIXME: pages_url could be load once
-runtime_files_registered = False
-
-@app.pre_process()
-def register_runtime_files(req):
-    global runtime_files_registered
-
-    if req.cfg.pages_runtime and not runtime_files_registered:
-        if req.cfg.pages_redirect_to_index:
-            app.set_route('/', runtime_file)                # / will be index
-        if req.cfg.pages_runtime_without_html:
-            for it in Page.list(req, Pager()):
-                if it.name[:-5] in ('admin', 'user', 'login', 'logout'):
-                    req.log_error('Denied runtime file uri: %s' % it.name[:-5],
-                                  state.LOG_ERR)
-                    continue
-                app.set_route('/'+it.name[:-5], runtime_file)   # without .html
-        else:
-            for it in Page.list(req, Pager()):
-                app.set_route('/'+it.name, runtime_file)
-        runtime_files_registered = True
-#enddef
 
 @app.route("/test/pages/db")
 def test_db(req):

@@ -20,24 +20,34 @@ _check_conf = (
     ('options', 'timestamp', unicode, 'tmp/options.timestamp'),
 )
 
-module_right = 'admin'
+def _call_conf(cfg, parser):
+    refresh_options(cfg, cfg.options_timestamp)
 
-system_menu.append(Item('/admin/system/options', label="Options",
-                        symbol="options", rights = [module_right]))
 
 timestamp = -1
 
+module_right = 'admin'
+system_menu.append(Item('/admin/system/options', label="Options",
+                        symbol="options", rights = [module_right]))
+
 @app.pre_process()
 def check_options(req):
+    if req.uri_rule in ('_debug_info_', '_send_file_', '_directory_index_'):
+        return  # this methods no need this pre process
+    refresh_options(req, req.cfg.options_timestamp)
+#emddef
+
+def refresh_options(req, cfg_timestamp):
+    """ refresh options from db when timestamp is change """
     global timestamp
 
-    check = check_timestamp(req, req.cfg.options_timestamp)
+    check = check_timestamp(req, cfg_timestamp)
     if check > timestamp:       # if last load was in past to timestamp file
         req.log_error("file timestamp is older, loading options from DB...",
                         state.LOG_INFO)
         load_options(req)
         timestamp = check
-#emddef
+#enddef
 
 @app.route('/admin/system/options')
 def admin_options(req):

@@ -2,12 +2,11 @@ from poorwsgi import *
 from falias.parser import Parser, Options
 from falias.util import Paths
 from time import strftime
+from sys import stderr
 
 from login import do_check_login
 
 import os
-
-config = None
 
 def option(*args):
     _len = len(args)
@@ -21,16 +20,15 @@ def option(*args):
 
 
 class Config:
-    def __init__(self, options, req):
-
+    def __init__(self, options):
         if 'morias_config' in options:
             inifile = options.get('morias_config')
             # TODO: check if file is readable
-            req.log_error('Read config from file ...', state.LOG_INFO)
+            app.log_error('Read config from file ...', state.LOG_INFO)
             p = Parser()
             p.read(inifile)
         else:
-            req.log_error('Read config from options ...', state.LOG_INFO)
+            app.log_error('Read config from options ...', state.LOG_INFO)
             p = Options(options)
         #endif
 
@@ -70,8 +68,8 @@ class Config:
         }
 
         for module in self.modules:
-            req.log_error('Loading module %s' % module, state.LOG_INFO)
-            self.load_module(p, req, module)
+            app.log_error('Loading module %s' % module, state.LOG_INFO)
+            self.load_module(p, module)
 
         """
         # memcache
@@ -83,12 +81,12 @@ class Config:
         """
     #endef
 
-    def load_module(self, p, req, module):
+    def load_module(self, p, module):
         #m = __import__("morias.%s" % module, globals())
         exec ("import %s as m" % module) in globals()
 
         if not '_check_conf' in m.__dict__:
-            req.log_error('No config need for module %s...' % module, state.LOG_INFO)
+            app.log_error('No config need for module %s...' % module, state.LOG_INFO)
 
         # check and set config values need for module
         else:
@@ -111,36 +109,53 @@ class Config:
         #endif
 
         if '_call_conf' in m.__dict__:
-            req.log_error('Config fn for module %s exist ...' % module, state.LOG_INFO)
+            app.log_error('Config fn for module %s exist ...' % module, state.LOG_INFO)
             m._call_conf(self, p)
     #enddef
+
+    def log_error(self, message, level = state.LOG_INFO):
+        """ application logger with default state.LOG_INFO log level """
+        app.log_error(message, level)
+
+    @property
+    def cfg(self):
+        """ baypass property for db operations at load modules """
+        return self
+
+    @property
+    def db(self):
+        """ baypass property for db operations at load modules """
+        return self.morias_db
+
+    @property
+    def logger(self):
+        """ baypass property for db operations at load modules """
+        return self.log_error
 
 #endclass
 
 @app.pre_process()
 def load_config(req):
-    global config
-
-    if config is None:
-        options = req.get_options()
-        config = Config(options, req)
+    if req.uri_rule in ('_debug_info_', '_send_file_', '_directory_index_'):
+        return  # this methods no need this pre process
 
     req.cfg = config
-    if 'morias_db' in config.__dict__:      # fast alias to db
+    if 'morias_db' in config.__dict__:             # fast alias to db
         req.db = config.morias_db
 
     if 'morias_smtp' in config.__dict__:    # fast alias to smtp
         req.smtp = config.morias_smtp
         req.smtp.xmailer = 'Morias CMS (http://morias.zeropage.cz)'
 
-    #req.templates = req.cfg.templates
-
     def logger(msg):
         req.log_error(msg, state.LOG_INFO)
     req.logger = logger
 
-    if req.uri_rule in ('_debug_info_', '_send_file_', '_directory_index_') \
-            or 'no_check_login' in req.uri_handler.__dict__:
+    if 'no_check_login' in req.uri_handler.__dict__:
         return          # do not call do_check_login before some handlers
+
     do_check_login(req)                     # load login cookie avery time
 #enddef
+
+# load config from os.environ
+config = Config(app.get_options())

@@ -22,31 +22,38 @@ _check_conf = (
 
 def _call_conf(cfg, parser):
     cfg.get_static_menu = MenuItem.get_menu
+    if cfg.morias_static_menu:
+        refresh_menu(cfg, cfg.page_menu_timestamp)
+
+
+timestamp = -1
+static_menu = None
 
 module_right = 'menu_modify'
 rights.add(module_right)
-
 content_menu.append(Item('/admin/menu', label="Menu", rights = [module_right]))
-
-static_menu = None
-timestamp = -1
 
 @app.pre_process()
 def load_static_menu(req):
-    if not req.cfg.morias_static_menu:
-        return          # only when morias.statci_menu is True (default)
+    if req.uri_rule in ('_debug_info_', '_send_file_', '_directory_index_'):
+        return  # this methods no need this pre process
 
+    if req.cfg.morias_static_menu:
+        refresh_menu(req, req.cfg.page_menu_timestamp)
+        req.static_menu.extend(static_menu)
+#enddef
+
+def refresh_menu(req, cfg_timestamp):
+    """ refresh menu from db if timestamp is change """
     global timestamp
     global static_menu
 
-    check = check_timestamp(req, req.cfg.page_menu_timestamp)
+    check = check_timestamp(req, cfg_timestamp)
     if check > timestamp:       # if last load was in past to timestamp file
         req.log_error("file timestamp is older, loading menu from DB...",
                         state.LOG_INFO)
         static_menu = MenuItem.get_menu(req)
         timestamp = check
-
-    req.static_menu.extend(static_menu)
 #enddef
 
 def js_items(req):
