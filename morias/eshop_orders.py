@@ -35,8 +35,6 @@ _check_conf = (
     ('addresses', 'region',     bool, False, True),
     ('addresses', 'country',    bool, False, True),
     # eshop block
-    ('eshop', 'currency', unicode, '', True),
-    ('eshop', 'eshop_in_menu',  bool, True),
     ('eshop', 'cart_in_menu',   bool, True),
     # transportation block (-1 to disable)
     ('eshop', 'transportation_post',        int, 0, True, _fee_doc),
@@ -53,8 +51,6 @@ _check_conf = (
 
 def _call_conf(cfg, parser):
     cfg.footers.append('eshop/_footer.html')
-    if cfg.eshop_eshop_in_menu:
-        user_menu.append(MenuItem('/eshop', label="Eshop"))
     if cfg.eshop_cart_in_menu:
         user_menu.append(MenuItem('/eshop/cart', label="Shopping Cart",
                         symbol="shopping-cart", role="shopping-cart"))
@@ -252,33 +248,6 @@ def eshop_cart_pay_and_order(req):
         cart.store(req)
         redirect(req, '/eshop/cart')
 #enddef /eshop/cart/pay_and_order
-
-@app.route('/eshop')
-def eshop_orders_eshop(req):
-    do_check_login(req)
-    cart = ShoppingCart(req)
-
-    pager = Pager()
-    pager.bind(req.args)
-
-    items = Item.list(req, pager, state = STATE_VISIBLE)
-    return generate_page(req, "eshop/eshop.html",
-                        cfg_currency = req.cfg.eshop_currency,
-                        cart = cart, pager = pager, items = items)
-#enddef
-
-@app.route('/eshop/<id:int>')
-def eshop_orders_detail(req,id):
-    do_check_login(req)
-    cart = ShoppingCart(req)
-
-    item = Item(id)
-    if not item.get(req):
-        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
-    return generate_page(req, "eshop/item_detail.html", item = item,
-                              cfg_currency = req.cfg.eshop_currency)
-#enddef
-
 
 @app.route('/admin/eshop/orders')
 def admin_orders(req):

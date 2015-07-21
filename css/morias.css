@@ -248,6 +248,10 @@ img.preview {
     margin-bottom: 2em;
 }
 
+.eshop-list h4 {
+    height: 2em;
+}
+
 .eshop-list .description {
     min-height: 6em;
     font-size: 80%;
@@ -255,6 +259,8 @@ img.preview {
 }
 
 .eshop-list .image {
+    height: 220px;
+    line-height: 200px;
     text-align: center;
     padding-bottom: 10px;
 }
@@ -273,9 +279,9 @@ img.preview {
     float: left;
 }
 .eshop-item .image {
-    height: 25em;
-    line-height: 25em;
-    padding-bottom: 30px;
+    height: 360px;
+    line-height: 330px;
+    padding-bottom: 0px;
     text-align: center;
 }
 .eshop-item .image img {

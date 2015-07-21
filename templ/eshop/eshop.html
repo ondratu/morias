@@ -16,9 +16,13 @@
         <div class="col-md-4">
           <div class="item">
             <a href="/eshop/{{ item.id }}"><h4>{{ item.name }}</h4></a>
-            <div class="description">{{ item.description|striptags }}</div>
+            {#<div class="description">{{ item.description|striptags }}</div>#}
             <div class="image"><a href="/eshop/{{ item.id }}">
+            {%- if item.image %}
+              <img class="img-rounded" src="/attachments/{{ item.image.webname() }}/320x200?hash={{ item.image.resize_hash('320x200') }}" alt="{{ item.image.file_name }}"></a></div>
+            {%- else %}
               <img class="img-rounded" data-src="/js/holder.js/320x200/text:{{ item.name }}" alt=""></a></div>
+            {%- endif%}
             <div class="buy clearfix">
               <div class="pull-left price">{{ "%.f"|format(item.price) }} {{ cfg_currency }}</div>
               <div class="pull-right">

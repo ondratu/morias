@@ -12,14 +12,24 @@ from core.render import generate_page
 from lib.menu import Item as MenuItem
 from lib.pager import Pager
 from lib.eshop_store import Item, Action, \
-        STATE_VISIBLE, STATE_HIDDEN, STATE_DISABLED, ACTION_INC, ACTION_DEC, ACTION_PRI
+        STATE_VISIBLE, STATE_HIDDEN, STATE_DISABLED, ACTION_INC, ACTION_DEC, \
+        ACTION_PRI
+from lib.attachments import Attachment
 
+from user import user_sections
 from eshop import eshop_menu
 
 _check_conf = (
     # morias common block
     ('morias', 'db', Sql, None),
+    # eshop block
+    ('eshop', 'currency', unicode, '', True),
+    ('eshop', 'eshop_in_menu',  bool, True),
 )
+
+def _call_conf(cfg, parser):
+    if cfg.eshop_eshop_in_menu:
+        user_sections.append(MenuItem('/eshop', label="Eshop"))
 
 module_right = 'eshop_store'
 rights.add(module_right)
@@ -169,3 +179,35 @@ def admin_item_incdec(req, id):
     req.content_type = 'application/json'
     return json.dumps({'item': item.__dict__})
 #enddef
+
+@app.route('/eshop')
+def eshop_orders_eshop(req):
+    pager = Pager()
+    pager.bind(req.args)
+
+    items = Item.list(req, pager, state = STATE_VISIBLE)
+    for it in items:
+        images = Attachment.list(req, Pager(limit = 1),
+                        object_type = 'eshop_item', object_id = it.id,
+                        mime_type = ('image/jpeg', 'image/png', 'image/svg+'))
+        if images:
+            it.image = images[0]
+    return generate_page(req, "eshop/eshop.html",
+                        cfg_currency = req.cfg.eshop_currency,
+                        pager = pager, items = items)
+#enddef
+
+@app.route('/eshop/<id:int>')
+def eshop_orders_detail(req,id):
+    item = Item(id)
+    if not item.get(req):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+    item.attachments = Attachment.list(req, Pager(),
+                        object_type = 'eshop_item', object_id = id)
+    for it in item.attachments:
+        if it.mime_type.startswith('image/'):
+            item.image = it
+    return generate_page(req, "eshop/item_detail.html", item = item,
+                              cfg_currency = req.cfg.eshop_currency)
+#enddef
+
