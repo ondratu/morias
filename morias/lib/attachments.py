@@ -149,10 +149,10 @@ class Attachment(object):
     #enddef
 
     def resize(self, req, width, height):
+        file_path = req.cfg.attachments_path + '/' + self.webname()
         if self.mime_type.startswith('image') \
             and guess_extension(self.mime_type) in _image_exts:
 
-            file_path = req.cfg.attachments_path + '/' + self.webname()
             img = Image(file_path.encode('utf-8'))
             img.fileName('image.'+self.file_name.encode('utf-8').split('.')[-1])
             size = img.size()
@@ -164,7 +164,11 @@ class Attachment(object):
                 img.scale(Geometry(width, height))
                 img.write(blob)
             return blob.data
+        elif guess_extension(self.mime_type) == '.svg':
+            with open(file_path.encode('utf-8'), 'rb') as svg:
+                return svg.read()
         else:
+            req.log_error(self.mime_type)
             return None
     #enddef
 

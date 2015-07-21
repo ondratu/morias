@@ -218,4 +218,5 @@ def attachments_resize(req, path, webid, width, height):
     req.headers_out.add_header('Last-Modified',
                                 last_modified.strftime(time_format))
     return retval
+attachments_resize.no_check_login = True
 # enddef

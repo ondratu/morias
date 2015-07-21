@@ -214,6 +214,11 @@ table tr td[level="8"] { padding-left: 90px; }
     height: 38px;
 }
 
+img.preview {
+    max-width: 320px;
+    max-height: 200px;
+}
+
 #list > div {
     height: 15em;
 }

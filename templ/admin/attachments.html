@@ -53,6 +53,7 @@
                 placement: 'right',
                 title: function(){
                     return $('<img>', {
+                            'class': 'preview',
                             src: $(this).attr('preview'),
                             alt: "{{ _('preview') }}"
                         });
