@@ -8,14 +8,15 @@ from lib.attachments import Attachment
 def get(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT uploader_id, timestamp, mime_type, file_name, data "
+    c.execute("SELECT uploader_id, timestamp, mime_type, file_name, md5, data "
                 "FROM attachments WHERE attachment_id = %d", self.id)
     row = c.fetchone()
     if not row:
         return None
 
     tran.commit()
-    self.uploader_id, self.timestamp, self.mime_type, self.file_name, data = row
+    self.uploader_id, self.timestamp, self.mime_type, self.file_name, \
+                                                        self.md5, data = row
     self.data = json.loads(data)
     return self
 #enddef
@@ -25,10 +26,10 @@ def add(self, req):
     c = tran.cursor()
 
     c.execute("INSERT INTO attachments (uploader_id, timestamp, mime_type, "
-                    "file_name, data) "
-                "VALUES (%d, strftime('%%s','now')*1, %s, %s, %s)",
+                    "file_name, md5, data) "
+                "VALUES (%d, strftime('%%s','now')*1, %s, %s, %s, %s)",
                 (self.uploader_id, self.mime_type, self.file_name,
-                json.dumps(self.data)) )
+                self.md5, json.dumps(self.data)) )
     self.id = c.lastrowid
     c.execute("INSERT INTO object_attachments (attachment_id, object_type, "
                     "object_id) VALUES (%d, %s, %d)",
@@ -78,7 +79,7 @@ def item_list(req, pager, **kwargs):
     c.execute(
         "SELECT "
             "a.attachment_id, a.uploader_id, a.timestamp, a.mime_type, "
-            "a.file_name, a.data, l.email, o.object_type "
+            "a.file_name, a.md5, a.data, l.email, o.object_type "
         "FROM attachments a "
             "LEFT JOIN object_attachments o ON (o.attachment_id = a.attachment_id) "
             "LEFT JOIN logins l ON (l.login_id = a.uploader_id) "
@@ -89,7 +90,8 @@ def item_list(req, pager, **kwargs):
     for row in iter(c.fetchone, None):
         item = Attachment()
         item.id, item.uploader, item.timestamp, item.mime_type, \
-                item.file_name, data, item.author, item.object_type = row
+                item.file_name, item.md5, data, item.author, \
+                                                item.object_type = row
         item.data = json.loads(data)
         items.append(item)
     #endwhile
@@ -109,12 +111,13 @@ def item_list_images(req):
     c = tran.cursor()
     c.execute(
         "SELECT "
-            "attachment_id, uploader_id, timestamp, mime_type, file_name, data "
+            "attachment_id, uploader_id, timestamp, mime_type, file_name, md5, data "
         "FROM attachments WHERE mime_type %s LIKE 'image%%' ")
     items = []
     for row in iter(c.fetchone, None):
         item = Attachment()
-        item.id, item.uploader, item.timestamp, item.mime_type, item.file_name, data = row
+        item.id, item.uploader, item.timestamp, item.mime_type, \
+                                    item.file_name, item.md5, data = row
         item.data = json.loads(data)
         items.append(item)
     #endwhile

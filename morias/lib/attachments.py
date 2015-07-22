@@ -71,9 +71,8 @@ class Attachment(object):
         self.object_id   = form.getfirst('object_id', '0', int)
         self.description = form.getfirst('description', '', uni)
         self.uploader_id = uploader_id
-        self.data = {
-                'md5': md5(str(time())).hexdigest()
-            }
+        self.md5 = md5(str(time())).hexdigest()
+        self.data = {}
         print "object_type", form.keys()
     #enddef
 
@@ -90,17 +89,17 @@ class Attachment(object):
 
     def webname(self):
         hex_id = "%06x" % self.id
-        return "%s/%s_%s%s" % (hex_id[:-3], hex_id, self.data['md5'][:6],
+        return "%s/%s_%s%s" % (hex_id[:-3], hex_id, self.md5[:6],
                                 guess_extension(self.mime_type) or '')
 
     def check_md5(self, webname):
         try:
-            return webname.split('_')[1] == self.data['md5'][:6]
+            return webname.split('_')[1] == self.md5[:6]
         except:
             return False
 
     def resize_hash(self, size):
-        return sha512(self.data['md5']+size).hexdigest()[20:40]
+        return sha512(self.md5+size).hexdigest()[20:40]
 
     @staticmethod
     def web_to_id(webname):
