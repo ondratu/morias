@@ -10,8 +10,10 @@ create table page_files_01 (
 insert into page_files_01 (page_id, name, title, locale, editor_rights)
     select page_id, name, title, locale, editor_rights from page;
 
+pragma foreign_keys = off;
 drop table if exists page;
-
 alter table page_files_01 rename to page_files;
+
 create unique index if not exists
     page_files_name_idx on page_files (name);
+pragma foreign_keys = on;

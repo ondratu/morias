@@ -12,8 +12,11 @@ create table logins_01 (
 insert into logins_01 (login_id, enabled, email, passwd, rights)
     select login_id, enabled, email, passwd, rights from login;
 
+pragma foreign_keys = off;
 drop table if exists login;
-
 alter table logins_01 rename to logins;
+
 create unique index if not exists
     logins_email_idx on logins (email);
+
+pragma foreign_keys = on;
