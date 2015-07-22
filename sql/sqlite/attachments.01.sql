@@ -31,3 +31,6 @@ create index if not exists
     attachments_file_name_idx on attachments (file_name);
 
 pragma foreign_keys = on;
+
+alter table object_attachments
+    add ordering integer;           -- object_attachments have ordering now
