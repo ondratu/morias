@@ -5,11 +5,13 @@ from sqlite3 import IntegrityError
 import json
 
 from lib.eshop_store import Item, Action, ACTION_INC, ACTION_DEC, ACTION_PRI
+from lib.attachments import Attachment
 
 def get(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
-    c.execute("SELECT modify_date, name, price, description, count, state, data "
+    c.execute("SELECT modify_date, name, price, description, count, state, data, "
+                    "image_id, image_md5, image_mime_type "
                 "FROM eshop_store WHERE item_id = %d", self.id)
     row = c.fetchone()
     if not row:
@@ -17,7 +19,12 @@ def get(self, req):
 
     tran.commit()
     self.modify_date, self.name, self.price, self.description, self.count, \
-            self.state, data = row
+            self.state, data, \
+            self.image_id, self.image_md5, self.image_mime_type  = row
+    if self.image_id:
+        self.image = Attachment(self.image_id,
+                                self.image_md5,
+                                self.image_mime_type)
     self.data = json.loads(data)
     return self
 #enddef
@@ -116,7 +123,7 @@ def item_list(req, pager, **kwargs):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
     c.execute("SELECT item_id, modify_date, name, price, description, count, "
-                    "state, data "
+                    "state, data, image_id, image_md5, image_mime_type "
                 "FROM eshop_store %s ORDER BY %s %s LIMIT %%s, %%s" % \
                 (cond, pager.order, pager.sort),
                 tuple(kwargs.values()) + (pager.offset, pager.limit))
@@ -124,8 +131,13 @@ def item_list(req, pager, **kwargs):
     for row in iter(c.fetchone, None):
         item = Item()
         item.id, item.modify_date, item.name, item.price, item.description, \
-                item.count, item.state, data = row
+                item.count, item.state, data, \
+                item.image_id, item.image_md5, item.image_mime_type = row
         item.data = json.loads(data)
+        if item.image_id:       # create Attachment object if item_id was set
+            item.image = Attachment(item.image_id,
+                                    item.image_md5,
+                                    item.image_mime_type)
         items.append(item)
     #endfor
 

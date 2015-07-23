@@ -19,7 +19,7 @@
             {#<div class="description">{{ item.description|striptags }}</div>#}
             <div class="image"><a href="/eshop/{{ item.id }}">
             {%- if item.image %}
-              <img class="img-rounded" src="/attachments/{{ item.image.webname() }}/320x200?hash={{ item.image.resize_hash('320x200') }}" alt="{{ item.image.file_name }}"></a></div>
+              <img class="img-rounded" src="/attachments/{{ item.image.webname() }}/320x200?hash={{ item.image.resize_hash('320x200') }}" alt="{{ _('Preview') }}"></a></div>
             {%- else %}
               <img class="img-rounded" data-src="/js/holder.js/320x200/text:{{ item.name }}" alt=""></a></div>
             {%- endif%}

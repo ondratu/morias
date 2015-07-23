@@ -264,6 +264,10 @@ img.preview {
     text-align: center;
     padding-bottom: 10px;
 }
+.eshop-list .image img {
+    max-height: 220px;
+    max-width: 320px;
+}
 
 .eshop-list .buy {
 }

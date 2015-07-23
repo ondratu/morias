@@ -186,12 +186,6 @@ def eshop_orders_eshop(req):
     pager.bind(req.args)
 
     items = Item.list(req, pager, state = STATE_VISIBLE)
-    for it in items:
-        images = Attachment.list(req, Pager(limit = 1),
-                        object_type = 'eshop_item', object_id = it.id,
-                        mime_type = ('image/jpeg', 'image/png', 'image/svg+'))
-        if images:
-            it.image = images[0]
     return generate_page(req, "eshop/eshop.html",
                         cfg_currency = req.cfg.eshop_currency,
                         pager = pager, items = items)
@@ -204,9 +198,6 @@ def eshop_orders_detail(req,id):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
     item.attachments = Attachment.list(req, Pager(),
                         object_type = 'eshop_item', object_id = id)
-    for it in item.attachments:
-        if it.mime_type.startswith('image/'):
-            item.image = it
     return generate_page(req, "eshop/item_detail.html", item = item,
                               cfg_currency = req.cfg.eshop_currency)
 #enddef
