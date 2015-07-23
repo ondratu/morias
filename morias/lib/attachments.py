@@ -32,8 +32,10 @@ def driver(req):
 #enddef
 
 class Attachment(object):
-    def __init__(self, id = None):
+    def __init__(self, id = None, md5 = None, mime_type = None):
         self.id = id
+        self.md5 = md5
+        self.mime_type = mime_type
 
     def get(self, req):
         m = driver(req)

@@ -34,3 +34,14 @@ pragma foreign_keys = on;
 
 alter table object_attachments
     add ordering integer;           -- object_attachments have ordering now
+
+create trigger object_attachments_ordering_tg
+    after insert on object_attachments
+for each row begin
+    update object_attachments set ordering = ifnull(
+        (select ordering from object_attachments
+            where object_id = new.object_id and object_type = new.object_type
+            order by ordering desc limit 1),
+        0) + 1
+    where rowid = new.rowid;
+end;
