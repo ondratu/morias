@@ -79,6 +79,7 @@
         <div class="col-sm-6">
         {% set attachments_object_type = 'eshop_item' %}
         {% set attachments_object_id = item.id %}
+        {% set attachments_on_server = false %}
         {% include "admin/_attachments_upload.html" %}
         </div>
       <div>

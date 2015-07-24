@@ -1,6 +1,8 @@
     <ul class="nav nav-tabs">
       <li class="active"><a href="#attachments_object" data-toggle="tab">{{ _('Object Attachments') }}</a></li>
+    {% if attachments_on_server != false %}
       <li><a href="#attachments_server" data-toggle="tab">{{ _('Attachments on server') }}</a></li>
+    {% endif %}
       <li><a href="#attachments_upload" data-toggle="tab">{{ _('Upload Attachmens') }}</a></li>
     </ul>
     <div class="tab-content attachments">
@@ -27,9 +29,11 @@
                                         {{ attachments_object_id }},
                                         {'thumb_size': '60x38'});
 
+      {% if attachments_on_server != false %}
         var as = new M.AttachmensServer('{{ attachments_object_type }}',
                                         {{ attachments_object_id }},
                                         {'thumb_size': '60x38'});
+      {% endif %}
 
         var up = new M.AttachmensUploader('{{ attachments_object_type }}',
                                         {{ attachments_object_id }});
