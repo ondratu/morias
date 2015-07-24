@@ -70,9 +70,9 @@ def delete(self, req):
 #enddef
 
 def item_list(req, pager, **kwargs):
-    n = ('!', 'NOT') if kwargs.pop('NOT', False) else ('','')
-    keys = list( "%s %s %%s" % (k, n[1]+'IN' if islistable(v) else n[0]+'=') for k,v in kwargs.items() )
-    cond = "WHERE " + ' AND '.join(keys) if keys else ''
+    n = 'NOT ' if kwargs.pop('NOT', False) else ''
+    keys = list( "%s %s %%s" % (k, 'IN' if islistable(v) else '=') for k,v in kwargs.items() )
+    cond = "WHERE %s(%s)" % (n, ' AND '.join(keys)) if keys else ''
 
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
@@ -122,5 +122,6 @@ def item_list_images(req):
         items.append(item)
     #endwhile
 
+    tran.commit()
     return items
 #enddef

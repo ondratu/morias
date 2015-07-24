@@ -209,6 +209,8 @@ table tr td[level="8"] { padding-left: 90px; }
 }
 .attachments > div > .row > .text {
     padding-top: 10px;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .attachments > div > .row > .preview > div {
     height: 38px;
