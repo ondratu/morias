@@ -242,20 +242,24 @@ class Order(object):
 
             record = []
             if note:
-                record.append(('', note))
+                record.append(('note', note))
             if self.state != new_state:
                 record.append((self.state, new_state))
+                self.state = new.state
             if self.email != new_email:
                 record.append((self.email, new_email))
+                self.email = new_email
             if self.items != new_items:     #o_items.symmetric_difference(n_items):
                 o_items = set(self.items)
                 n_items = set(new_items)
                 record.append((o_items.difference(n_items),     # removed items
                                n_items.difference(o_items) ))   # appended items
+                self.items = new_items
 
             if self.data != new_data:
                 record.append((dict_difference(self.data, new_data),    # removed items
                                dict_difference(new_data, self.data) ))  # appended items
+                self.data = new.data
 
             self.history.append((int(time()) ,record))
 
@@ -270,7 +274,7 @@ class Order(object):
         return self
     #enddef
 
-    def set_state(self, req, state):
+    def set_state(self, req, state, note = '', usernote = ''):
         m = driver(req)
         c = m._lock(req)        # lock the table first
 
@@ -278,17 +282,26 @@ class Order(object):
             if m._get(self, c) is None:
                 raise LookupError('not found in backend')
 
-            self.history.append((int(time()) ,(self.state, state)))
+            record = [(self.state, state)]
             self.state = state
+
+            if note:
+                record.append(('note', note ))          # append storno note
+            if usernote:
+                record.append(('usernote', usernote ))  # append storno usernote
+
+            self.history.append((int(time()) ,record))
 
             if m._mod(self, c) is None:
                 raise LookupError('not found in backend')
 
-            for item_id, it in self.items:   # record to store
-                item = Item(item_id)
-                action = Action.from_order(self.id, -it['count'])
-                if item._action(req, c, action) is None:
-                    raise RuntimeError('Item not found')
+            if state == STATE_STORNED:          # "return" items to store
+                for item_id, it in self.items:
+                    item = Item(item_id)
+                    action = Action.from_order(self.id, -it['count'])
+                    if item._action(req, c, action) is None:
+                        raise RuntimeError('Item not found')
+            #endif
 
         except Exception as e:
             req.log_error(str(e))

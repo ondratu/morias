@@ -313,6 +313,11 @@ img.preview {
     margin-right: 1em;
     float: left;
 }
+.eshop-order-history > .col-md-12 {
+    border-bottom: 1px solid #dddddd;
+    padding-bottom: 5px;
+}
+
 
 table[role=cart-items] .error {
     color: #b94a48;

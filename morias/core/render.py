@@ -56,12 +56,15 @@ def match_right(ctx, rights):
     return True                     # some rights match
 #enddef
 
-def _truncate(string, length = 255, killwords = True, end='...'):
+def truncate(string, length = 255, killwords = True, end='...'):
     """ Only True yet """
     if len(string) > length:
         return string[:length] + end
     return string
 #enddef
+
+def number(obj):
+    return isinstance(obj, int) or isinstance(obj, float)
 
 def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     missing = []
@@ -106,7 +109,8 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
 
     # jinja2 compatibility with old versions
     env.globals['length']   = len
-    env.globals['truncate'] = _truncate
+    env.globals['truncate'] = truncate
+    env.globals['number']   = number
 
     # some addons
     env.globals['ord'] = ord

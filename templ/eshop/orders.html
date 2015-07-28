@@ -1,0 +1,54 @@
+{# vim:set softtabstop=2: -#}
+{% set title = 'User eShop orders' -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+{% set states = { 0: _('Storned'),
+                  1: _('Accept'),
+                  2: _('Proccess'),
+                  3: _('Sent'),
+                  4: _('Closed'),
+                  10: _('Wait for paid'),
+                  11: _('Wait for pick up') }
+%}
+
+    <div class="container">
+      <form method="get"><ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('eShop orders') }}</li>
+        <li><div class="form-group"><select class="form-control" name="state">
+              <option value="-1" {{ 'selected="selected"' if state == '-1' }}>{{ _('All') }}</option>
+            {%- for key,val in states.items() %}
+              <option value="{{ key }}" {{ 'selected="selected"' if state == key }}>{{ val }}</option>
+            {%- endfor %}
+            </select></div>
+        </li>
+        <li><div class="form-group"><button class="form-control btn btn-default" type="submit">{{ _('Search') }}</button></div></li>
+      </ul></form>
+
+      <table class="table table-hover">
+        <tr><th>#</th>
+            <th>{{ _('Email') }}</th>
+            <th>{{ _('Create Date') }}</th>
+            <th>{{ _('Modify Date') }}</th>
+            <th>{{ _('State') }}</th>
+        {% for item in items %}
+        <tr {{ 'class="disabled"' if item.state in (0,4) else '' }}>
+            <td><a href="/eshop/orders/{{item.id}}">{{ item.id }}</a></td>
+            <td>{{ item.email }}</td>
+            <td>{{ datetime(item.create_date).strftime("%H:%M %d.%m.%Y") }}</td>
+            <td>{{ datetime(item.modify_date).strftime("%H:%M %d.%m.%Y") }}</td>
+            <td>{{ states[item.state] }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+{% include "_pager.html" %}
+
+      <script>
+        $(document).ready(function() {
+          $('a[clear]').click(function(ev) {
+            $('#'+$(ev.target).attr('clear')).val('');
+          });
+        });
+      </script>
+    </div>
+{% include "_footer.html" %}
+

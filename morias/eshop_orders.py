@@ -25,7 +25,7 @@ from lib.eshop_orders import ShoppingCart, Address, Order, \
 from lib.eshop_store import Item, STATE_VISIBLE
 
 from eshop import eshop_menu
-from user import user_menu
+from user import user_sections, user_info_menu
 
 _fee_doc = "-1 to disable, or any other value to enable 0 means no fee"
 _check_conf = (
@@ -52,7 +52,7 @@ _check_conf = (
 def _call_conf(cfg, parser):
     cfg.footers.append('eshop/_footer.html')
     if cfg.eshop_cart_in_menu:
-        user_menu.append(MenuItem('/eshop/cart', label="Shopping Cart",
+        user_sections.append(MenuItem('/eshop/cart', label="Shopping Cart",
                         symbol="shopping-cart", role="shopping-cart"))
 #enddef
 
@@ -61,6 +61,8 @@ rights.add(module_right)
 
 eshop_menu.append(MenuItem('/admin/eshop/orders', label="Orders",
                         symbol="eshop-orders", rights = [module_right]))
+user_info_menu.append(MenuItem('/eshop/orders', label="My Orders",
+                        symbol="eshop-orders"))
 
 
 @app.route('/eshop/cart', method = state.METHOD_GET | state.METHOD_PATCH)
@@ -249,6 +251,64 @@ def eshop_cart_pay_and_order(req):
         redirect(req, '/eshop/cart')
 #enddef /eshop/cart/pay_and_order
 
+@app.route('/eshop/orders')
+def user_orders(req):
+    check_login(req)
+
+    state = req.args.getfirst('state', -1, int)
+
+    kwargs = {'client_id': req.login.id}
+    if state >= 0:
+        kwargs['state'] = state
+
+    pager = Pager(sort = 'desc')
+    items = Order.list(req, pager, **kwargs)
+
+    return generate_page(req, "/eshop/orders.html",
+                         pager = pager, items = items,
+                         state = state)
+#enddef
+
+@app.route('/eshop/orders/<id:int>')
+def user_orders_detail(req, id):
+    check_login(req)
+    check_right(req, module_right)
+
+    order = Order(id)
+    if order.get(req) is None:
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+    if order.client_id != req.login.id:
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
+
+    cfg = Object()
+    cfg.addresses_country   = req.cfg.addresses_country
+    cfg.addresses_region    = req.cfg.addresses_region
+    cfg.eshop_currency      = req.cfg.eshop_currency
+
+    order.calculate()
+    return generate_page(req, "eshop/orders_detail.html",
+                         order = order, cfg = cfg)
+#enddef
+
+@app.route('/eshop/orders/<id:int>/storno', method = state.METHOD_POST)
+def user_orders_storno(req, id):
+    check_login(req)
+    check_referer(req, '/eshop/orders/%d' % id)
+
+    message = req.form.getfirst('message', '', uni)
+
+    order = Order(id)
+    if order.get(req) is None:
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+    if order.client_id != req.login.id:
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
+
+    if order.set_state(req, STATE_STORNED, usernote = message) is None:
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+
+    redirect(req, '/eshop/orders/%d' % id)
+#enddef
+
 @app.route('/admin/eshop/orders')
 def admin_orders(req):
     check_login(req)
@@ -292,7 +352,7 @@ def admin_orders_mod(req, id):
 
 @app.route('/admin/eshop/orders/<id:int>/storno', method = state.METHOD_POST)
 @app.route('/admin/eshop/orders/<id:int>/wait_for_paid', method = state.METHOD_POST)
-@app.route('/admin/eshop/orders/<id:int>/proccess', method = state.METHOD_POST)
+@app.route('/admin/eshop/orders/<id:int>/process', method = state.METHOD_POST)
 @app.route('/admin/eshop/orders/<id:int>/sent', method = state.METHOD_POST)
 @app.route('/admin/eshop/orders/<id:int>/wait_for_pick_up', method = state.METHOD_POST)
 @app.route('/admin/eshop/orders/<id:int>/close', method = state.METHOD_POST)
@@ -302,25 +362,27 @@ def admin_orders_action(req, id):
     check_right(req, module_right)
 
     if req.uri.endswith('/storno'):
-        state = STATE_STORNED
-    elif req.uri.endswith('/proccess'):
-        state = STATE_PROCESS
+        ostate = STATE_STORNED
+    elif req.uri.endswith('/process'):
+        ostate = STATE_PROCESS
     elif req.uri.endswith('/sent'):
-        state = STATE_SENT
+        ostate = STATE_SENT
     elif req.uri.endswith('/close'):
-        state = STATE_CLOSED
+        ostate = STATE_CLOSED
     elif req.uri.endswith('/wait_for_paid'):
-        state = STATE_WAIT_FOR_PAID
+        ostate = STATE_WAIT_FOR_PAID
     elif req.uri.endswith('/wait_for_pick_up'):
-        state = STATE_WAIT_FOR_PICK_UP
+        ostate = STATE_WAIT_FOR_PICK_UP
     else:
         raise SERVER_RETURN(state.HTTP_BAD_REQUEST)
 
+    note = req.form.getfirst('note', '', uni)
+
     order = Order(id)
-    if order.set_state(req, state) is None:
+    if order.set_state(req, ostate, note) is None:
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
 
-    if state != STATE_CLOSED:
+    if ostate != STATE_CLOSED:
         pass #TODO: send email to client (order.email)
 
     redirect(req, '/admin/eshop/orders/%d' % id)
