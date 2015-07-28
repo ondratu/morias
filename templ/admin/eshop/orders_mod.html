@@ -114,51 +114,51 @@
           <div class="col-md-6"><b>{{ _('Old value') }}</b></div>
           <div class="col-md-6"><b>{{ _('New value') }}</b></div>
         </div>{# /col-md-2 #}
-      {% for it in order.history %}
+      {%- for it in order.history %}
         <div class="col-md-12"></div>
         <div class="col-md-2">{{ datetime(it[0]).strftime("%H:%M %d.%m.%Y") }}</div>
         <div class="col-md-10">
-        {% for record in it[1] %}
-          {% if number(record[0]) and number(record[1]) -%}
+        {%- for record in it[1] %}
+          {%- if number(record[0]) and number(record[1]) %}
           <div class="col-md-6">{{ states[record[0]] }}</div>
           <div class="col-md-6">{{ states[record[1]] }}</div>
-          {% else -%}
-            {% if record[0] == "note" %}
+          {%- else %}
+            {%- if record[0] == "note" %}
           <div class="col-md-6">{{ _('Note') }}:</div>
-            {% elif record[0] == "usernote" %}
+            {%- elif record[0] == "usernote" %}
           <div class="col-md-6">{{ _('Note from client') }}:</div>
-            {% else %}
+            {%- else %}
           <div class="col-md-6">{{ record[0] }}</div>
-            {% endif %}
+            {%- endif %}
           <div class="col-md-6">{{ record[1] }}</div>
-          {% endif -%}
-        {% endfor %}
+          {%- endif %}
+        {%- endfor %}
         </div>{# /col-md-2 #}
-      {% endfor %}
+      {%- endfor %}
       </div>{# /row #}
 
       <div class="row">
         <h3>{{ _('State is:') }} {{ states[order.state] }} <small>{{ _('Next state will be') }}:</small></h3>
         <input name="note" type="text" class="form-control" placeholder="{{ _('Note about action') }}">
-      {% if order.state in (1,2,3,10,11) %}
+      {%- if order.state in (1,2,3,10,11) %}
         <a class="btn btn-danger" post="/admin/eshop/orders/{{ order.id }}/storno">{{ _('Storno') }}</a>
-      {%endif%}
-      {% if order.state == 1 %}
+      {%- endif %}
+      {%- if order.state == 1 %}
         <a class="btn btn-warning" post="/admin/eshop/orders/{{ order.id }}/wait_for_paid">{{ _('Wait for paid') }}</a>
-      {%endif%}
-      {% if order.state in (1, 10) %}
+      {%- endif %}
+      {%- if order.state in (1, 10) %}
         <a class="btn btn-primary" post="/admin/eshop/orders/{{ order.id }}/process">{{ _('Process') }}</a>
-      {%endif%}
-      {% if order.state == 2 %}
+      {%- endif %}
+      {%- if order.state == 2 %}
         <a class="btn btn-success" post="/admin/eshop/orders/{{ order.id }}/sent">{{ _('Sent') }}</a>
         <a class="btn btn-success" post="/admin/eshop/orders/{{ order.id }}/wait_for_pick_up">{{ _('Wait for pick up') }}</a>
-      {%endif%}
-      {% if order.state in (3, 11) %}
+      {%- endif %}
+      {%- if order.state in (3, 11) %}
         <a class="btn btn-default" post="/admin/eshop/orders/{{ order.id }}/close">{{ _('Close') }}</a>
-      {%endif%}
-      {% if order.state == 4 %}
+      {%- endif %}
+      {%- if order.state in (0, 4) %}
         <a class="btn btn-info" post="/admin/eshop/orders/{{ order.id }}/process">{{ _('Reopen') }}</a>
-      {%endif%}
+      {%- endif %}
       </div>
 
       <script>
