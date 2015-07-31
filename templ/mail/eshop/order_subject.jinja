@@ -1,0 +1,9 @@
+{%- set states = {  0: _('Order was storned'),
+                    1: _('Order was accept'),
+                    2: _('Order is in proccess'),
+                    3: _('Order was sent'),
+                    4: _('Order was closed'),
+                    10: _('Order is waiting for paid'),
+                    11: _('Order is waiting for pick up') }
+%}
+{{ states[order.state] }}

@@ -8,12 +8,13 @@
 from poorwsgi import *
 from falias.sql import Sql
 from falias.util import nint, Object
+from falias.smtp import Smtp
 
 import json
 
 from core.login import rights, check_login, check_right, check_referer, \
                         do_check_login
-from core.render import generate_page
+from core.render import generate_page, morias_template
 
 from lib.menu import Item as MenuItem
 from lib.pager import Pager
@@ -30,7 +31,8 @@ from user import user_sections, user_info_menu
 _fee_doc = "-1 to disable, or any other value to enable 0 means no fee"
 _check_conf = (
     # morias common block
-    ('morias', 'db', Sql, None),
+    ('morias', 'db', Sql),
+    ('morias', 'smtp',Smtp),
     # common addresses block
     ('addresses', 'region',     bool, False, True),
     ('addresses', 'country',    bool, False, True),
@@ -54,6 +56,8 @@ def _call_conf(cfg, parser):
     if cfg.eshop_cart_in_menu:
         user_sections.append(MenuItem('/eshop/cart', label="Shopping Cart",
                         symbol="shopping-cart", role="shopping-cart"))
+    if cfg.debug:
+        app.set_route('/eshop/cart/wipe', eshop_cart_wipe)
 #enddef
 
 module_right = 'eshop_orders'
@@ -64,6 +68,28 @@ eshop_menu.append(MenuItem('/admin/eshop/orders', label="Orders",
 user_info_menu.append(MenuItem('/eshop/orders', label="My Orders",
                         symbol="eshop-orders"))
 
+def send_order_status(req, order):
+    try:
+        req.log_error('posilam mail......')
+        # TODO: use lang from cart when order was create
+        req.smtp.send_email_alternative(
+                morias_template(req,
+                                'mail/eshop/order_subject.jinja',
+                                order = order).encode('utf-8'),  # subject
+                order.email,
+                morias_template(req,
+                                'mail/eshop/order.jinja',
+                                order = order).encode('utf-8'),  # body
+                morias_template(req,
+                                'mail/eshop/order.html',
+                                order = order).encode('utf-8'),  # body
+                logger = req.logger)
+    #except Exception as e:
+    #    req.log_error('Mailing order[%d] error: %s' % (order.id, str(e)),
+    #                    state.LOG_ERR)
+    finally:
+        pass
+#enddef
 
 @app.route('/eshop/cart', method = state.METHOD_GET | state.METHOD_PATCH)
 def eshop_cart(req):
@@ -116,13 +142,11 @@ def eshop_cart_add(req):
     return json.dumps({'reason': 'item append to cart', 'cart': cart.dict() })
 #enddef
 
-# FIXME: for debug only, this method could not be in git
-@app.route('/eshop/cart/wipe')
 def eshop_cart_wipe(req):
-    if req.cfg.debug:
-        do_check_login(req)
-        cart = ShoppingCart(req)
-        cart.clean(req)
+    """ /eshop/cart/wipe - wipe esho cart - for debug only """
+    do_check_login(req)
+    cart = ShoppingCart(req)
+    cart.clean(req)
     redirect(req, '/eshop/cart')
 #enddef
 
@@ -242,6 +266,7 @@ def eshop_cart_pay_and_order(req):
     retval = order.add(req)
     if retval == order:
         cart.clean(req)
+        send_order_status(req, order)
         redirect(req, '/eshop')
     if retval[0] == EMPTY_ITEMS:
         redirect(req, '/eshop')
@@ -306,6 +331,7 @@ def user_orders_storno(req, id):
     if order.set_state(req, STATE_STORNED, usernote = message) is None:
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
 
+    send_order_status(req, order)
     redirect(req, '/eshop/orders/%d' % id)
 #enddef
 
@@ -383,7 +409,7 @@ def admin_orders_action(req, id):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
 
     if ostate != STATE_CLOSED:
-        pass #TODO: send email to client (order.email)
+        send_order_status(req, order)
 
     redirect(req, '/admin/eshop/orders/%d' % id)
 #enddef

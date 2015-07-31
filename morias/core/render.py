@@ -63,6 +63,9 @@ def truncate(string, length = 255, killwords = True, end='...'):
     return string
 #enddef
 
+def fill(string, width = 80):
+    return string + " "*(width-len(string))
+
 def number(obj):
     return isinstance(obj, int) or isinstance(obj, float)
 
@@ -117,9 +120,11 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     env.globals['now'] = time
     env.globals['datetime'] = datetime.fromtimestamp
     env.globals['jsonify'] = dumps
+    env.globals['fill'] = fill
 
     env.filters['datetime'] = datetime.fromtimestamp
     env.filters['jsonify'] = dumps
+    env.filters['fill'] = fill
 
     # morias functionality
     env.globals['check_right'] = check_right
@@ -152,6 +157,8 @@ def morias_template(req, template, **kwargs):
     kwargs['site'].copyright    = req.cfg.site_copyright
     kwargs['site'].styles       = req.cfg.site_styles
     kwargs['site'].this         = req.uri
+    kwargs['site'].scheme       = req.scheme
+    kwargs['site'].domain       = req.server_hostname
 
     kwargs['site'].modules      = req.cfg.modules
     kwargs['site'].footers      = req.cfg.footers

@@ -1,0 +1,50 @@
+{%- set states = {  0: _('Order was storned'),
+                    1: _('Order was accept'),
+                    2: _('Order is in proccess'),
+                    3: _('Order was sent'),
+                    4: _('Order was closed'),
+                    10: _('Order is waiting for paid'),
+                    11: _('Order is waiting for pick up') }
+-%}
+{{ _('Hello') }},
+
+{%- if order.state == 1 %}
+{% trans scheme=site.scheme, domain=site.domain, order_id=order.id %}
+thank you for your order. You can see detail of order in your user section
+or at address {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}.
+{% endtrans %}
+
+{{ _('Order recapitulation') }}:
+{{ _('Billing Address') }}:             {{ _('Shipping Address') }}:
+{%- set baddr = order.data.billing_address %}
+{%- set saddr = order.data.billing_address %}
+    {{ baddr.get('address1','')|e|fill(35) }}{{ saddr.get('address1','')|e }}
+    {{ baddr.get('address2','')|e|fill(35) }}{{ saddr.get('address2','')|e }}
+    {{ baddr.get('city','')|e }}            {{ saddr.get('city','')|e }}
+  {%- if cfg.addresses_region %}
+    {{ baddr.get('region','')|e }}          {{ saddr.get('region','')|e }}
+  {%- endif %}
+    {{ baddr.get('zip','')|e }}             {{ saddr.get('zip','')|e }}
+  {%- if cfg.addresses_country %}
+    {{ baddr.get('country','')|e }}         {{ baddr.get('country','')|e }}
+  {%- endif %}
+{%- endif  %}
+
+{%- if debug %}
+  {% from '_dbgitem.jinja' import subdict %}
+*Locales:*
+  {{ _ctx_().get_exported() }}
+
+*Template:*
+  {{ _template_ }}
+
+*_data_:*
+  {{ subdict(_data_,2) }}
+
+*_ctx_:*
+  {% for key, val in _ctx_().get_all().items() %}{{key}}: {{ val }}
+  {% endfor %}
+
+*Missing:*
+  {{ _miss_ }}
+{%- endif %}
