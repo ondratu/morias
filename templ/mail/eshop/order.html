@@ -1,3 +1,28 @@
+{# vim:set softtabstop=2: -#}
+<html id="html" lang="cs">
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Python, Jinja2, Morias"/>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Style-Type" content="text/css"/>
+    <style>
+      body { max-width: 40em; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px;}
+      h3 { margin-top: 10px; margin-bottom: 5px; }
+      h4 { margin-top: 5px; margin-bottom: 5px; }
+      .row { margin-bottom: 1em; }
+      .row:after { content: " "; display: table; clear: both; }
+      .col { float: left; }
+      [itemprop=adr] { min-width: 19em; }
+      [itemprop=adr] > h3, [itemprop=adr] > div { padding-left: 20px; }
+      table { width: 100%; border-bottom: 2px solid #dddddd; }
+      td, th { padding: 4px; vertical-align: top; border-top: 1px solid #dddddd; }
+      th { text-align: left; border-bottom: 2px solid #dddddd; }
+      .id, .price, .count { text-align: right; }
+      .summary { font-weight: bold; }
+    </style>
+  </head>
+  <body>
 {%- set states = {  0: _('Order was storned'),
                     1: _('Order was accept'),
                     2: _('Order is in proccess'),
@@ -5,134 +30,138 @@
                     4: _('Order was closed'),
                     10: _('Order is waiting for paid'),
                     11: _('Order is waiting for pick up') }
-%}
+-%}
+    {{ _('Hello') }},
+    <br><br>
 
-<div class="row">
-        <div  class="col-md-6" itemprop="adr">
-          <h4>{{ _('Billing Address') }}:</h4>
-          {%- set addr = order.data.billing_address %}
-          <h3>{{ addr.get('name','')|e }}</h3>
-          <div itemprop="street-address">{{ addr.get('address1','')|e }}</div>
-          <div itemprop="street-address">{{ addr.get('address2','')|e }}</div>
-          <div itemprop="locality">{{ addr.get('city','')|e }}</div>
-        {%- if cfg.addresses_region %}
-          <div itemprop="region">{{ addr.get('region','')|e }}</div>
-        {%- endif %}
-          <div itemprop="postal-code">{{ addr.get('zip','')|e }}</div>
-        {%- if cfg.addresses_country %}
-          <div itemprop="country-name">{{ addr.get('country','')|e }}</div>
-        {%- endif %}
-        </div>
+  {%- if order.state == 1 %}
+    {% trans scheme=site.scheme, domain=site.domain, order_id=order.id %}
+    thank you for your order. You can see detail of order in your user section
+    or at address <a href="{{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}">
+    {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}</a>.
+    {%- endtrans %}
+    <br><br>
 
-        <div class="col-md-6" itemprop="adr">
-          <h4>{{ _('Shipping Address') }}:</h4>
-          {%- set addr = order.data.shipping_address %}
-          <h3>{{ addr.get('name','')|e }}</h3>
-          <div itemprop="street-address">{{ addr.get('address1','')|e }}</div>
-          <div itemprop="street-address">{{ addr.get('address2','')|e }}</div>
-          <div itemprop="locality">{{ addr.get('city','')|e }}</div>
-        {%- if cfg.addresses_region %}
-          <div itemprop="region">{{ addr.get('region','')|e }}</div>
-        {%- endif %}
-          <div itemprop="postal-code">{{ addr.get('zip','')|e }}</div>
-        {%- if cfg.addresses_country %}
-          <div itemprop="country-name">{{ addr.get('country','')|e }}</div>
-        {%- endif %}
-        </div>
-      </div>{# /row #}
-
-      <div class="row">
-        <div class="col-md-12">
-          <h4>{{ _('Send order status to') }}:</h4>
-          <h3 class="padding15">{{ order.email }} </h3>
-        </div>
-      </div>{# /row #}
-
-      {% from "eshop/_tp_methods.html" import tp -%}
-
-      <div class="row">
-        <div class="col-md-12">
-          <h4>{{ _('Ordered items') }}</h4>
-          <table class="table table-hover" role="order-items">
-            <tr><th>#</th>
-                <th>{{ _('Name') }}</th>
-                <th class="price">{{ _('Price') }}</th>
-                <th class="count col-md-1">{{ _('Count') }}</th>
-                <th class="summary">{{ _('Summary' )}}</th>
-            </tr>
-          {% for item_id, item in order.items %}
-            <tr><td>{{ item_id }}</td>
-                <td>{{ item.name }}</td>
-                <td class="price">{{ item.price }} {{cfg.eshop_currency}}</td>
-                <td class="count">{{ item.count }}</td>
-                <td class="price">{{ item.summary }} {{cfg.eshop_currency}}</td>
-            </tr>
-          {% endfor %}
-            <tr class="active summary"><td></td>
-                <td>{{ _('Summary') }}</td>
-                <td></td>
-                <td class="count">{{ order.count }}</td>
-                <td class="summary">{{ order.summary }} {{cfg.eshop_currency}}</td>
-            </tr>
-            <tr><td></td>
-                <td>{{ tp.get('transportation_by_' + order.data.transportation[0], 'transportation_by_' + order.data.transportation[0]) }}</td>
-                <td></td>
-                <td></td>
-                <td class="price">{{ order.data.transportation[1] }} {{cfg.eshop_currency}}</td>
-            </tr>
-            <tr><td></td>
-                <td>{{ tp.get('payment_by_' + order.data.payment[0], 'payment_by_' + order.data.payment[0]) }}</td>
-                <td></td>
-                <td></td>
-                <td class="price">{{ order.data.payment[1] }} {{cfg.eshop_currency}}</td>
-            </tr>
-            <tr class="active summary"><td></td>
-                <td>{{ _('Total') }}</td>
-                <td></td>
-                <td></td>
-                <td class="summary">{{ order.total }} {{cfg.eshop_currency}}</td>
-            </tr>
-          </table>
-        </div>
-      </div>{# /row #}
-
-      <div class="row eshop-order-history">
-        <h4>{{ _('History') }}</h4>
-        <div class="col-md-2"><b>{{ _('Change time') }}</b></div>
-        <div class="col-md-10">
-          <div class="col-md-6"><b>{{ _('Old value') }}</b></div>
-          <div class="col-md-6"><b>{{ _('New value') }}</b></div>
-        </div>{# /col-md-2 #}
-      {%- for it in order.history %}
-        <div class="col-md-12"></div>
-        <div class="col-md-2">{{ datetime(it[0]).strftime("%H:%M %d.%m.%Y") }}</div>
-        <div class="col-md-10">
-        {%- for record in it[1] %}
-          {%- if number(record[0]) and number(record[1]) %}
-          <div class="col-md-6">{{ states[record[0]] }}</div>
-          <div class="col-md-6">{{ states[record[1]] }}</div>
-          {%- else %}
-            {%- if record[0] == "note" %}
-          <div class="col-md-6">{{ _('Note') }}:</div>
-            {%- elif record[0] == "usernote" %}
-          <div class="col-md-6">{{ _('Note from client') }}:</div>
-            {%- else %}
-          <div class="col-md-6">{{ record[0] }}</div>
-            {%- endif %}
-          <div class="col-md-6">{{ record[1] }}</div>
-          {%- endif %}
-        {%- endfor %}
-        </div>{# /col-md-2 #}
-      {%- endfor %}
-      </div>{# /row #}
-
-      <div class="row">
-        <h3>{{ _('State is:') }} {{ states[order.state] }}</h3>
-      {%- if order.state in (1,2,3,10,11) %}
-        <form method="post" action="/eshop/orders/{{ order.id }}/storno">
-          <input name="message" type="text" class="form-control" placeholder="{{ _('Message from you') }}">
-          <button type="submit" class="btn btn-danger pull-right">{{ _('Please storno order') }}</button>
-        </form>
+    <div class="row">
+      <div  class="col" itemprop="adr">
+        <h4>{{ _('Billing Address') }}:</h4>
+        {%- set addr = order.data.billing_address %}
+        <h3>{{ addr.get('name','')|e }}</h3>
+        <div itemprop="street-address">{{ addr.get('address1','')|e }}</div>
+        <div itemprop="street-address">{{ addr.get('address2','')|e }}</div>
+        <div itemprop="locality">{{ addr.get('city','')|e }}</div>
+      {%- if cfg.addresses_region %}
+        <div itemprop="region">{{ addr.get('region','')|e }}</div>
       {%- endif %}
+        <div itemprop="postal-code">{{ addr.get('zip','')|e }}</div>
+      {%- if cfg.addresses_country %}
+        <div itemprop="country-name">{{ addr.get('country','')|e }}</div>
+      {%- endif %}
+      </div>{# /billing address #}
+
+      <div class="col" itemprop="adr">
+        <h4>{{ _('Shipping Address') }}:</h4>
+        {%- set addr = order.data.shipping_address %}
+        <h3>{{ addr.get('name','')|e }}</h3>
+        <div itemprop="street-address">{{ addr.get('address1','')|e }}</div>
+        <div itemprop="street-address">{{ addr.get('address2','')|e }}</div>
+        <div itemprop="locality">{{ addr.get('city','')|e }}</div>
+      {%- if cfg.addresses_region %}
+        <div itemprop="region">{{ addr.get('region','')|e }}</div>
+        {%- endif %}
+        <div itemprop="postal-code">{{ addr.get('zip','')|e }}</div>
+      {%- if cfg.addresses_country %}
+        <div itemprop="country-name">{{ addr.get('country','')|e }}</div>
+        {%- endif %}
+      </div>{# /shipping address #}
+    </div>{# /row #}
+
+{%- from "eshop/_tp_methods.jinja" import tp -%}
+
+    <div class="row">
+      <div class="col-md-12">
+        <h4>{{ _('Ordered items') }}</h4>
+        <table class="table table-hover" role="order-items">
+          <tr><th>#</th>
+              <th>{{ _('Name') }}</th>
+              <th>{{ _('Price') }}</th>
+              <th>{{ _('Count') }}</th>
+              <th>{{ _('Summary' )}}</th>
+            </tr>
+        {% for item_id, item in order.items -%}
+          <tr><td class="id">{{ item_id }}</td>
+              <td>{{ item.name|e }}</td>
+              <td class="price">{{ item.price }} {{cfg.eshop_currency}}</td>
+              <td class="count">{{ item.count }}</td>
+              <td class="price">{{ item.summary }} {{cfg.eshop_currency}}</td>
+          </tr>
+        {%- endfor %}
+          <tr class="summary"><td></td>
+              <td>{{ _('Summary') }}</td>
+              <td></td>
+              <td class="count">{{ order.count }}</td>
+              <td class="price">{{ order.summary }} {{cfg.eshop_currency}}</td>
+          </tr>
+          <tr><td></td>
+              <td>{{ tp.get('transportation_by_' + order.data.transportation[0], 'transportation_by_' + order.data.transportation[0]) }}</td>
+              <td></td>
+              <td></td>
+              <td class="price">{{ order.data.transportation[1] }} {{cfg.eshop_currency}}</td>
+          </tr>
+          <tr><td></td>
+              <td>{{ tp.get('payment_by_' + order.data.payment[0], 'payment_by_' + order.data.payment[0]) }}</td>
+              <td></td>
+              <td></td>
+              <td class="price">{{ order.data.payment[1] }} {{cfg.eshop_currency}}</td>
+          </tr>
+          <tr class="summary"><td></td>
+              <td>{{ _('Total') }}</td>
+              <td></td>
+              <td></td>
+              <td class="price">{{ order.total }} {{cfg.eshop_currency}}</td>
+          </tr>
+        </table>
       </div>
-{% include "_footer.html" %}
+    </div>{# /row #}
+
+  {%- else %}
+    {% trans scheme=site.scheme, domain=site.domain, order_id=order.id, state = states[order.state] -%}
+    Your order {{ order_id }} from <a href="{{ scheme }}://{{ domain }}">{{ scheme }}://{{ domain }}</a>
+    has new state. For more information, you can see to order in your user
+    section or at address: <a href="{{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}">
+    {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}</a>.
+    {%- endtrans %}
+  {%- endif %}
+
+  <div class="row">
+    <h3>{{ _('Order state') }}: {{ states[order.state] }}</h3>
+  </div>
+
+  {% trans name=site.name -%}
+  Best regards,<br>
+  {{ name }} team.
+  {%- endtrans -%}
+
+{#- %- if debug %}
+{% from '_dbgitem.html' import subdict %}
+    <pre class="debug">
+    <b>Locales:</b>
+    {{ _ctx_().get_exported() }}
+
+    <b>Template:</b>
+      {{ _template_ }}
+
+    <b>_data_:</b>
+       {{ subdict(_data_,2) }}
+
+    <b>_ctx_:</b>
+      {% for key, val in _ctx_().get_all().items() %}{{key}}: {{ val|e }}
+      {% endfor %}
+
+    <b>Missing:</b>
+      {{ _miss_ }}
+
+        </pre>
+{% endif -% -#}
+  </body>
+</html>

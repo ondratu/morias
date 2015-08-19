@@ -39,16 +39,16 @@ _check_conf = (
     # eshop block
     ('eshop', 'cart_in_menu',   bool, True),
     # transportation block (-1 to disable)
-    ('eshop', 'transportation_post',        int, 0, True, _fee_doc),
-    ('eshop', 'transportation_personally',  int, 0, True, _fee_doc),
-    ('eshop', 'transportation_haulier',     int, 0, True, _fee_doc),
-    ('eshop', 'transportation_messenger',   int, 0, True, _fee_doc),
+    ('eshop', 'transportation_post',        float, 0, True, _fee_doc),
+    ('eshop', 'transportation_personally',  float, 0, True, _fee_doc),
+    ('eshop', 'transportation_haulier',     float, 0, True, _fee_doc),
+    ('eshop', 'transportation_messenger',   float, 0, True, _fee_doc),
     # paymant block (-1 to disable)
-    ('eshop', 'payment_delivery',           int, 0, True, _fee_doc),
-    ('eshop', 'payment_pickup',             int, 0, True, _fee_doc),
-    ('eshop', 'payment_transfer',           int, 0, True, _fee_doc),
-    ('eshop', 'payment_card',               int, 0, True, _fee_doc),
-    ('eshop', 'payment_paypal',             int, 0, True, _fee_doc),
+    ('eshop', 'payment_delivery',           float, 0, True, _fee_doc),
+    ('eshop', 'payment_pickup',             float, 0, True, _fee_doc),
+    ('eshop', 'payment_transfer',           float, 0, True, _fee_doc),
+    ('eshop', 'payment_card',               float, 0, True, _fee_doc),
+    ('eshop', 'payment_paypal',             float, 0, True, _fee_doc),
 )
 
 def _call_conf(cfg, parser):
@@ -70,7 +70,13 @@ user_info_menu.append(MenuItem('/eshop/orders', label="My Orders",
 
 def send_order_status(req, order):
     try:
-        req.log_error('posilam mail......')
+        cfg = Object()
+        cfg.addresses_country   = req.cfg.addresses_country
+        cfg.addresses_region    = req.cfg.addresses_region
+        cfg.eshop_currency      = req.cfg.eshop_currency
+
+        order.calculate()   # calculate summary
+
         # TODO: use lang from cart when order was create
         req.smtp.send_email_alternative(
                 morias_template(req,
@@ -79,16 +85,16 @@ def send_order_status(req, order):
                 order.email,
                 morias_template(req,
                                 'mail/eshop/order.jinja',
-                                order = order).encode('utf-8'),  # body
+                                order = order,
+                                cfg = cfg).encode('utf-8'),     # body
                 morias_template(req,
                                 'mail/eshop/order.html',
-                                order = order).encode('utf-8'),  # body
+                                order = order,
+                                cfg= cfg).encode('utf-8'),      # body
                 logger = req.logger)
-    #except Exception as e:
-    #    req.log_error('Mailing order[%d] error: %s' % (order.id, str(e)),
-    #                    state.LOG_ERR)
-    finally:
-        pass
+    except Exception as e:
+        req.log_error('Mailing order[%d] error: %s' % (order.id, str(e)),
+                        state.LOG_ERR)
 #enddef
 
 @app.route('/eshop/cart', method = state.METHOD_GET | state.METHOD_PATCH)
@@ -182,7 +188,7 @@ def eshop_cart_address_post(req):
         shipping_address = billing_address.copy()
         shipping_address['same_as_billing'] = True
     else:
-        shipping_address = Address.bind(req.form, 'shipping')
+        shipping_address = Address.bind(req.form, 'shipping_')
         shipping_address['same_as_billing'] = False
     transportation  = req.form.getfirst('transportation', '', str)
     payment         = req.form.getfirst('payment', '', str)

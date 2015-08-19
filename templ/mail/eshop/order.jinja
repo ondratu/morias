@@ -12,25 +12,52 @@
 {% trans scheme=site.scheme, domain=site.domain, order_id=order.id %}
 thank you for your order. You can see detail of order in your user section
 or at address {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}.
-{% endtrans %}
+{%- endtrans %}
 
 {{ _('Order recapitulation') }}:
-{{ _('Billing Address') }}:             {{ _('Shipping Address') }}:
+{{ (_('Billing Address')+':')|fill(38) }}{{ _('Shipping Address') }}:
 {%- set baddr = order.data.billing_address %}
 {%- set saddr = order.data.billing_address %}
-    {{ baddr.get('address1','')|e|fill(35) }}{{ saddr.get('address1','')|e }}
-    {{ baddr.get('address2','')|e|fill(35) }}{{ saddr.get('address2','')|e }}
-    {{ baddr.get('city','')|e }}            {{ saddr.get('city','')|e }}
+    {{ baddr.get('address1','')|e|fill(38) }}{{ saddr.get('address1','')|e }}
+    {{ baddr.get('address2','')|e|fill(38) }}{{ saddr.get('address2','')|e }}
+    {{ baddr.get('city','')|e|fill(38) }}{{ saddr.get('city','')|e }}
   {%- if cfg.addresses_region %}
-    {{ baddr.get('region','')|e }}          {{ saddr.get('region','')|e }}
+    {{ baddr.get('region','')|e|fill(38) }}{{ saddr.get('region','')|e }}
   {%- endif %}
-    {{ baddr.get('zip','')|e }}             {{ saddr.get('zip','')|e }}
+    {{ baddr.get('zip','')|e|fill(38) }}{{ saddr.get('zip','')|e }}
   {%- if cfg.addresses_country %}
-    {{ baddr.get('country','')|e }}         {{ baddr.get('country','')|e }}
+    {{ baddr.get('country','')|e|fill(38) }}{{ baddr.get('country','')|e }}
   {%- endif %}
-{%- endif  %}
+{%- from "eshop/_tp_methods.jinja" import tp %}
 
-{%- if debug %}
+  #  |{{ _('Name')|center(30) }}|{{ _('Price')|center(15) }}|{{ _('Count')|center(7) }}|{{ _('Summary')|center(15) }}
+{{ '-'*76 }}
+{%- for item_id, item in order.items %}
+{{ item_id|string|pre(4) }} | {{ item.name|truncate(29)|fill(29) }}|{{ (item.price|string+' '+cfg.eshop_currency)|pre(14) }} |{{ item.count|string|pre(6) }} |{{ (item.summary|string+' '+cfg.eshop_currency)|pre(15) }}
+{%- endfor %}
+{{ '-'*76 }}
+     | {{ _('Summary')|fill(29) }}|{{ ' '*15 }}|{{ order.count|string|pre(6) }} |{{ (order.summary|string+' '+cfg.eshop_currency)|pre(15) }}
+     | {{ tp.get('transportation_by_' + order.data.transportation[0], 'transportation_by_' + order.data.transportation[0])|fill(29) }}|{{ ' '*15 }}|{{ ' '*7 }}|{{ (order.data.transportation[1]|string+' '+cfg.eshop_currency)|pre(15) }}
+     | {{ tp.get('payment_by_' + order.data.payment[0], 'payment_by_' + order.data.payment[0])|fill(29) }}|{{ ' '*15 }}|{{ ' '*7 }}|{{ (order.data.payment[1]|string+' '+cfg.eshop_currency)|pre(15) }}
+{{ '='*76 }}
+     | {{ _('Total')|fill(29) }}|{{ ' '*23 }}|{{ (order.total|string+' '+cfg.eshop_currency)|pre(15) }}
+{%- else %}
+
+{% trans scheme=site.scheme, domain=site.domain, order_id=order.id, state = states[order.state] -%}
+Your order {{ order_id }} from {{ scheme }}://{{ domain }} has new state.
+For more information, you can see to order in your user section or at
+address: {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}.
+{%- endtrans %}
+{%- endif %}
+
+{{ _('Order state') }}: {{ states[order.state] }}
+
+{% trans name=site.name -%}
+Best regards,
+{{ name }} team.
+{%- endtrans -%}
+
+{# %- if debug %}
   {% from '_dbgitem.jinja' import subdict %}
 *Locales:*
   {{ _ctx_().get_exported() }}
@@ -47,4 +74,4 @@ or at address {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}.
 
 *Missing:*
   {{ _miss_ }}
-{%- endif %}
+{%- endif % -#}

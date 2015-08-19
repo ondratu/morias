@@ -66,6 +66,9 @@ def truncate(string, length = 255, killwords = True, end='...'):
 def fill(string, width = 80):
     return string + " "*(width-len(string))
 
+def pre(string, width = 80):
+    return " "*(width-len(string)) + string
+
 def number(obj):
     return isinstance(obj, int) or isinstance(obj, float)
 
@@ -110,7 +113,7 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     env.globals['_miss_'] = missing
     env.globals['_template_'] = filename
 
-    # jinja2 compatibility with old versions
+    # jinja2 filters could be functions
     env.globals['length']   = len
     env.globals['truncate'] = truncate
     env.globals['number']   = number
@@ -121,10 +124,12 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     env.globals['datetime'] = datetime.fromtimestamp
     env.globals['jsonify'] = dumps
     env.globals['fill'] = fill
+    env.globals['pre'] = pre
 
     env.filters['datetime'] = datetime.fromtimestamp
     env.filters['jsonify'] = dumps
     env.filters['fill'] = fill
+    env.filters['pre'] = pre
 
     # morias functionality
     env.globals['check_right'] = check_right
