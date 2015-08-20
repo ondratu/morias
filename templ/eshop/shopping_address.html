@@ -29,7 +29,7 @@
       </div>
     {%- elif error == 'no_email' %}
       <div class="alert alert-danger">
-        {{ _('No or Bad email, please fill the right email address for sendig order state.') }}
+        {{ _('No email, bad email or emails are not same. Please fill the right email address for sendig order state.') }}
       </div>
     {%- endif %}
 
@@ -198,24 +198,34 @@
       </div>{# /col-md-6 #}
 
       <div class="col-md-6">
-        <div class="form-horizontal {{ 'has-error' if error == 'no_email'}}" role="form">
+        {%- if not login.email %}
+        <div class="form-horizontal {{ 'has-error' if error == 'no_email'}}" role="form" data="email">
           <h4>{{ _('Send order status to') }}:</h4>
 
           <div class="form-group item">
-            <label for="email" class="col-sm-2 control-label">{{ _('Email') }}</label>
+            <label for="email" class="col-sm-4 control-label">{{ _('Email') }}</label>
             <div class="col-sm-8">
-              <input type="email" id="email" name="email" class="form-control" value="{{ (cart.email or login.email or '')|e }}">
+              <input type="email" id="email" name="email" class="form-control" value="{{ (cart.email or '')|e }}">
               <div class="help-block">{{ _('This email was be store for comunication with you about order state.') }}</div>
             </div>
           </div>
+
+          <div class="form-group item">
+            <label for="emailcheck" class="col-sm-4 control-label">{{ _('Email again') }}</label>
+            <div class="col-sm-8">
+              <input type="email" id="emailcheck" name="emailcheck" class="form-control" value="{{ (cart.emailcheck or '')|e }}">
+              <div class="help-block">{{ _('One more time your email.') }}</div>
+            </div>
+          </div>
         </div>{# /form #}
+        {%- endif %}
 
         <div id="mode-of-transportation" class="form-horizontal {{ 'has-error' if error == 'no_transportation'}}" role="form">
           <h4>{{ _('Mode of transportation') }}:</h4>
 
         {%- if cfg.transportation_post >= 0 %}
           <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
+            <div class="col-sm-offset-4 col-sm-6">
               <div class="radio">
                 <label><input type="radio" name="transportation" value="post" {{ 'checked="checked"' if cart.transportation[0] == 'post' else '' }}>
                   {{ _('By post') }}</label>
@@ -227,7 +237,7 @@
 
         {%- if cfg.transportation_personally >= 0 %}
           <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
+            <div class="col-sm-offset-4 col-sm-6">
               <div class="radio">
                 <label><input type="radio" name="transportation" value="personally" {{ 'checked="checked"' if cart.transportation[0] == 'personally' else '' }}>
                   {{ _('Personally') }}</label>
@@ -239,7 +249,7 @@
 
         {%- if cfg.transportation_haulier >= 0 %}
           <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
+            <div class="col-sm-offset-4 col-sm-6">
               <div class="radio">
                 <label><input type="radio" name="transportation" value="haulier" {{ 'checked="checked"' if cart.transportation[0] == 'haulier' else '' }}>
                   {{ _('Haulier') }}</label>
@@ -251,7 +261,7 @@
 
         {%- if cfg.transportation_messenger >= 0 %}
           <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
+            <div class="col-sm-offset-4 col-sm-6">
               <div class="radio">
                 <label><input type="radio" name="transportation" value="messenger" {{ 'checked="checked"' if cart.transportation[0] == 'messenger' else '' }}>
                   {{ _('Messenger') }}</label>
@@ -267,7 +277,7 @@
 
         {%- if cfg.payment_delivery >= 0 %}
           <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
+            <div class="col-sm-offset-4 col-sm-6">
               <div class="radio">
                 <label><input type="radio" name="payment" value="delivery" {{ 'checked="checked"' if cart.payment[0] == 'delivery' else '' }}>
                   {{ _('Cash on delivery') }}</label>
@@ -279,7 +289,7 @@
 
         {%- if cfg.payment_pickup >= 0 %}
           <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
+            <div class="col-sm-offset-4 col-sm-6">
               <div class="radio">
                 <label><input type="radio" name="payment" value="pickup" {{ 'checked="checked"' if cart.payment[0] == 'pickup' else '' }}>
                   {{ _('Payment upon pick-up') }}</label>
@@ -291,7 +301,7 @@
 
         {%- if cfg.payment_transfer >= 0 %}
           <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
+            <div class="col-sm-offset-4 col-sm-6">
               <div class="radio">
                 <label><input type="radio" name="payment" value="transfer" {{ 'checked="checked"' if cart.payment[0] == 'transfer' else '' }}>
                   {{ _('By bank transfer') }}</label>
@@ -303,7 +313,7 @@
 
         {%- if cfg.payment_card >= 0 %}
           <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
+            <div class="col-sm-offset-4 col-sm-6">
               <div class="radio">
                 <label><input type="radio" name="payment" value="card" {{ 'checked="checked"' if cart.payment[0] == 'card' else '' }}>
                   {{ _('By credit card') }}</label>
@@ -315,7 +325,7 @@
 
         {%- if cfg.payment_paypal >= 0 %}
           <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-8">
+            <div class="col-sm-offset-4 col-sm-6">
               <div class="radio">
                 <label><input type="radio" name="payment" value="paypal" {{ 'checked="checked"' if cart.payment[0] == 'paypal' else '' }}>
                   {{ _('By PayPal') }}</label>
@@ -348,6 +358,19 @@
             {{ cart.dict()|jsonify }}
             {% if login != none %}, {{ login.data.get('addresses', [])|jsonify }} {% endif %}
         );
+
+        $('#email').on('change', function(ev) {
+            if ($(ev.target).val() != $('#emailcheck').val())
+              $('[data=email]').addClass('has-error');
+            else
+              $('[data=email]').removeClass('has-error');
+        });
+        $('#emailcheck').on('change', function(ev) {
+            if ($(ev.target).val() != $('#email').val())
+              $('[data=email]').addClass('has-error');
+            else
+              $('[data=email]').removeClass('has-error');
+        });
       });
     </script>
 

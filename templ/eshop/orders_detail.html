@@ -14,7 +14,9 @@
     <div class="container">
       <ul class="nav nav-pills nav-sm">
         <li class="navbar-brand">{{ _('Order') }} {{ order.id }}</li>
+      {% if not sha %}
         <li class="pull-right"><a href="/eshop/orders">{{ _('Orders list') }}</a></li>
+      {% endif %}
       </ul>
 
       <div class="row">
@@ -138,7 +140,7 @@
 
       <div class="row">
         <h3>{{ _('State is:') }} {{ states[order.state] }}</h3>
-      {%- if order.state in (1,2,3,10,11) %}
+      {%- if not sha and order.state in (1,2,3,10,11) %}
         <form method="post" action="/eshop/orders/{{ order.id }}/storno">
           <input name="message" type="text" class="form-control" placeholder="{{ _('Message from you') }}">
           <button type="submit" class="btn btn-danger pull-right">{{ _('Please storno order') }}</button>

@@ -40,6 +40,7 @@ class ShoppingCart(object):
         self.transportation     = shopping_cart.get('transportation', None)
         self.payment            = shopping_cart.get('payment', None)
         self.email              = shopping_cart.get('email', '')
+        self.emailcheck         = shopping_cart.get('emailcheck', '')
         self.message            = shopping_cart.get('message', '')
 
         if req.login:
@@ -139,6 +140,7 @@ class ShoppingCart(object):
         self.transportation     = None
         self.payment            = None
         self.email              = ''
+        self.emailcheck         = ''
         self.message            = ''
 #endclass
 
@@ -192,7 +194,7 @@ class Order(object):
             'shipping_address'  : cart.shipping_address,
             'transportation'    : cart.transportation,
             'payment'           : cart.payment,
-            'message'           : cart.message
+            'message'           : cart.message,
         }
         return order
     #enddef

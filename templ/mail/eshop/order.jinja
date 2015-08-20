@@ -6,12 +6,13 @@
                     10: _('Order is waiting for paid'),
                     11: _('Order is waiting for pick up') }
 -%}
+{%- set order_sha = '' if order.client_id else '?sha='+order.sha %}
 {{ _('Hello') }},
 
 {%- if order.state == 1 %}
-{% trans scheme=site.scheme, domain=site.domain, order_id=order.id %}
+{% trans scheme=site.scheme, domain=site.domain, order_id=order.id, order_sha=order_sha %}
 thank you for your order. You can see detail of order in your user section
-or at address {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}.
+or at address {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}{{ order_sha }}.
 {%- endtrans %}
 
 {{ _('Order recapitulation') }}:
@@ -43,10 +44,10 @@ or at address {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}.
      | {{ _('Total')|fill(29) }}|{{ ' '*23 }}|{{ (order.total|string+' '+cfg.eshop_currency)|pre(15) }}
 {%- else %}
 
-{% trans scheme=site.scheme, domain=site.domain, order_id=order.id, state = states[order.state] -%}
+{% trans scheme=site.scheme, domain=site.domain, order_id=order.id, order_sha=order_sha, state = states[order.state] -%}
 Your order {{ order_id }} from {{ scheme }}://{{ domain }} has new state.
 For more information, you can see to order in your user section or at
-address: {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}.
+address: {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}{{order_sha}}.
 {%- endtrans %}
 {%- endif %}
 

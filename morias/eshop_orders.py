@@ -5,6 +5,8 @@
     shopping_address.html template.
 """
 
+from hashlib import sha1
+
 from poorwsgi import *
 from falias.sql import Sql
 from falias.util import nint, Object
@@ -69,14 +71,18 @@ user_info_menu.append(MenuItem('/eshop/orders', label="My Orders",
                         symbol="eshop-orders"))
 
 def send_order_status(req, order):
+    """ Send order status to order email.
+        This function call calculate on order and create sha
+    """
+    cfg = Object()
+    cfg.addresses_country   = req.cfg.addresses_country
+    cfg.addresses_region    = req.cfg.addresses_region
+    cfg.eshop_currency      = req.cfg.eshop_currency
+
+    order.calculate()   # calculate summary
+    order.sha = sha1(str(order.create_date)).hexdigest()
+
     try:
-        cfg = Object()
-        cfg.addresses_country   = req.cfg.addresses_country
-        cfg.addresses_region    = req.cfg.addresses_region
-        cfg.eshop_currency      = req.cfg.eshop_currency
-
-        order.calculate()   # calculate summary
-
         # TODO: use lang from cart when order was create
         req.smtp.send_email_alternative(
                 morias_template(req,
@@ -192,7 +198,12 @@ def eshop_cart_address_post(req):
         shipping_address['same_as_billing'] = False
     transportation  = req.form.getfirst('transportation', '', str)
     payment         = req.form.getfirst('payment', '', str)
-    email           = req.form.getfirst('email', '', str)
+    if req.login:
+        email = req.login.email
+        emailcheck = email
+    else:
+        email       = req.form.getfirst('email', '', str)
+        emailcheck  = req.form.getfirst('emailcheck', '', str)
 
     transportation_price = req.cfg.__dict__.get(
                 'eshop_transportation_' + transportation, -1)
@@ -214,6 +225,8 @@ def eshop_cart_address_post(req):
         cart.payment = (payment, payment_price)
     if re_email.match(email):
         cart.email = email
+    if re_email.match(emailcheck):
+        cart.emailcheck = emailcheck
 
     cart.store(req)     # store shopping cart
 
@@ -221,12 +234,12 @@ def eshop_cart_address_post(req):
         return eshop_cart_address(req, cart, error = 'no_billing_address')
     if len(shipping_address) == 1:  # only same_as_billing
         return eshop_cart_address(req, cart, error = 'no_shipping_address')
+    if not email or email != emailcheck:
+        return eshop_cart_address(req, cart, error = 'no_email')
     if not transportation:
         return eshop_cart_address(req, cart, error = 'no_transportation')
     if not payment:
         return eshop_cart_address(req, cart, error = 'no_payment')
-    if not email:
-        return eshop_cart_address(req, cart, error = 'no_email')
     # end of errors block
 
     cart.calculate()
@@ -273,7 +286,8 @@ def eshop_cart_pay_and_order(req):
     if retval == order:
         cart.clean(req)
         send_order_status(req, order)
-        redirect(req, '/eshop')
+        return generate_page(req, "eshop/shopping_accept.html",
+                             order = order)
     if retval[0] == EMPTY_ITEMS:
         redirect(req, '/eshop')
     if retval[0] == NOT_ENOUGH_ITEMS:
@@ -284,8 +298,10 @@ def eshop_cart_pay_and_order(req):
 
 @app.route('/eshop/orders')
 def user_orders(req):
-    check_login(req)
+    if not req.login:
+        return generate_page(req, "/eshop/orders_for_logined.html")
 
+    check_login(req)
     state = req.args.getfirst('state', -1, int)
 
     kwargs = {'client_id': req.login.id}
@@ -302,13 +318,19 @@ def user_orders(req):
 
 @app.route('/eshop/orders/<id:int>')
 def user_orders_detail(req, id):
-    check_login(req)
-    check_right(req, module_right)
+    sha = req.args.getfirst('sha', '', str)
+    if not sha and not req.login:
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
 
     order = Order(id)
     if order.get(req) is None:
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
-    if order.client_id != req.login.id:
+    order.sha = sha1(str(order.create_date)).hexdigest()
+
+    if (sha and sha != order.sha):
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)
+    # if sha is set, you can see to order
+    if (not sha and req.login and order.client_id != req.login.id):
         raise SERVER_RETURN(state.HTTP_FORBIDDEN)
 
     cfg = Object()
@@ -318,7 +340,7 @@ def user_orders_detail(req, id):
 
     order.calculate()
     return generate_page(req, "eshop/orders_detail.html",
-                         order = order, cfg = cfg)
+                         order = order, sha = sha, cfg = cfg)
 #enddef
 
 @app.route('/eshop/orders/<id:int>/storno', method = state.METHOD_POST)

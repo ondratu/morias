@@ -1,0 +1,26 @@
+{# vim:set softtabstop=2: -#}
+{% set title = _('Check order') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills row">
+        <li class="navbar-brand">{{ _('Order was accept') }}</li>
+      </ul>
+
+      <div class="row">
+        <div class="col-md-12">
+      {%- set order_sha = '' if order.client_id else '?sha='+order.sha %}
+      {%- trans scheme=site.scheme, domain=site.domain, order_id=order.id, order_sha=order_sha %}
+        <b>Thank you</b> for your order. You can see detail of order in your user section
+        or at address <a href="{{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}{{order_sha}}">
+        {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}{{order_sha}}</a>.
+
+        You will be also inform by mail to address, which you entered to your
+        order.
+    {%- endtrans %}
+        </div>
+      </div>{# /row #}
+    </div>{# /container #}
+
+{% include "_footer.html" %}

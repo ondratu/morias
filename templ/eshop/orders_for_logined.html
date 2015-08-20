@@ -1,0 +1,18 @@
+{# vim:set softtabstop=2: -#}
+{% set title = 'User eShop orders' -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <form method="get"><ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('eShop orders') }}</li>
+      </ul></form>
+
+      <div class="jumbotron">
+        <h2>{{ _('This view is only for registred user.') }}</h2>
+        {{ _('Here you could show all of your orders.') }}
+      </div>
+
+    </div>
+{% include "_footer.html" %}
+

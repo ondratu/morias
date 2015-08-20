@@ -31,14 +31,15 @@
                     10: _('Order is waiting for paid'),
                     11: _('Order is waiting for pick up') }
 -%}
+{%- set order_sha = '' if order.client_id else '?sha='+order.sha %}
     {{ _('Hello') }},
     <br><br>
 
   {%- if order.state == 1 %}
-    {% trans scheme=site.scheme, domain=site.domain, order_id=order.id %}
-    thank you for your order. You can see detail of order in your user section
-    or at address <a href="{{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}">
-    {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}</a>.
+    {% trans scheme=site.scheme, domain=site.domain, order_id=order.id, order_sha=order_sha %}
+    <b>thank you</b> for your order. You can see detail of order in your user section
+    or at address <a href="{{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}{{order_sha}}">
+    {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}{{order_sha}}</a>.
     {%- endtrans %}
     <br><br>
 
@@ -125,11 +126,11 @@
     </div>{# /row #}
 
   {%- else %}
-    {% trans scheme=site.scheme, domain=site.domain, order_id=order.id, state = states[order.state] -%}
+    {% trans scheme=site.scheme, domain=site.domain, order_id=order.id, order_sha=order_sha, state = states[order.state] -%}
     Your order {{ order_id }} from <a href="{{ scheme }}://{{ domain }}">{{ scheme }}://{{ domain }}</a>
     has new state. For more information, you can see to order in your user
-    section or at address: <a href="{{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}">
-    {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}</a>.
+    section or at address: <a href="{{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}{{order_sha}}">
+    {{ scheme }}://{{ domain }}/eshop/orders/{{ order_id }}{{order_sha}}</a>.
     {%- endtrans %}
   {%- endif %}
 

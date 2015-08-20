@@ -53,8 +53,9 @@ def _add (self, c):
                     "%d, %s, %s, %s)",
                 (self.client_id, self.email, self.state, json.dumps(self.items),
                  json.dumps(self.history), json.dumps(self.data) ) )
-    c.execute("SELECT order_id FROM eshop_orders WHERE rowid = %d", c.lastrowid)
-    self.id = c.fetchone()[0]
+    c.execute("SELECT order_id, create_date FROM eshop_orders WHERE rowid = %d",
+                c.lastrowid)
+    self.id, self.create_date = c.fetchone()
 #enddef
 
 def _mod(self, c):
