@@ -40,7 +40,7 @@
         {% if login is defined and login != none -%}
           <li><a href="/logout">{{ _('Logout') }} {{ login.email.split('@')[0] }}</a></li>
         {% else -%}
-          <li><a href="/login">{{ _('Sign in') }}</a></li>
+          <li {{ 'class="active"' if site.this == '/login' else '' }}><a href="/login">{{ _('Sign in') }}</a></li>
         {% endif -%}
         </ul>
       </div>
