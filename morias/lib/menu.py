@@ -1,10 +1,9 @@
 from core.login import do_match_right
-from inspect import stack
-from sys import getrefcount
+
 
 class Item(object):
-    def __init__(self, uri, label = None, title = None, rights = [],
-            symbol = None, locale = '', role = None):
+    def __init__(self, uri, label=None, title=None, rights=[],
+                 symbol=None, locale='', role=None):
         self.uri = uri
         self.label = label
         self.title = title
@@ -16,10 +15,9 @@ class Item(object):
     def __repr__(self):
         return str(self.__dict__)
 
-#endclass Item
 
 class Menu(object):
-    def __init__(self, label, symbol = None, locale = '', role = None):
+    def __init__(self, label, symbol=None, locale='', role=None):
         self.label = label
         self.symbol = symbol
         self.locale = locale
@@ -52,17 +50,17 @@ class Menu(object):
                     menu.symbol,
                     menu.locale,
                     menu.role)
-    #enddef
 
-#endclass Menu
 
 def isitem(obj):
     return isinstance(obj, Item)
 
+
 def ismenu(obj):
     return isinstance(obj, Menu)
 
-def correct_menu(req, menu, retval = None):
+
+def correct_menu(req, menu, retval=None):
     new_menu = retval if ismenu(retval) else Menu.base(menu)
     for item in menu:
         if isitem(item) and do_match_right(req, item.rights):
@@ -72,4 +70,3 @@ def correct_menu(req, menu, retval = None):
             if len(submenu) > 0:
                 new_menu.append(submenu)
     return new_menu
-    #return list ( item for item in menu if ismenu(item) or do_match_right(req, item.rights) )

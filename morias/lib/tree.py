@@ -3,16 +3,17 @@ from falias.util import nint
 from time import time
 
 # errors
-EMPTY_TITLE     = 1
+EMPTY_TITLE = 1
 
 _drivers = ("sqlite",)
+
 
 def driver(req):
     if req.db.driver not in _drivers:
         raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
     m = "tree_" + req.db.driver
     return __import__("lib." + m).__getattribute__(m)
-#enddef
+
 
 class Item(object):
     """ \ First Item (0)
@@ -26,13 +27,13 @@ class Item(object):
         \ Item
     """
 
-    ID      = 'id'
-    PARENT  = 'parent'
-    NEXT    = 'next'
-    ORDER   = 'order'
-    TABLE   = 'tree'
+    ID = 'id'
+    PARENT = 'parent'
+    NEXT = 'next'
+    ORDER = 'order'
+    TABLE = 'tree'
 
-    def __init__(self, id = None):
+    def __init__(self, id=None):
         self.id = id
         self.parent = None
         self.order = int(time())    # only one item in DB could be first
@@ -53,11 +54,11 @@ class Item(object):
         c = m._lock(req)                    # lock the table first
         try:
             # get preview item of me
-            prev = m._get_item(c, self.__class__, next = self.next)
+            prev = m._get_item(c, self.__class__, next=self.next)
             if prev is None:                # fix next, if is not first
                 self.order = 0
                 if self.next:
-                    next = m._get_item(c, self.__class__, id = self.next)
+                    next = m._get_item(c, self.__class__, id=self.next)
                     next.order = int(time())
                     self.parent = next.parent
                     m._mod(next, c)
@@ -75,15 +76,16 @@ class Item(object):
                 m._mod(self, c)
 
             m._commit(c)                    # release lock
-        except KeyError as e:
+        except KeyError:
             m._rollback(c)
             return None
 
         return self
-    #enddef
+    # enddef
 
     def mod(self, req, **kwargs):
-        if not self.title: return EMPTY_TITLE
+        if not self.title:
+            return EMPTY_TITLE
         m = driver(req)
         return m.mod(self, req, **kwargs)
 
@@ -106,16 +108,17 @@ class Item(object):
                 m._mod(self, c)
 
             if tmp_order != 0:             # fix my prev item
-                prev = m._get_item(c, self.__class__, next = self.id)
+                prev = m._get_item(c, self.__class__, next=self.id)
                 prev.next = tmp_next
                 m._mod(prev, c)
             elif tmp_next:                  # fix nexts order to be first
-                next = m._get_item(c, self.__class__, id = tmp_next)
+                next = m._get_item(c, self.__class__, id=tmp_next)
                 if next:
-                    next.order = 0;
+                    next.order = 0
                     m._mod(next, c)
 
-            m._fix_parent(c, self.__class__, self.id, self.parent)  # fix item's child
+            # fix item's child
+            m._fix_parent(c, self.__class__, self.id, self.parent)
 
             m._del(self, c)                  # delete item
             m._commit(c)
@@ -124,7 +127,6 @@ class Item(object):
             m._rollback(c)
             return None
         return True
-
 
     def move(self, req):        # TODO: move not work yet !
         """ * set items's next to None and 0 order to time()
@@ -147,7 +149,7 @@ class Item(object):
 
             # load new prev first, couse for move to and, there wold be two
             # next == null
-            prev = m._get_item(c, self.__class__, next = new_next)
+            prev = m._get_item(c, self.__class__, next=new_next)
 
             tmp_next = self.next
             tmp_order = self.order
@@ -160,19 +162,20 @@ class Item(object):
                 m._mod(self, c)
 
             if tmp_order != 0:              # fix my prev item
-                oprev = m._get_item(c, self.__class__, next = self.id)
+                oprev = m._get_item(c, self.__class__, next=self.id)
                 oprev.next = tmp_next
                 m._mod(oprev, c)
             elif tmp_next:                  # fix nexts order to be first
-                next = m._get_item(c, self.__class__, id = tmp_next)
-                next.order = 0;
+                next = m._get_item(c, self.__class__, id=tmp_next)
+                next.order = 0
                 m._mod(next, c)
 
-            m._fix_parent(c, self.__class__, self.id, self.parent)  # fix item's child
+            # fix item's child
+            m._fix_parent(c, self.__class__, self.id, self.parent)
 
             ''' push item to new position '''
             if new_next:                    # fix new parents
-                next = m._get_item(c, self.__class__, id = new_next)
+                next = m._get_item(c, self.__class__, id=new_next)
                 self.parent = next.parent
 
             if prev is None:                # fix next, if is not first
@@ -181,7 +184,7 @@ class Item(object):
                     next.order = int(time())
             else:                           # set prev's next
                 if prev.id == tmp_next:
-                    m._get(prev, c)         # fresh prev, couse could have order=0
+                    m._get(prev, c)     # fresh prev, couse could have order=0
                 prev.next = self.id
                 m._mod(prev, c)
 
@@ -191,7 +194,7 @@ class Item(object):
             self.next = new_next
             m._mod(self, c)
             m._commit(c)
-        except KeyError as e:
+        except KeyError:
             m._rollback(c)
             return None
         return self
@@ -203,7 +206,7 @@ class Item(object):
 
         try:
             m._get(self, c)                 # fresh item's data
-            prev = m._get_item(c, self.__class__, next = self.id)
+            prev = m._get_item(c, self.__class__, next=self.id)
             if prev is None:
                 m._rollback(c)
                 return None                 # no moving :)
@@ -215,7 +218,7 @@ class Item(object):
 
             m._mod(self, c)
             m._commit(c)
-        except KeyError as e:
+        except KeyError:
             m._rollback(c)
             return None
         return self
@@ -230,15 +233,19 @@ class Item(object):
             if self.parent is None:
                 raise StopIteration("Item is at root")
 
-            nparent = m._get_item(c, self.__class__, id = self.next) if self.next else None
+            if self.next:
+                nparent = m._get_item(c, self.__class__, id=self.next)
+            else:
+                nparent = None
             if self.parent == nparent:
                 raise StopIteration("Can't be higher then next")
 
             # if item not on root, it must have parent
-            self.parent = m._get_item(c, self.__class__, id = self.parent).parent
+            self.parent = m._get_item(c, self.__class__,
+                                      id=self.parent).parent
             m._mod(self, c)
             m._commit(c)
-        except (KeyError, StopIteration) as e:
+        except (KeyError, StopIteration):
             m._rollback(c)
             return None
         return self
@@ -261,15 +268,19 @@ class Item(object):
 
     @staticmethod
     def sort(cls, items):
-        if not items: return []
+        if not items:
+            return []
         _sorted = []
         _levels = {}
 
         _id, item = items.popitem(False)
         while item:
-            item['_level'] = _levels[item[cls.PARENT]] + 1 if item[cls.PARENT] else 0
+            if item[cls.PARENT]:
+                item['_level'] = _levels[item[cls.PARENT]] + 1
+            else:
+                item['_level'] = 0
             _levels[item[cls.ID]] = item['_level']
             _sorted.append(item)
             item = items.pop(item[cls.NEXT], None)
         return _sorted
-#endclass
+# endclass

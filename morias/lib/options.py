@@ -1,7 +1,8 @@
-"""
-    This module library provide options from data backend. Use this library
-    only for soft options like prices, themes and so on. Don't be remember, that
-    you must obtain to right reload modified options from backend in ritht time.
+"""This module library provide options from data backend.
+
+Use this libraryonly for soft options like prices, themes and so on. Don't
+be remember, that you must obtain to right reload modified options from
+backend in ritht time.
 """
 
 from operator import attrgetter
@@ -14,64 +15,73 @@ from falias.util import islistable
 
 from timestamp import write_timestamp
 
-#errors
-EMPTY_SECTION   = 0
-EMPTY_OPTION    = 1
-EMPTY_VALUE     = 2
-UNKNOW_OPTION   = 3
-BAD_VALUE       = 4
+# errors
+EMPTY_SECTION = 0
+EMPTY_OPTION = 1
+EMPTY_VALUE = 2
+UNKNOWN_OPTION = 3
+BAD_VALUE = 4
 
-option_errors   = { EMPTY_SECTION   : 'empty_section',
-                    EMPTY_OPTION    : 'empty_option',
-                    EMPTY_VALUE     : 'empty_value',
-                    UNKNOW_OPTION   : 'unknow_option',
-                    BAD_VALUE       : 'bad_value' }
+option_errors = {EMPTY_SECTION: 'empty_section',
+                 EMPTY_OPTION:  'empty_option',
+                 EMPTY_VALUE:   'empty_value',
+                 UNKNOWN_OPTION: 'unknown_option',
+                 BAD_VALUE:     'bad_value'}
 
 _drivers = ("sqlite",)
+
 
 def driver(req):
     if req.db.driver not in _drivers:
         raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
     m = "options_" + req.db.driver
     return __import__("lib." + m).__getattribute__(m)
-#enddef
+
 
 class Option:
-    def __init__(self, section = '', option = ''):
+    def __init__(self, section='', option=''):
         self.section = section
         self.option = option
         self.value = None
-    #enddef
 
     def get(self, req):
         m = driver(req)
         return m.get(self, req)
 
-
     def add(self, req):
-        if not self.section: return EMPTY_SECTION
-        if not self.option: return EMPTY_OPTION
-        if not self.value: return EMPTY_VALUE
+        if not self.section:
+            return EMPTY_SECTION
+        if not self.option:
+            return EMPTY_OPTION
+        if not self.value:
+            return EMPTY_VALUE
         m = driver(req)
         m.add(self, req)
         write_timestamp(req, req.cfg.options_timestamp)
-    #enddef
+    # enddef
 
     def mod(self, req):
-        if not self.section: return EMPTY_SECTION
-        if not self.option: return EMPTY_OPTION
-        if not self.value: return EMPTY_VALUE
+        if not self.section:
+            return EMPTY_SECTION
+        if not self.option:
+            return EMPTY_OPTION
+        if not self.value:
+            return EMPTY_VALUE
         m = driver(req)
         rv = m.mod(self, req)
         write_timestamp(req, req.cfg.options_timestamp)
         return rv
-    #enddef
+    # enddef
 
     def set(self, req):
-        if not self.section: return EMPTY_SECTION
-        if not self.option: return EMPTY_OPTION
-        if not self.value: return EMPTY_VALUE
-        cfgs = req.cfg.options.get(self.section, {}).get(self.option, {}).values()
+        if not self.section:
+            return EMPTY_SECTION
+        if not self.option:
+            return EMPTY_OPTION
+        if not self.value:
+            return EMPTY_VALUE
+        cfgs = req.cfg.options.get(self.section,
+                                   {}).get(self.option, {}).values()
         if not cfgs:
             return UNKNOWN_OPTION
         cls = cfgs[0][1]
@@ -84,7 +94,7 @@ class Option:
         rv = m.option_set(self, req)
         write_timestamp(req, req.cfg.options_timestamp)
         return rv
-    #enddef
+    # enddef
 
     def delete(self, req):
         m = driver(req)
@@ -98,7 +108,7 @@ class Option:
             pager.order = 'section'
 
         section = kwargs.get('section', None)
-        module  = kwargs.get('module', None)
+        module = kwargs.get('module', None)
 
         items = []
         for sec, _sec in req.cfg.options.items():
@@ -128,19 +138,19 @@ class Option:
                     continue
 
                 items.append(item)
-        #endfor
+        # endfor
 
         if pager.order == 'option':
-            items = sorted(items, key = attrgetter('section'))
-            items = sorted(items, key = attrgetter('option'))
+            items = sorted(items, key=attrgetter('section'))
+            items = sorted(items, key=attrgetter('option'))
         else:
-            items = sorted(items, key = attrgetter('option'))
-            items = sorted(items, key = attrgetter('section'))
+            items = sorted(items, key=attrgetter('option'))
+            items = sorted(items, key=attrgetter('section'))
 
         pager.total = len(items)
         pager.limit = len(items) + 1
         return items
-    #enddef
+    # enddef
 
     @staticmethod
     def modules_list(req):
@@ -149,13 +159,12 @@ class Option:
             for opt, _opt in _sec.items():
                 items.update(_opt.keys())
         return items
-    #enddef
 
     @staticmethod
     def sections_list(req):
         return req.cfg.options.keys()
-    #enddef
-#endclass
+# endclass
+
 
 def load_options(req):
     for sec, _sec in req.cfg.options.items():
@@ -171,8 +180,9 @@ def load_options(req):
                 if item.get(req) is None:
                     continue
                 req.cfg.__dict__[var] = smart_get(item.value, cls)
-                req.log_error("Set cfg.%s from options DB to `%s'" % \
-                                (var, item.value.encode('utf-8')), state.LOG_INFO)
+                req.log_error("Set cfg.%s from options DB to `%s'" %
+                              (var, item.value.encode('utf-8')),
+                              state.LOG_INFO)
             except:
                 exc_type, exc_value, exc_traceback = exc_info()
                 traceback = format_exception(exc_type,
@@ -180,6 +190,6 @@ def load_options(req):
                                              exc_traceback)
                 traceback = ''.join(traceback)
                 req.log_error("Failed to load cfg.%s from options DB:" % var,
-                                state.LOG_ERR)
+                              state.LOG_ERR)
                 req.log_error(traceback, state.LOG_ERR)
-#enddef
+# enddef

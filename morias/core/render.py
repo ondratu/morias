@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from jinja2 import Environment, FileSystemLoader, DebugUndefined, \
-        contextfunction
+    contextfunction
 from falias.util import Object
 
 from gettext import NullTranslations, translation
@@ -12,10 +12,12 @@ from json import dumps
 from lang import get_lang, get_langs
 from morias.lib.menu import correct_menu
 
+
 class sdict(dict):
     def set(self, key, item):
         self.__setitem__(key, item)
         return ''
+
 
 def to_unicode(obj):
     if isinstance(obj, str):
@@ -23,27 +25,27 @@ def to_unicode(obj):
     elif isinstance(obj, dict):
         for k in obj.keys():
             obj[k] = to_unicode(obj[k])
-    elif isinstance(obj, list) or isinstance(obj, tuple) or isinstance(obj, set):
-        obj = list(to_unicode(it) for it in obj )
+    elif isinstance(obj, (list, tuple, set)):
+        obj = list(to_unicode(it) for it in obj)
     elif hasattr(obj, '__dict__'):
         for k in obj.__dict__.keys():
             obj.__dict__[k] = to_unicode(obj.__dict__[k])
-    #else:
-    #    print '>> ', obj, ' <<'
-
     return obj
-#enddef
+# enddef
+
 
 @contextfunction
 def ctx(context):
     return context
+
 
 @contextfunction
 def check_right(ctx, right):
     if right in ctx['login'].rights or 'super' in ctx['login'].rights:
         return True
     return False
-#enddef
+# enddef
+
 
 @contextfunction
 def match_right(ctx, rights):
@@ -54,25 +56,30 @@ def match_right(ctx, rights):
         return False                # no rights match
 
     return True                     # some rights match
-#enddef
+# enddef
 
-def truncate(string, length = 255, killwords = True, end='...'):
+
+def truncate(string, length=255, killwords=True, end='...'):
     """ Only True yet """
     if len(string) > length:
         return string[:length] + end
     return string
-#enddef
+# enddef
 
-def fill(string, width = 80):
-    return string + " "*(width-len(string))
 
-def pre(string, width = 80):
-    return " "*(width-len(string)) + string
+def fill(string, width=80):
+    return string.ljust(width)
+
+
+def pre(string, width=80):
+    return string.just(width)
+
 
 def number(obj):
-    return isinstance(obj, int) or isinstance(obj, float)
+    return isinstance(obj, (int, long, float))
 
-def jinja_template(filename, path, translations = NullTranslations, **kwargs):
+
+def jinja_template(filename, path, translations=NullTranslations, **kwargs):
     missing = []
 
     class MissingUndefined(DebugUndefined):
@@ -82,17 +89,17 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
             return MissingUndefined()
 
         __add__ = __radd__ = __mul__ = __rmul__ = __div__ = __rdiv__ = \
-        __truediv__ = __rtruediv__ = __floordiv__ = __rfloordiv__ = \
-        __mod__ = __rmod__ = __pos__ = __neg__ = __call__ = \
-        __getitem__ = __lt__ = __le__ = __gt__ = __ge__ = __int__ = \
-        __float__ = __complex__ = __pow__ = __rpow__ = \
-        __recursion__
+            __truediv__ = __rtruediv__ = __floordiv__ = __rfloordiv__ = \
+            __mod__ = __rmod__ = __pos__ = __neg__ = __call__ = \
+            __getitem__ = __lt__ = __le__ = __gt__ = __ge__ = __int__ = \
+            __float__ = __complex__ = __pow__ = __rpow__ = \
+            __recursion__
 
         def __getattribute__(self, name):
             if name[0] == '_':
                 return DebugUndefined.__getattribute__(self, name)
             missing.append(self._undefined_name)
-            return MissingUndefined(name = name)
+            return MissingUndefined(name=name)
 
         def __unicode__(self):
             if self._undefined_name is None:
@@ -101,10 +108,10 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
             if kwargs['debug']:
                 return '[Undefined] %s' % self._undefined_name
             return DebugUndefined.__unicode__(self)
-    #endclass
+    # endclass
 
     env = Environment(loader=FileSystemLoader(path),
-                      undefined = MissingUndefined,
+                      undefined=MissingUndefined,
                       extensions=['jinja2.ext.i18n', 'jinja2.ext.do',
                                   'jinja2.ext.loopcontrols'])
     # debug functionality
@@ -114,9 +121,9 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
     env.globals['_template_'] = filename
 
     # jinja2 filters could be functions
-    env.globals['length']   = len
+    env.globals['length'] = len
     env.globals['truncate'] = truncate
-    env.globals['number']   = number
+    env.globals['number'] = number
 
     # some addons
     env.globals['ord'] = ord
@@ -140,7 +147,8 @@ def jinja_template(filename, path, translations = NullTranslations, **kwargs):
 
     template = env.get_template(filename)
     return template.render(kwargs)
-#enddef
+# enddef
+
 
 def morias_template(req, template, **kwargs):
     if 'lang' not in kwargs:                # lang could be set explicit
@@ -155,28 +163,29 @@ def morias_template(req, template, **kwargs):
         kwargs['login'] = req.login
 
     kwargs['site'] = Object()
-    kwargs['site'].name         = req.cfg.site_name
-    kwargs['site'].description  = req.cfg.site_description
-    kwargs['site'].keywords     = req.cfg.site_keywords
-    kwargs['site'].author       = req.cfg.site_author
-    kwargs['site'].copyright    = req.cfg.site_copyright
-    kwargs['site'].styles       = req.cfg.site_styles
-    kwargs['site'].this         = req.uri
-    kwargs['site'].scheme       = req.scheme
-    kwargs['site'].domain       = req.server_hostname
+    kwargs['site'].name = req.cfg.site_name
+    kwargs['site'].description = req.cfg.site_description
+    kwargs['site'].keywords = req.cfg.site_keywords
+    kwargs['site'].author = req.cfg.site_author
+    kwargs['site'].copyright = req.cfg.site_copyright
+    kwargs['site'].styles = req.cfg.site_styles
+    kwargs['site'].this = req.uri
+    kwargs['site'].scheme = req.scheme
+    kwargs['site'].domain = req.server_hostname
 
-    kwargs['site'].modules      = req.cfg.modules
-    kwargs['site'].footers      = req.cfg.footers
+    kwargs['site'].modules = req.cfg.modules
+    kwargs['site'].footers = req.cfg.footers
 
     kwargs['e'] = sdict()
 
     translations = translation('morias',
-                                localedir = req.cfg.locales,
-                                languages = languages,
-                                fallback = True)
+                               localedir=req.cfg.locales,
+                               languages=languages,
+                               fallback=True)
 
     return jinja_template(template, req.cfg.templates, translations, **kwargs)
-#enddef
+# enddef
+
 
 def generate_page(req, template, **kwargs):
     if 'content_type' in kwargs:
@@ -184,11 +193,11 @@ def generate_page(req, template, **kwargs):
         kwargs.pop('content_type')
     else:
         req.content_type = 'text/html'
-    #endif
+    # endif
 
-    if not 'menu' in kwargs:
+    if 'menu' not in kwargs:
         kwargs['menu'] = correct_menu(req, req.menu)
         correct_menu(req, req.static_menu, kwargs['menu'])
 
     return morias_template(req, template, **kwargs)
-#enddef
+# enddef

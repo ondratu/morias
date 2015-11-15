@@ -1,6 +1,6 @@
 
 class Pager(object):
-    def __init__(self, offset = 0, limit = 10, order = '', sort = 'asc'):
+    def __init__(self, offset=0, limit=10, order='', sort='asc'):
         self.d_offset = offset
         self.d_limit = limit
         self.d_order = order
@@ -14,7 +14,7 @@ class Pager(object):
 
         self.params = ''
         super(Pager, self).__init__()
-    #enddef
+    # enddef
 
     def bind(self, form):
         self.offset = form.getfirst("offset", self.offset, int)
@@ -25,9 +25,10 @@ class Pager(object):
         self.sort = sort if sort in ('asc', 'desc') else self.sort
 
     def set_params(self, **kwargs):
-        self.params = '&'.join('%s=%s' % (key, val) for key, val in kwargs.items())
+        self.params = '&'.join('%s=%s' % (key, val)
+                               for key, val in kwargs.items())
 
     def calculate(self):
-        self.pages = (self.total -1) / self.limit
+        self.pages = (self.total - 1) / self.limit
         self.page = self.offset / self.limit
-#endclass
+# endclass

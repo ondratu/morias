@@ -1,17 +1,18 @@
-from poorwsgi import *
+from poorwsgi import app, state, redirect, SERVER_RETURN
 from falias.sql import Sql
 from falias.util import Object
 
 from core.render import generate_page
-from core.login import rights, do_login, do_logout, check_login, check_referer
+from core.login import rights, do_login, do_logout, check_login, check_referer, \
+    check_right
 
 from lib.menu import Item
 from lib.pager import Pager
 from lib.login import Login
 
-from admin import *
-from user import *
-from core.errors import *
+from admin import system_menu
+from user import user_info_menu
+from core.errors import BAD_LOGIN
 
 _check_conf = (
     ('morias', 'salt', unicode),                    # salt for passwords
@@ -25,9 +26,10 @@ R_ADMIN = module_right          # back compatibility
 rights.update((R_ADMIN,))
 
 system_menu.append(Item('/admin/logins', label="Logins", symbol='login',
-                        rights = [R_ADMIN]))
+                        rights=[R_ADMIN]))
 user_info_menu.append(Item('/user/login', label="Login", symbol='login',
-                        rights = ['user']))
+                           rights=['user']))
+
 
 @app.route("/test/logins/db")
 def test_db(req):
@@ -35,8 +37,8 @@ def test_db(req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
     c.execute("SELECT %s, %s, %s, %s, %s", data)
-    copy = tuple(it.encode('utf-8') if isinstance(it, unicode) else it \
-                        for it in c.fetchone())
+    copy = tuple(it.encode('utf-8') if isinstance(it, unicode) else it
+                 for it in c.fetchone())
     tran.commit()
 
     req.content_type = "text/plain; charset=utf-8"
@@ -44,9 +46,10 @@ def test_db(req):
         return "Test Ok\n" + str(data) + '\n' + str(copy)
     else:
         return "Test failed\n" + str(data) + '\n' + str(copy)
-#enddef
+# enddef
 
-@app.route('/login', method = state.METHOD_GET_POST)
+
+@app.route('/login', method=state.METHOD_GET_POST)
 def login(req):
     referer = req.args.getfirst('referer', '', str)
 
@@ -70,14 +73,16 @@ def login(req):
         data.email = login.email
         data.error = BAD_LOGIN
 
-    return generate_page(req, "login.html", data = data)
-#enddef
+    return generate_page(req, "login.html", data=data)
+# enddef
+
 
 @app.route('/logout')
 def logout(req):
     do_logout(req)
     redirect(req, req.referer or '/')
-#enddef
+# enddef
+
 
 @app.route('/admin/logins')
 def admin_logins(req):
@@ -86,15 +91,16 @@ def admin_logins(req):
 
     error = req.args.getfirst('error', 0, int)
 
-    pager = Pager(sort = 'asc', order = 'email')
+    pager = Pager(sort='asc', order='email')
     pager.bind(req.args)
 
     rows = Login.list(req, pager)
     return generate_page(req, "admin/logins.html",
-                        pager = pager, rows = rows, error = error)
-#enddef
+                         pager=pager, rows=rows, error=error)
+# enddef
 
-@app.route('/admin/logins/add', method = state.METHOD_GET_POST)
+
+@app.route('/admin/logins/add', method=state.METHOD_GET_POST)
 def admin_logins_add(req):
     check_login(req)
     check_right(req, R_ADMIN)
@@ -106,15 +112,16 @@ def admin_logins_add(req):
 
         if error:
             return generate_page(req, "admin/logins_mod.html",
-                            rights = rights,
-                            item = login, error = error)
+                                 rights=rights,
+                                 item=login, error=error)
 
         redirect(req, '/admin/logins/%d' % login.id)
-    #end
+    # endif
 
     return generate_page(req, "admin/logins_mod.html",
-                            rights = rights)
-#enddef
+                         rights=rights)
+# enddef
+
 
 @app.route('/admin/logins/<id:int>', state.METHOD_GET_POST)
 def admin_logins_mod(req, id):
@@ -123,26 +130,27 @@ def admin_logins_mod(req, id):
 
     login = Login(id)
     if req.login.id == login.id:                    # not good idea to remove
-        raise SERVER_RETURN(state.HTTP_FORBIDDEN)   # rights himself for example
+        raise SERVER_RETURN(state.HTTP_FORBIDDEN)   # rights himself
 
-    state = None
+    done = None
     if req.method == 'POST':
         login.bind(req.form, req.cfg.morias_salt)
-        state = login.mod(req)
+        done = login.mod(req)
 
-        if state < 100:
+        if done < 100:
             return generate_page(req, "admin/logins_mod.html",
-                                 rights = rights,
-                                 item = login, error = state)
-        #endif
-    #endif
+                                 rights=rights,
+                                 item=login, error=done)
+        # endif
+    # endif
 
     if not login.get(req):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
     return generate_page(req, "admin/logins_mod.html",
-                            rights = rights,
-                            item = login, state = state)
-#enddef
+                         rights=rights,
+                         item=login, state=done)
+# enddef
+
 
 @app.route('/admin/logins/<id:int>/disable', state.METHOD_POST)
 @app.route('/admin/logins/<id:int>/enable', state.METHOD_POST)
@@ -158,7 +166,8 @@ def admin_logins_enable(req, id):
     login.enabled = int(req.uri.endswith('/enable'))
     login.enable(req)
     redirect(req, '/admin/logins')
-#enddef
+# enddef
+
 
 @app.route('/user/login', state.METHOD_GET_POST)
 def user_logins_pref(req):
@@ -173,12 +182,12 @@ def user_logins_pref(req):
 
         if state < 100:
             return generate_page(req, "user/login_pref.html",
-                                 error = state)
-        #endif
-    #endif
+                                 error=state)
+        # endif
+    # endif
 
     login.get(req)
     req.login = login
     return generate_page(req, "user/login_pref.html",
-                        state = state)
-#enddef
+                         state=state)
+# enddef

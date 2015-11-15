@@ -1,21 +1,22 @@
 
 from falias.util import uni, nint
 
-#errors
-EMPTY_TITLE     = 1
-EMPTY_BODY      = 2
+# errors
+EMPTY_TITLE = 1
+EMPTY_BODY = 2
 
 _drivers = ("sqlite",)
+
 
 def driver(req):
     if req.db.driver not in _drivers:
         raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
     m = "new_" + req.db.driver
     return __import__("lib." + m).__getattribute__(m)
-#enddef
+
 
 class New():
-    def __init__(self, id = None):
+    def __init__(self, id=None):
         self.id = id
 
     def get(self, req):
@@ -23,26 +24,28 @@ class New():
         return m.get(self, req)
 
     def add(self, req):
-        if not self.title: return EMPTY_TITLE
-        if not self.body: return EMPTY_BODY
-
+        if not self.title:
+            return EMPTY_TITLE
+        if not self.body:
+            return EMPTY_BODY
         m = driver(req)
         m.add(self, req)
-    #enddef
+    # enddef
 
     def mod(self, req):
-        if not self.title: return EMPTY_TITLE
-        if not self.body: return EMPTY_BODY
-
+        if not self.title:
+            return EMPTY_TITLE
+        if not self.body:
+            return EMPTY_BODY
         m = driver(req)
         return m.mod(self, req)
-    #enddef
+    # enddef
 
     def set_state(self, req, state):
         m = driver(req)
         return m.set_state(self, req, state)
 
-    def bind(self, form, author_id = None):
+    def bind(self, form, author_id=None):
         self.id = form.getfirst('new_id', self.id, nint)
         self.title = form.getfirst('title', '', uni)
         self.locale = form.getfirst('locale', '', uni)
@@ -53,14 +56,14 @@ class New():
         self.data = {}
         if author_id:
             self.author_id = author_id
-    #enddef
+    # enddef
 
     @staticmethod
-    def list(req, pager, body = False, **kwargs):
-        if pager.order not in ('create_date', 'public_date', 'title', 'locale'):
+    def list(req, pager, body=False, **kwargs):
+        if pager.order not in ('create_date', 'public_date', 'title',
+                               'locale'):
             pager.order = 'create_date'
 
         m = driver(req)
         return m.item_list(req, pager, body, **kwargs)
-    #enddef
-#endclass
+# endclass

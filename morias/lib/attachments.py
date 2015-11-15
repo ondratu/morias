@@ -4,7 +4,7 @@ from PythonMagick import Image, Blob
 from PythonMagick._PythonMagick import Geometry
 
 from hashlib import md5, sha512
-from random import random, seed
+from random import seed
 from time import time
 from mimetypes import guess_extension
 from os import makedirs, rename, remove
@@ -12,27 +12,28 @@ from os.path import dirname, exists, getmtime
 from datetime import datetime
 
 # errors
-NO_FILE             = 1
-EMPTY_OBJECT_TYPE   = 2
-EMPTY_OBJECT_ID     = 3
+NO_FILE = 1
+EMPTY_OBJECT_TYPE = 2
+EMPTY_OBJECT_ID = 3
 
-errors = {  NO_FILE: 'no_file', EMPTY_OBJECT_TYPE: 'empty_object_type',
-            EMPTY_OBJECT_ID: 'empty_object_id' }
+errors = {NO_FILE: 'no_file', EMPTY_OBJECT_TYPE: 'empty_object_type',
+          EMPTY_OBJECT_ID: 'empty_object_id'}
 
 _drivers = ("sqlite",)
 _image_exts = ['.jpe', '.png']
 
 seed()
 
+
 def driver(req):
     if req.db.driver not in _drivers:
         raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
     m = "attachments_" + req.db.driver
     return __import__("lib." + m).__getattribute__(m)
-#enddef
+
 
 class Attachment(object):
-    def __init__(self, id = None, md5 = None, mime_type = None):
+    def __init__(self, id=None, md5=None, mime_type=None):
         self.id = id
         self.md5 = md5
         self.mime_type = mime_type
@@ -42,13 +43,15 @@ class Attachment(object):
         return m.get(self, req)
 
     def add(self, req):
-        if not 'file' in self.__dict__: return NO_FILE
-        if not self.object_type: return EMPTY_OBJECT_TYPE
-        if not self.object_id: return EMPTY_OBJECT_ID
+        if 'file' not in self.__dict__:
+            return NO_FILE
+        if not self.object_type:
+            return EMPTY_OBJECT_TYPE
+        if not self.object_id:
+            return EMPTY_OBJECT_ID
 
         m = driver(req)
         return m.add(self, req)
-    #enddef
 
     def mod(self, req):
         pass    # TODO
@@ -68,31 +71,29 @@ class Attachment(object):
             form_file = form['attachment']
             self.file_name = form_file.filename
             self.mime_type = form_file.type
-            self.file      = form_file.file
+            self.file = form_file.file
         self.object_type = form.getfirst('object_type', '', uni)
-        self.object_id   = form.getfirst('object_id', '0', int)
+        self.object_id = form.getfirst('object_id', '0', int)
         self.description = form.getfirst('description', '', uni)
         self.uploader_id = uploader_id
         self.md5 = md5(str(time())).hexdigest()
         self.data = {}
         print "object_type", form.keys()
-    #enddef
 
     def dumps(self):
         return {
-            'file_name'   : self.__dict__.get('file_name',''),
-            'mime_type'   : self.__dict__.get('mime_type',''),
-            'object_type' : self.__dict__.get('object_type',''),
-            'object_id'   : self.__dict__.get('object_id', 0),
-            'description' : self.__dict__.get('description',''),
-            'webname'     : self.webname()
+            'file_name': getattr(self, 'file_name', ''),
+            'mime_type': getattr(self, 'mime_type', ''),
+            'object_type': getattr(self, 'object_type', ''),
+            'object_id': getattr(self, 'object_id', 0),
+            'description': getattr(self, 'description', ''),
+            'webname': self.webname()
         }
-
 
     def webname(self):
         hex_id = "%06x" % self.id
         return "%s/%s_%s%s" % (hex_id[:-3], hex_id, self.md5[:6],
-                                guess_extension(self.mime_type) or '')
+                               guess_extension(self.mime_type) or '')
 
     def check_md5(self, webname):
         try:
@@ -112,16 +113,16 @@ class Attachment(object):
         if not exists(dirname(file_path)):
             makedirs(dirname(file_path))
 
-        with open (file_path + '.new', 'w+') as new:
+        with open(file_path + '.new', 'w+') as new:
             if not hasattr(self.file, '__exit__'):  # for Python 2.x Only
-                new.write(self.file.read())         # cStringIO when file is text
+                new.write(self.file.read())     # cStringIO when file is text
             else:
                 with self.file as tmp:
                     new.write(tmp.read())
         rename(file_path + '.new', file_path)
 
         self.thumb(req)
-    #enddef
+    # enddef
 
     def remove(self, req):
         thumb_path = req.cfg.attachments_thumb_path + '/' + self.webname()
@@ -130,15 +131,14 @@ class Attachment(object):
 
         file_path = req.cfg.attachments_path + '/' + self.webname()
         remove(file_path)           # remove original
-    #enddef
+    # enddef
 
     def thumb(self, req):
         if self.mime_type.startswith('image') \
-            and guess_extension(self.mime_type) in _image_exts:
+                and guess_extension(self.mime_type) in _image_exts:
 
             file_path = req.cfg.attachments_path + '/' + self.webname()
             img = Image(file_path.encode('utf-8'))
-            size = img.size()
 
             width, height = req.cfg.attachments_thumb_size.get()
             img.scale(Geometry(width, height))
@@ -147,15 +147,16 @@ class Attachment(object):
             if not exists(dirname(thumb_path)):
                 makedirs(dirname(thumb_path))
             img.write(thumb_path.encode('utf-8'))
-    #enddef
+    # enddef
 
     def resize(self, req, width, height):
         file_path = req.cfg.attachments_path + '/' + self.webname()
         if self.mime_type.startswith('image') \
-            and guess_extension(self.mime_type) in _image_exts:
+                and guess_extension(self.mime_type) in _image_exts:
 
             img = Image(file_path.encode('utf-8'))
-            img.fileName('image.'+self.file_name.encode('utf-8').split('.')[-1])
+            img.fileName(
+                'image.'+self.file_name.encode('utf-8').split('.')[-1])
             size = img.size()
 
             blob = Blob()
@@ -171,23 +172,22 @@ class Attachment(object):
         else:
             req.log_error(self.mime_type)
             return None
-    #enddef
+    # enddef
 
     @staticmethod
     def last_modified(req, webname):
         try:
-            file_path = req.cfg.attachments_path + '/' + \
-                        webname.split('_')[0][:-3] + '/' + webname
+            file_path = (req.cfg.attachments_path + '/' +
+                         webname.split('_')[0][:-3] + '/' + webname)
             return datetime.utcfromtimestamp(int(getmtime(file_path)))
         except OSError as e:
             req.log_error(e)
             return None
-    #enddef
+    # enddef
 
     def __del__(self):
         if 'file' in self.__dict__ and not self.file.closed:
             self.file.close()
-
 
     @staticmethod
     def list(req, pager, **kwargs):
@@ -205,4 +205,4 @@ class Attachment(object):
     @staticmethod
     def error(err):
         return errors.get(err, 'unknow')
-#endclass
+# endclass

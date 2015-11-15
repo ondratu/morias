@@ -1,12 +1,10 @@
-from poorwsgi import *
+from poorwsgi import app, state
 from falias.parser import Parser, Options
 from falias.util import Paths
 from time import strftime
-from sys import stderr
 
 from login import do_check_login
 
-import os
 
 def option(*args):
     _len = len(args)
@@ -20,7 +18,7 @@ def option(*args):
 
 
 class Config:
-    def __init__(self, options):
+    def load(self, options):
         if 'morias_config' in options:
             inifile = options.get('morias_config')
             # TODO: check if file is readable
@@ -30,40 +28,43 @@ class Config:
         else:
             app.log_error('Read config from options ...', state.LOG_INFO)
             p = Options(options)
-        #endif
+        # endif
 
-        self.debug      = p.get('morias', 'debug', False, cls = bool)
+        self.debug = p.get('morias', 'debug', False, cls=bool)
 
-        self.templates  = p.get('morias', 'templates', cls = Paths)
-        self.footers    = []    # modules could append path for it's footer
-        self.modules    = p.get('morias', 'modules', cls = tuple)
-        self.langs      = p.get('morias', 'langs', 'en,cs', cls = tuple)
-        self.locales    = p.get('morias', 'locales', 'locales/')
+        self.templates = p.get('morias', 'templates', cls=Paths)
+        self.footers = []    # modules could append path for it's footer
+        self.modules = p.get('morias', 'modules', cls=tuple)
+        self.langs = p.get('morias', 'langs', 'en,cs', cls=tuple)
+        self.locales = p.get('morias', 'locales', 'locales/')
 
-        self.site_name          = p.get('site','name', "Morias")
-        self.site_description   = p.get('site','description', "cms")
-        self.site_keywords      = p.get('site','keywords', '', cls = tuple)
-        self.site_author        = p.get('site','author', '')
-        self.site_copyright     = p.get('site','copyright',
-                            strftime ("%%Y %s" % self.site_author.encode('utf-8')))
-        self.site_styles        = p.get('site','styles', '', cls = tuple)
+        self.site_name = p.get('site', 'name', "Morias")
+        self.site_description = p.get('site', 'description', "cms")
+        self.site_keywords = p.get('site', 'keywords', '', cls=tuple)
+        self.site_author = p.get('site', 'author', '')
+        self.site_copyright = p.get('site', 'copyright',
+                                    strftime("%%Y %s" %
+                                             self.site_author.encode('utf-8')))
+        self.site_styles = p.get('site', 'styles', '', cls=tuple)
 
-        self.options    = {
+        self.options = {
             'morias': {
-                'langs' : {'morias.core':
-                        ('en,cs', list, self.langs, True, '')},
+                'langs': {'morias.core':
+                          ('en,cs', list, self.langs, True, '')},
             },
-            'site'  : {
-                'name' : {'morias.core':
-                        ('Morias', unicode, self.site_name, True, '')},
-                'description' : {'morias.core':
-                        ('cms', unicode, self.site_description, True, '')},
-                'keywords' : {'morias.core':
-                        ('', tuple, self.site_keywords, True, '')},
-                'author' : {'morias.core':
-                        ('', unicode, self.site_author, True, '' )},
-                'copyright' : {'morias.core':
-                        ('', unicode, self.site_copyright, True, '' )},
+            'site': {
+                'name':         {'morias.core':
+                                 ('Morias', unicode, self.site_name,
+                                  True, '')},
+                'description':  {'morias.core':
+                                 ('cms', unicode, self.site_description,
+                                  True, '')},
+                'keywords':     {'morias.core':
+                                 ('', tuple, self.site_keywords, True, '')},
+                'author':       {'morias.core':
+                                 ('', unicode, self.site_author, True, '')},
+                'copyright':    {'morias.core':
+                                 ('', unicode, self.site_copyright, True, '')},
             }
         }
 
@@ -75,45 +76,50 @@ class Config:
         # memcache
         mc_servers = cfg.get('memcache', 'servers')
         mc_servers = map(lambda x: x.strip(), mc_servers.split(','))
-        self.mc = Client(mc_servers, debug = cfg.getint('memcache', 'debug', 0))
+        self.mc = Client(mc_servers, debug=cfg.getint('memcache', 'debug', 0))
         self.mcPrefix = cfg.get('memcache', 'prefix', '')
         self.mcExpiry = cfg.getint('memcache', 'expiry', 360) # 60 min
         """
-    #endef
+    # endef
 
     def load_module(self, p, module):
-        #m = __import__("morias.%s" % module, globals())
-        exec ("import %s as m" % module) in globals()
+        m = __import__("%s" % module, globals=globals(), fromlist=[None])
+        # m = None
+        # exec ("import %s as m" % module) in globals()
 
-        if not '_check_conf' in m.__dict__:
-            app.log_error('No config need for module %s...' % module, state.LOG_INFO)
+        if '_check_conf' not in m.__dict__:
+            app.log_error('No config need for module %s...' % module,
+                          state.LOG_INFO)
 
         # check and set config values need for module
         else:
             for it in m._check_conf:
                 sec, opt, cls, dfl, mod, doc = option(*it)
                 var = "%s_%s" % (sec, opt)
-                if var in self.__dict__ and not isinstance(self.__dict__[var], cls):
+                if var in self.__dict__ \
+                        and not isinstance(self.__dict__[var], cls):
                     raise TypeError("Option `%s` is not class instance `%s`",
                                     var, str(cls))
-                if not var in self.__dict__:
+                if var not in self.__dict__:
                     self.__dict__[var] = p.get(sec, opt, dfl, cls)
 
                 if not mod:     # option could not be set via option module
                     continue
-                if not sec in self.options:
+                if sec not in self.options:
                     self.options[sec] = {}
-                if not opt in self.options[sec]:
+                if opt not in self.options[sec]:
                     self.options[sec][opt] = {}
-                self.options[sec][opt][module] = (dfl, cls, self.__dict__[var], doc)
-        #endif
+                self.options[sec][opt][module] = (dfl, cls, self.__dict__[var],
+                                                  doc)
+        # endif
 
         if '_call_conf' in m.__dict__:
-            app.log_error('Config fn for module %s exist ...' % module, state.LOG_INFO)
+            app.log_error('Config fn for module %s exist ...' % module,
+                          state.LOG_INFO)
             m._call_conf(self, p)
-    #enddef
+    # enddef
 
-    def log_error(self, message, level = state.LOG_INFO):
+    def log_error(self, message, level=state.LOG_INFO):
         """ application logger with default state.LOG_INFO log level """
         app.log_error(message, level)
 
@@ -131,11 +137,11 @@ class Config:
     def logger(self):
         """ baypass property for db operations at load modules """
         return self.log_error
+# endclass
 
-#endclass
 
 @app.pre_process()
-def load_config(req):
+def config_to_request(req):
     if req.uri_rule in ('_debug_info_', '_send_file_', '_directory_index_'):
         return  # this methods no need this pre process
 
@@ -155,7 +161,7 @@ def load_config(req):
         return          # do not call do_check_login before some handlers
 
     do_check_login(req)                     # load login cookie avery time
-#enddef
+# enddef
 
-# load config from os.environ
-config = Config(app.get_options())
+# module config instance
+config = Config()

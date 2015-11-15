@@ -1,6 +1,6 @@
-from poorwsgi import *
+from poorwsgi import app, state
 from falias.sql import Sql
-from falias.util import uniq, nuni, uni
+from falias.util import nuni, uni
 
 import json
 
@@ -10,7 +10,7 @@ from core.login import check_login, check_right
 from lib.menu import Item
 from lib.pager import Pager
 from lib.timestamp import check_timestamp
-from lib.options import Option, load_options
+from lib.options import Option, load_options, option_errors
 
 from admin import system_menu
 
@@ -20,22 +20,24 @@ _check_conf = (
     ('options', 'timestamp', unicode, 'tmp/options.timestamp'),
 )
 
+
 def _call_conf(cfg, parser):
     refresh_options(cfg, cfg.options_timestamp)
-
 
 timestamp = -1
 
 module_right = 'admin'
 system_menu.append(Item('/admin/system/options', label="Options",
-                        symbol="options", rights = [module_right]))
+                        symbol="options", rights=[module_right]))
+
 
 @app.pre_process()
 def check_options(req):
     if req.uri_rule in ('_debug_info_', '_send_file_', '_directory_index_'):
         return  # this methods no need this pre process
     refresh_options(req, req.cfg.options_timestamp)
-#emddef
+# emddef
+
 
 def refresh_options(req, cfg_timestamp):
     """ refresh options from db when timestamp is change """
@@ -44,10 +46,11 @@ def refresh_options(req, cfg_timestamp):
     check = check_timestamp(req, cfg_timestamp)
     if check > timestamp:       # if last load was in past to timestamp file
         req.log_error("file timestamp is older, loading options from DB...",
-                        state.LOG_INFO)
+                      state.LOG_INFO)
         load_options(req)
         timestamp = check
-#enddef
+# enddef
+
 
 @app.route('/admin/system/options')
 def admin_options(req):
@@ -68,14 +71,15 @@ def admin_options(req):
     for option in options:
         option.defaults_json = json.dumps(list(option.defaults))
 
-    return generate_page(req, "admin/options.html", pager = pager,
-                        options = options, sections = Option.sections_list(req),
-                        modules = Option.modules_list(req), section = section,
-                        module = module)
-#enddef
+    return generate_page(req, "admin/options.html", pager=pager,
+                         options=options, sections=Option.sections_list(req),
+                         modules=Option.modules_list(req), section=section,
+                         module=module)
+# enddef
+
 
 @app.route('/admin/system/options/<session:word>/<option:re:[\w-]+>',
-            method = state.METHOD_PUT)
+           method=state.METHOD_PUT)
 def admin_options_edit(req, section, option):
     check_login(req)
     check_right(req, module_right)
@@ -101,4 +105,4 @@ def admin_options_edit(req, section, option):
 
     req.content_type = 'application/json'
     return json.dumps({'value': value})
-#enddef
+# enddef

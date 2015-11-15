@@ -7,74 +7,77 @@ from shutil import copyfile
 from falias.util import uni, nint
 from poorwsgi import state
 
-import json, re
+import re
 
 from core.render import generate_page
 from core.login import do_match_right, do_check_right
 
-#errors
-EMPTY_FILENAME  = 1
-BAD_FILENAME    = 2
-PAGE_EXIST      = 3
-PAGE_NOT_EXIST  = 4
+# errors
+EMPTY_FILENAME = 1
+BAD_FILENAME = 2
+PAGE_EXIST = 3
+PAGE_NOT_EXIST = 4
 
 re_filename = re.compile(r"^[\w\.-]+\.html$")
 
 _drivers = ("sqlite",)
+
 
 def driver(req):
     if req.db.driver not in _drivers:
         raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
     m = "page_file_" + req.db.driver
     return __import__("lib." + m).__getattribute__(m)
-#enddef
+
 
 class Page():
-    def __init__(self, id = None):
+    def __init__(self, id=None):
         self.id = id
 
     def get(self, req):
         m = driver(req)
         if m.get(self, req):
-            with open (req.cfg.pages_source + '/' + self.name, 'r') as f:
+            with open(req.cfg.pages_source + '/' + self.name, 'r') as f:
                 self.text = f.read().decode('utf-8')
             return self
         return None
-    #enddef
+    # enddef
 
     @staticmethod
     def text_by_name(req, name):
         try:
-            with open (req.cfg.pages_source + '/' + name, 'r') as f:
+            with open(req.cfg.pages_source + '/' + name, 'r') as f:
                 return f.read().decode('utf-8')
         except IOError as e:
             req.log_error(str(e), state.LOG_ERR)
             return None
-    #enddef
+    # enddef
 
     def add(self, req):
-        if not self.name: return EMPTY_FILENAME
-
-        if not self.check_filename(): return BAD_FILENAME
+        if not self.name:
+            return EMPTY_FILENAME
+        if not self.check_filename():
+            return BAD_FILENAME
 
         m = driver(req)
         return m.add(self, req)
-    #enddef
+    # enddef
 
     def mod(self, req):
-        if not self.name: return EMPTY_FILENAME
-
-        if not self.check_filename(): return BAD_FILENAME
+        if not self.name:
+            return EMPTY_FILENAME
+        if not self.check_filename():
+            return BAD_FILENAME
 
         m = driver(req)
         return m.mod(self, req)
-    #enddef
+    # enddef
 
     def delete(self, req):
         m = driver(req)
         return m.delete(self, req)
 
-    def bind(self, form, author_id = None):
+    def bind(self, form, author_id=None):
         self.id = form.getfirst('page_id', self.id, nint)
         self.name = form.getfirst('name', '', uni)
         self.title = form.getfirst('title', '', uni)
@@ -83,11 +86,11 @@ class Page():
         self.text = form.getfirst('text', '', uni)
         if author_id:
             self.author_id = author_id
-    #enddef
+    # enddef
 
     def save(self, req):
         source = req.cfg.pages_source + '/' + self.name
-        with open (source + '.tmp', 'w+') as tmp:
+        with open(source + '.tmp', 'w+') as tmp:
             tmp.write(self.text.encode('utf-8'))
         if exists(source):      # backup old file
             backup = req.cfg.pages_history + '/' + self.name
@@ -97,17 +100,18 @@ class Page():
         if req.cfg.pages_runtime:
             return              # not need when paeges are runtime generated
         target = req.cfg.pages_out + '/' + self.name
-        with open (target + '.tmp', 'w+') as tmp:
-            tmp.write(generate_page(req,
-                    "page_file.html", page = self,
-                    staticmenu = req.cfg.get_static_menu(req) ).encode('utf-8'))
+        with open(target + '.tmp', 'w+') as tmp:
+            tmp.write(generate_page(
+                req, "page_file.html", page=self,
+                staticmenu=req.cfg.get_static_menu(req)).encode('utf-8'))
         rename(target + '.tmp', target)
-    #enddef
+    # enddef
 
     def remove(self, req, rights):
         # meta file about deleted page
         backup = req.cfg.pages_history + '/' + self.name
-        with open (backup + '.' + datetime.now().isoformat() + '.deleted' , 'w+') as tmp:
+        b_name = backup + '.' + datetime.now().isoformat() + '.deleted'
+        with open(b_name, 'w+') as tmp:
             tmp.write("title: %s\n" % self.title.encode('utf-8'))
             tmp.write("author_id: %ds\n" % self.author_id)
             tmp.write("locale: %s\n" % self.locale)
@@ -115,39 +119,38 @@ class Page():
 
         source = req.cfg.pages_source + '/' + self.name
         if exists(source):      # backup old file
-            backup = req.cfg.pages_history + '/' + self.name
             rename(source, backup + '.' + datetime.now().isoformat())
 
         target = req.cfg.pages_out + '/' + self.name
         if req.cfg.pages_out and exists(target):    # delete output file
             remove(target)
-    #enddef
+    # enddef
 
     def regenerate(self, req):
         if req.cfg.pages_runtime:
             return              # not need where runtime is True
-        with open (req.cfg.pages_source + '/' + self.name, 'r') as f:
+        with open(req.cfg.pages_source + '/' + self.name, 'r') as f:
             self.text = f.read().decode('utf-8')
 
         target = req.cfg.pages_out + '/' + self.name
-        with open (target + '.tmp', 'w+') as tmp:
-            tmp.write(generate_page(req,
-                    "page_file.html", page = self,
-                    staticmenu = req.cfg.get_static_menu(req) ).encode('utf-8'))
+        with open(target + '.tmp', 'w+') as tmp:
+            tmp.write(generate_page(
+                req, "page_file.html", page=self,
+                staticmenu=req.cfg.get_static_menu(req)).encode('utf-8'))
         rename(target + '.tmp', target)
-    #enddef
-
+    # enddef
 
     def check_right(self, req):
         """ check if any of login.rights metch any of page.rights """
         m = driver(req)
         m.load_rights(self, req)
-        if do_check_right(req, 'pages_author') and self.author_id == req.login.id:
+        if do_check_right(req, 'pages_author') \
+                and self.author_id == req.login.id:
             return True
         elif self.rights and do_match_right(req, self.rights):
             return True
         return False
-    #enddef
+    # enddef
 
     def check_filename(self):
         return True if re_filename.match(self.name) else False
@@ -164,5 +167,4 @@ class Page():
 
         m = driver(req)
         return m.item_list(req, pager, **kwargs)
-
-#endclass
+# endclass

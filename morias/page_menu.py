@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from poorwsgi import *
+from poorwsgi import app, state
 from falias.sql import Sql
 
 import json
@@ -9,29 +9,32 @@ from core.login import rights, check_login, check_right, check_referer
 from core.render import generate_page
 
 from lib.pager import Pager
+from lib.menu import Item
 from lib.timestamp import check_timestamp
 from lib.page_menu import MenuItem
 
-from admin import *
+from admin import content_menu
 
 _check_conf = (
     ('morias', 'db', Sql),                      # database configuration
-    ('morias', 'static_menu', bool, True, True, "If static menu is append to menu"),
+    ('morias', 'static_menu', bool, True, True,
+     "If static menu is append to menu"),
     ('page_menu', 'timestamp', unicode, 'tmp/page_menu.timestamp'),
 )
+
 
 def _call_conf(cfg, parser):
     cfg.get_static_menu = MenuItem.get_menu
     if cfg.morias_static_menu:
         refresh_menu(cfg, cfg.page_menu_timestamp)
 
-
 timestamp = -1
 static_menu = None
 
 module_right = 'menu_modify'
 rights.add(module_right)
-content_menu.append(Item('/admin/menu', label="Menu", rights = [module_right]))
+content_menu.append(Item('/admin/menu', label="Menu", rights=[module_right]))
+
 
 @app.pre_process()
 def load_static_menu(req):
@@ -41,7 +44,8 @@ def load_static_menu(req):
     if req.cfg.morias_static_menu:
         refresh_menu(req, req.cfg.page_menu_timestamp)
         req.static_menu.extend(static_menu)
-#enddef
+# enddef
+
 
 def refresh_menu(req, cfg_timestamp):
     """ refresh menu from db if timestamp is change """
@@ -51,13 +55,14 @@ def refresh_menu(req, cfg_timestamp):
     check = check_timestamp(req, cfg_timestamp)
     if check > timestamp:       # if last load was in past to timestamp file
         req.log_error("file timestamp is older, loading menu from DB...",
-                        state.LOG_INFO)
+                      state.LOG_INFO)
         static_menu = MenuItem.get_menu(req)
         timestamp = check
-#enddef
+# enddef
+
 
 def js_items(req):
-    pager = Pager(limit = -1)
+    pager = Pager(limit=-1)
     items = []
     for item in MenuItem.list(req, pager):
         items.append(item.__dict__)
@@ -70,16 +75,15 @@ def admin_menu(req):
     check_login(req)
     check_right(req, module_right)
 
-    pager = Pager(limit = -1)
+    pager = Pager(limit=-1)
     items = MenuItem.list(req, pager)
 
-    return generate_page(req, "admin/page_menu.html",
-                        pager = pager, items = items)
-#enddef
+    return generate_page(req, "admin/page_menu.html", pager=pager, items=items)
 
-@app.route('/admin/menu/<id:int>', method = state.METHOD_PUT)
-@app.route('/admin/menu/add', method = state.METHOD_POST)
-def admin_menu_add_update(req, id = None):
+
+@app.route('/admin/menu/<id:int>', method=state.METHOD_PUT)
+@app.route('/admin/menu/add', method=state.METHOD_POST)
+def admin_menu_add_update(req, id=None):
     check_login(req)
     check_right(req, module_right)
     check_referer(req, '/admin/menu')
@@ -99,9 +103,10 @@ def admin_menu_add_update(req, id = None):
     req.status = state.HTTP_BAD_REQUEST
     req.content_type = 'application/json'
     return json.dumps({'reason': 'title_exist'})
-#enddef
+# enddef
 
-@app.route('/admin/menu/<id:int>/delete', method = state.METHOD_DELETE)
+
+@app.route('/admin/menu/<id:int>/delete', method=state.METHOD_DELETE)
 def admin_menu_delete(req, id):
     check_login(req)
     check_right(req, module_right)
@@ -114,9 +119,10 @@ def admin_menu_delete(req, id):
     req.status = state.HTTP_BAD_REQUEST
     req.content_type = 'application/json'
     return json.dumps({'reason': 'integrity_error'})
-#enddef
+# enddef
 
-@app.route('/admin/menu/<id:int>/move', method = state.METHOD_PUT)
+
+@app.route('/admin/menu/<id:int>/move', method=state.METHOD_PUT)
 def admin_menu_move(req, id):
     check_login(req)
     check_right(req, module_right)
@@ -131,10 +137,11 @@ def admin_menu_move(req, id):
     req.status = state.HTTP_BAD_REQUEST
     req.content_type = 'application/json'
     return json.dumps({'reason': 'integrity_error'})
-#enddef
+# enddef
 
-@app.route('/admin/menu/<id:int>/to_child', method = state.METHOD_PUT)
-@app.route('/admin/menu/<id:int>/to_parent', method = state.METHOD_PUT)
+
+@app.route('/admin/menu/<id:int>/to_child', method=state.METHOD_PUT)
+@app.route('/admin/menu/<id:int>/to_parent', method=state.METHOD_PUT)
 def admin_menu_to(req, id):
     check_login(req)
     check_right(req, module_right)
@@ -142,11 +149,14 @@ def admin_menu_to(req, id):
 
     item = MenuItem(id)
 
-    status = item.to_child(req) if req.uri.endswith('to_child') else item.to_parent(req)
+    if req.uri.endswith('to_child'):
+        status = item.to_child(req)
+    else:
+        status = item.to_parent(req)
     if status:
         return js_items(req)
 
     req.status = state.HTTP_BAD_REQUEST
     req.content_type = 'application/json'
     return json.dumps({'reason': 'not_possible'})
-#enddef
+# enddef
