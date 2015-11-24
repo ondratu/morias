@@ -37,25 +37,26 @@
         </div>
 
         <div class="form-group">
-            <label class="col-sm-3 control-label">{{ _('Rights') }}</label>
-            <label style="text-align: center;" class="col-sm-4 control-label">{{ _('Possilbe rights') }}</label>
-            <label style="text-align: center;" class="col-sm-4 control-label">{{ _('Attache rights') }}</label>
-        </div>
-        <div class="form-group">
-          <div id="possible_rights" class="col-sm-4 col-sm-offset-3">
+          <label class="col-sm-3 control-label">{{ _('Rights') }}</label>
+          <div id="possible_rights" class="col-sm-4">
+            <div>
+              <label style="text-align: center;" class="control-label">{{ _('Possilbe rights') }}</label>
+            </div>
           {% for right in rights|sort if right not in item.rights -%}
-            <a class="col-sm-5 btn btn-default btn-add" value="{{ right }}">
+            <a class="pull-left btn btn-default btn-add" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
               <i class="pull-right fa"></i></a>
-            <div class="col-sm-1"></div>
           {% endfor %}
+             <div class="clearfix"></div>
           </div>
-          <div id="attache_rights" class="col-sm-4">    
+          <div id="attache_rights" class="col-sm-4">
+            <div>
+              <label style="text-align: center;" class="control-label">{{ _('Attache rights') }}</label>
+            </div>
           {% for right in item.rights|sort -%}
-            <a class="col-sm-5 btn btn-default btn-remove" value="{{ right }}">
+            <a class="pull-left btn btn-default btn-remove" value="{{ right }}">
               <span class="pull-left">{{ right }}</span>
               <i class="pull-right fa"></i></a>
-            <div class="col-sm-1"></div>
             <input type="hidden" value="{{right|e}}" name="rights">
           {% endfor %}
           </div>
@@ -80,7 +81,7 @@
           <div class="col-sm-4 help-inline" >{% include "admin/_login_error.html" %}</div>
         {% endif %}
         </div>
-        
+
         <div class="form-group">
           <div class="col-sm-offset-3 col-sm-4">
             <button class="btn btn-default" type="submit">{{ _('Save') }}</button></div>

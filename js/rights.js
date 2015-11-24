@@ -7,10 +7,8 @@ M.rights = {
 
 M.rights.add = function (){
     var _this = $(this);
-    var _next = _this.next();
-        
+
     _this.remove();
-    _next.remove();
 
     _this.removeClass('btn-add');
     _this.addClass('btn-remove');
@@ -18,7 +16,6 @@ M.rights.add = function (){
 
     var _attache_rights = $('#attache_rights');
     _attache_rights.append(_this);
-    _attache_rights.append(_next);
 
     var _input = $('<input>', {
                         type: 'hidden',
@@ -30,20 +27,16 @@ M.rights.add = function (){
 
 M.rights.remove = function (){
     var _this = $(this);
-    var _next = _this.next();
-    
-    _next.next().remove();      // input
+
+    _this.next().remove();      // input
 
     _this.remove();
-    _next.remove();
 
     _this.removeClass('btn-remove');
     _this.addClass('btn-add');
     _this.click(M.rights.add);
 
-    var _attache_rights = $('#possible_rights');
-    _attache_rights.append(_this);
-    _attache_rights.append(_next);
+    _this.insertBefore('#possible_rights >:last-child');
 }
 
 $(document).ready(function() {
