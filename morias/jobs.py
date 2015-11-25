@@ -38,7 +38,7 @@ def admin_jobs(req):
 
 @app.route('/admin/jobs/<pid:int>/delete', state.METHOD_POST)
 def admin_pages_del(req, pid):
-    check_login(req, '/login?referer=/admin/jopbs')
+    check_login(req, '/log_in?referer=/admin/jopbs')
     check_right(req, 'super')
     check_referer(req, '/admin/jobs')
 

@@ -1,0 +1,9 @@
+{%- if sign_up %}
+{%- trans scheme=site.scheme, domain=site.domain %}
+Signed up to {{ scheme }}://{{ domain }}
+{%- endtrans %}
+{%- else %}
+{%- trans scheme=site.scheme, domain=site.domain %}
+Login created on {{ scheme }}://{{ domain }}
+{%- endtrans %}
+{%- endif %}

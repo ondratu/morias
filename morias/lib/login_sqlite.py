@@ -37,10 +37,11 @@ def add(self, req):
 
     try:        # email must be uniq
         c.execute("""
-            INSERT INTO logins (email, rights, data, passwd)
-                VALUES ( %s, %s, %s, %s )
+            INSERT INTO logins
+                    (email, rights, data, passwd, enabled, service_hash)
+                VALUES (%s, %s, %s, %s, %s, %s)
             """, (self.email, json.dumps(self.rights), json.dumps(self.data),
-                  self.passwd))
+                  self.passwd, getattr(self, 'enabled', 0), self.service_hash))
         self.id = c.lastrowid
     except IntegrityError:
         return LOGIN_EXIST
@@ -115,6 +116,21 @@ def find(self, req):
     self.rights = json.loads(row[1])
     self.data = json.loads(row[2])
     self.md5 = row[3]
+    return True
+# enddef
+
+
+def verify(req, service_hash):
+    tran = req.db.transaction(req.logger)
+    c = tran.cursor()
+    c.execute("""
+        UPDATE logins SET enabled=1, service_hash=NULL
+            WHERE service_hash = %s
+        """, service_hash)
+    if not c.rowcount:
+        return False
+
+    tran.commit()
     return True
 # enddef
 

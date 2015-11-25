@@ -1,0 +1,131 @@
+{# vim:set softtabstop=2: -#}
+{% if site.this == '/login' -%}
+    {% set title = _('Login edit') -%}
+{% else -%}
+    {% set title = _('Sign up') -%}
+{% endif -%}
+{% include "_header.html" %}
+{% include "user/_menu.html" -%}
+
+    <div class="container">
+    {% if site.this == '/login' -%}
+      <h1>{{ _('Login edit') }}</h1>
+    {% else -%}
+      <h1>{{ _('Sign up') }}</h1>
+    {% endif -%}
+
+    {% if state is defined and state == 200 -%}
+      <div class="alert alert-info">{{ _('Password was set!') }}</div>
+    {% endif -%}
+
+      <form class="form-horizontal form-sign-up" role="form" method="post">
+        <div class="col-md-6">
+          {% if site.this == '/sign_up' %}
+          <div class="sign-up-margin"></div>
+          {% endif %}
+
+          <div class="form-group {{ 'has-error' if error is defined and error in (1, 4) else '' }}">
+            <label for="input_email" class="col-sm-5 control-label">{{ _('Email') }}</label>
+            <div class="col-sm-6">
+              <input type="email" id="input_email" name="email" class="form-control" placeholder="{{ _('Email') }}" value="{{ (item.email or '')|e }}">
+            </div>
+        {% if error is defined and error in (1, 4) %}
+            <div class="col-sm-6 col-sm-offset-5 help-block" >{% include "admin/_login_error.html" %}</div>
+          {% if site.this == '/sign_up' and error == 4 %}
+            <div class="col-sm-6 col-sm-offset-5 help-block" >
+            {%- trans email=item.email %}
+              May be, you want to <a href="/login/reset_password&email={{ email }}">reset password</a>.
+            {%- endtrans %}
+            </div>
+          {% endif %}
+        {% endif %}
+          </div>
+
+        {% if site.this == '/sign_up' %}
+          <div class="form-group shadow {{ 'has-error' if 'robot' in form else '' }}">
+            <div class="col-sm-offset-5 col-sm-6">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="robot" value="robot" {{'checked="checked"' if 'robot' in form else '' }}>
+                  {{ _("Yes, I'm robot.") }}
+                </label>
+              </div>
+            </div>
+          {% if 'robot' in form -%}
+            <div class="col-sm-6 col-sm-offset-5 help-block">{{ _("Robots can't send the form.") }}</div>
+          {% endif %}
+          </div>
+
+          <div class="form-group shadow {{ 'has-error' if check is defined and not check else '' }}">
+            <label for="input_answer" class="col-sm-5 control-label">{{ question }}</label>
+            <input type="hidden" name="qid" value="{{ qid }}">
+            <div class="col-sm-6">
+              <input id="input_answer" name="answer" type="text" class="form-control" placeholder="{{ question }}" value="{{ form.get('answer', '')|e }}">
+            </div>
+            {% if check is defined and not check %}
+              <div class="col-sm-6 col-sm-offset-5 help-block">{{ _('Your anser is not correct.')}}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+          <div class="form-group {{ 'has-error' if error is defined and error == 2 else '' }}">
+            <label for="input_passwd" class="col-sm-5 control-label">{{ _('Password') }}</label>
+            <div class="col-sm-6">
+              <input type="password" id="input_passwd" name="passwd" class="form-control" placeholder="{{ _('Password') }}">
+            </div>
+          {% if error is defined and error == 2 %}
+            <div class="col-sm-6 col-sm-offset-5 help-block">{% include "admin/_login_error.html" %}</div>
+          {% endif %}
+          {% if site.this == '/user/login' %}
+            <div class="col-sm-6 col-sm-offset-5 help-block">{{ _('Fill it only, if you want to change.') }}</div>
+          {% endif %}
+          </div>
+
+          <div class="form-group {{ 'has-error' if error is defined and error == 3 else '' }}">
+            <label for="input_again" class="col-sm-5 control-label">{{ _('Password again') }}</label>
+            <div class="col-sm-6">
+              <input type="password" id="input_again" name="again" class="form-control" placeholder="{{ _('Password again') }}">
+            </div>
+          {% if error is defined and error == 3 %}
+            <div class="col-sm-6 col-sm-offset-5 help-block" >{% include "admin/_login_error.html" %}</div>
+          {% endif %}
+          </div>
+
+        </div>{# /col-md-6 #}
+
+        {% if site.this == '/sign_up' %}
+        <div class="col-md-6">
+          <h2>{{ _('Terms and conditions') }}</h2>
+          <div class="conditions">
+            {{ lipsum(10) }}
+          </div>
+
+          <div class="form-group {{ 'has-error' if error is defined and error == 6 else '' }}">
+            <div class="col-sm-12">
+              <div class="checkbox">
+                <label class="control-label">
+                  <input type="checkbox" name="conditions" value="1" {{ 'checked' if 'conditions' in item.data }}>
+                  {{ _('Condition allowed') }}
+                </label>
+              </div>
+            </div>
+          {% if error is defined and error == 6 %}
+            <div class="col-sm-12 help-block" >{% include "admin/_login_error.html" %}</div>
+          {% endif %}
+          </div>
+
+        </div>
+      {% endif %}
+
+        <div class="clearfix"></div>
+        <div class="col-md-6">
+         <div class="form-group">
+           <div class="col-sm-offset-5 col-sm-6">
+             <button class="btn btn-default" type="submit">{{ _('Save') if site.this == '/login' else _('Sign up') }}</button>
+           </div>
+         </div>
+        </div>
+      </form>
+    </div>
+
+{% include "_footer.html" %}

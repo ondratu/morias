@@ -1,0 +1,24 @@
+{{ _('Hello') }},
+
+{%- if sign_up %}
+{% trans scheme=site.scheme, domain=site.domain, hash=item.service_hash %}
+You are signed up to {{ scheme }}://{{ domain }}. For finish this proccess,
+please verify your email on {{ scheme }}://{{ domain }}/login/verify/{{ hash }}.
+{%- endtrans %}
+{%- else %}
+{% trans scheme=site.scheme, domain=site.domain, hash=item.service_hash %}
+Your login for {{ scheme }}://{{ domain }} was created. For finish this
+proccess, please verify you email on
+{{ scheme }}://{{ domain }}/login/verify/{{ hash }}.
+{%- endtrans %}
+{%- endif %}
+
+{% trans scheme=site.scheme, domain=site.domain %}
+When your email was verified, you are able to log in at address
+{{ scheme }}://{{ domain }}/log_in.
+{%- endtrans %}
+
+{% trans name=site.name -%}
+Best regards,
+{{ name }} team.
+{%- endtrans %}

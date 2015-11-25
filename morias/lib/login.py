@@ -1,7 +1,10 @@
 
-import re
-
 from falias.util import uni, nint
+
+from time import time
+from hashlib import sha256
+
+import re
 
 from core.login import sha1_sdigest
 
@@ -13,6 +16,7 @@ WEAK_PASSWD = 2
 PASSWD_NOT_SAME = 3
 LOGIN_EXIST = 4
 LOGIN_NOT_EXIST = 5
+CONDITION_NOT_CONFIRMED = 6
 
 PASSWD_WAS_SET = 200
 
@@ -39,14 +43,20 @@ class Login(object):
         m = driver(req)
         return m.get(self, req)
 
-    def add(self, req):
+    def add(self, req, sign_up=False):
         if not self.check_email():
             return BAD_EMAIL
         if not self.check_passwd():
             return WEAK_PASSWD
         if self.passwd != self.again:
             return PASSWD_NOT_SAME
+        if sign_up and 'conditions' not in self.data:
+            return CONDITION_NOT_CONFIRMED
 
+        self.data['history'] = [(int(time()),   # (timestamp, action)
+                                 'sign_up' if sign_up else 'created')]
+        source_string = '%s%s' % (self.data, self.email)
+        self.service_hash = sha256(source_string).hexdigest()
         m = driver(req)
         return m.add(self, req)
     # enddef
@@ -81,9 +91,9 @@ class Login(object):
         keys = ['email', 'data']
         vals = [self.email, self.data]
 
+        if not self.check_email():
+            return BAD_EMAIL
         if self.plain or self.passwd != self.again:     # if passwd was set
-            if not self.check_email():
-                return BAD_EMAIL
             if not self.check_passwd():
                 return WEAK_PASSWD
             if self.passwd != self.again:
@@ -112,6 +122,8 @@ class Login(object):
         self.rights = form.getlist('rights', uni)
         # json data
         self.data = {}  # empty dictionary for now
+        if 'conditions' in form:
+            self.data['conditions'] = int(time())
     # enddef
 
     def simple(self):
@@ -140,6 +152,11 @@ class Login(object):
         if self.get(req):
             return _md5 == self.md5
         return False
+
+    @staticmethod
+    def verify(req, service_hash):
+        m = driver(req)
+        return m.verify(req, service_hash)
 
     @staticmethod
     def list(req, pager):

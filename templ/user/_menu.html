@@ -38,14 +38,15 @@
           {%- endif %}
         {%- endfor %}
         {% if login is defined and login != none -%}
-          <li><a href="/logout">{{ _('Logout') }} {{ login.email.split('@')[0] }}</a></li>
+          <li><a href="/log_out">{{ _('Log out') }} {{ login.email.split('@')[0] }}</a></li>
         {% else -%}
-          <li {{ 'class="active"' if site.this == '/login' else '' }}><a href="/login">{{ _('Sign in') }}</a></li>
+          <li {{ 'class="active"' if site.this == '/log_in' else '' }}><a href="/log_in">{{ _('Log in') }}</a></li>
         {% endif -%}
         </ul>
       </div>
     </nav>
 
+  {%- if not nobreadcrumb is defined %}
     <ol class="breadcrumb container">
       <li><a href="/">{{ site.name }}</a></li>
     {%- set full = '/' %}
@@ -56,3 +57,4 @@
     {%- endfor %}
       <li class="active">{{ site.this.split('/')[-1] }}</li>
     </ol>
+  {%- endif %}

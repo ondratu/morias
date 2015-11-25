@@ -131,7 +131,7 @@ def admin_news_mod(req, id):
 @app.route('/admin/news/<id:int>/disable', state.METHOD_POST)
 @app.route('/admin/news/<id:int>/enable', state.METHOD_POST)
 def admin_news_enable(req, id):
-    check_login(req, '/login?referer=/admin/news')
+    check_login(req, '/log_in?referer=/admin/news')
     match_right(req, module_rights)
     check_referer(req, '/admin/news')
 

@@ -1,4 +1,4 @@
-.form-signin {
+.form-log-in {
   max-width: 30em;
   padding: 15px;
   margin: auto;
@@ -6,20 +6,12 @@
   margin-bottom: 40px;
 }
 
-.form-signin .checkbox {
-  font-weight: normal;
+@media (min-width: 992px) {
+  .form-sign-up .sign-up-margin {
+      margin-top: 66px;
+  }
 }
-
-.form-signin .form-control {
-  font-size: 16px;
-  height: auto;
-  padding: 10px;*/
-}
-
-.form-signup h2 {
-    margin-top: 0;
-}
-.form-signup .conditions {
+.form-sign-up .conditions {
     max-height: 30em;
     overflow: auto;
     margin-bottom: 1em;

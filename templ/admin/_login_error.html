@@ -9,6 +9,8 @@
     {{ _('Login exist yet') }}
 {%- elif error == 5 -%}
     {{ _('Login does not exist') }}
+{%- elif error == 6 -%}
+    {{ _('Condition must be confirmed') }}
 {%- endif -%}
 {%- else -%}
     &nbsp;

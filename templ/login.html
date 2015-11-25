@@ -1,21 +1,41 @@
-{% set title = _('Sign in') -%}
+{% set title = _('Log in') -%}
 {% include "_header.html" %}
-{% include "user/_menu.html" -%} {#- could be "_menu_" + page.lang + ".html" -#}
+{% set nobreadcrumb = True %}
+{% include "user/_menu.html" %} {#- could be "_menu_" + page.lang + ".html" #}
 
     <div class="container">
-      <form class="form-signin" method="post">
-      {% if data.error is defined and data.error == 1000 %}
-        <div class="alert alert-danger">{{ _('Bad login email or password') }}</div>
-      {% elif data.error is defined and data.error == 1001 %}
-        <div class="alert alert-danger">{{ _('Your login is banned') }}</div>
-      {% endif %}
-        <h2 class="form-signin-heading">{{ _('Please sign in') }}</h2>
-        <input name="email" type="text" class="form-control" placeholder="{{ _('Email address') }}" value="{{ data.email|e }}" autofocus>
-        <input name="passwd" type="password" class="form-control" placeholder="{{ _('Password') }}">
-        <label class="checkbox">
-          <input type="checkbox" value="ip"> {{ _('Check IP') }}
-        </label>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">{{ _('Sign in') }}</button>
+      <form class="form-horizontal form-log-in" role="form" method="post">
+        <h1>{{ _('Log in please') }}</h1>
+
+        <div class="form-group">
+          <input name="email" type="text" class="form-control input-lg" placeholder="{{ _('Email address') }}" value="{{ data.email|e }}" autofocus>
+        </div>
+        <div class="form-group">
+          <input name="passwd" type="password" class="form-control input-lg" placeholder="{{ _('Password') }}">
+        </div>
+
+      {%- if data.error is defined %}
+        <div class="form-group has-error">
+        {%- if data.error == 1000 %}
+          <div class="help-block">{{ _('Bad login email or password') }}</div>
+        {%- elif data.error == 1001 %}
+          <div class="help-block">{{ _('Your login is banned') }}</div>
+        {%- endif %}
+        </div>
+      {%- endif %}
+
+        <div class="form-group">
+          <div class="checkbox">
+            <label class="input-lg">
+              <input type="checkbox" value="ip"> {{ _('Check IP') }}
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group checkbox">
+          <button class="btn btn-lg btn-primary col-md-5" type="submit">{{ _('Log in') }}</button>
+          <a class="btn btn-lg btn-default col-md-5 col-md-offset-2" href="/sign_up">{{ _('Sign Up') }}</a>
+        </div>
       </form>
     </div>
 

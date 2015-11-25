@@ -1,0 +1,22 @@
+{# vim:set softtabstop=2: -#}
+{% set title = _('Your email was verificated') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+     <h1>{{ _('Your email was verificated') }}</h1>
+
+      <div class="row">
+        <div class="col-md-12">
+        <p class="lead">
+        {%- trans %}
+          Your email was verificated. You can log in now on
+          <a href="/log_in">Log in page</a>.
+        {%- endtrans %}
+        </p>
+
+        </div>
+      </div>{# /row #}
+    </div>{# /container #}
+
+{% include "_footer.html" %}

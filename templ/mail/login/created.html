@@ -1,0 +1,46 @@
+{# vim:set softtabstop=2: -#}
+<html id="html" lang="cs">
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Python, Jinja2, Morias"/>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Style-Type" content="text/css"/>
+    <style>
+      body { max-width: 40em; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px;}
+    </style>
+  </head>
+  <body>
+    {{ _('Hello') }},
+    <br><br>
+
+{%- if sign_up %}
+    {% trans scheme=site.scheme, domain=site.domain, hash=item.service_hash %}
+    You are signed up to <a href="{{ scheme }}://{{ domain }}">
+    {{ scheme }}://{{ domain }}</a>. For finish this proccess, please verify
+    your email on <a href="{{ scheme }}://{{ domain }}/login/verify/{{ hash }}">
+    {{ scheme }}://{{ domain }}/login/verify/{{ hash }}</a>.
+    {%- endtrans %}
+{%- else %}
+    {% trans scheme=site.scheme, domain=site.domain, hash=item.service_hash %}
+    Your login for <a href="{{ scheme }}://{{ domain }}">
+    {{ scheme }}://{{ domain }}</a> was created. For finish this proccess,
+    please verify your email on <a href="{{ scheme }}://{{ domain }}/login/verify/{{ hash }}">
+    {{ scheme }}://{{ domain }}/login/verify/{{ hash }}</a>.
+    {%- endtrans %}
+{%- endif %}
+    <br><br>
+
+    {% trans scheme=site.scheme, domain=site.domain %}
+    When your email was verified, you are able to log in at address
+    <a href="{{ scheme }}://{{ domain }}/log_in">
+    {{ scheme }}://{{ domain }}/log_in</a>.
+    {%- endtrans %}
+    <br><br>
+
+    {% trans name=site.name -%}
+    Best regards,
+    {{ name }} team.
+    {%- endtrans %}
+  </body>
+</html>

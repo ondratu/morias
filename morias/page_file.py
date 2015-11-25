@@ -212,7 +212,7 @@ def admin_pages_del(req, id):
             * admin with pages_modify
     """
 
-    check_login(req, '/login?referer=/admin/pages')
+    check_login(req, '/log_in?referer=/admin/pages')
     match_right(req, ('pages_author', 'pages_modify'))
     check_referer(req, '/admin/pages')
 
@@ -228,7 +228,7 @@ def admin_pages_del(req, id):
 
 @app.route('/admin/pages/all/regenerate', state.METHOD_POST)
 def admin_pages_regenerate_all(req):
-    check_login(req, '/login?referer=/admin/pages')
+    check_login(req, '/log_in?referer=/admin/pages')
     check_right(req, 'pages_modify')
 
     Page.regenerate_all(req)

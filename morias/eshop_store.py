@@ -139,7 +139,7 @@ def admin_item_mod(req, id):
 @app.route('/admin/eshop/store/<id:int>/hidden', state.METHOD_POST)
 @app.route('/admin/eshop/store/<id:int>/visible', state.METHOD_POST)
 def admin_item_state(req, id):
-    check_login(req, '/login?referer=/admin/eshop/store')
+    check_login(req, '/log_in?referer=/admin/eshop/store')
     check_right(req, module_right)
     check_referer(req, '/admin/eshop/store')
 
@@ -162,7 +162,7 @@ def admin_item_state(req, id):
 @app.route('/admin/eshop/store/<id:int>/inc', method=state.METHOD_POST)
 @app.route('/admin/eshop/store/<id:int>/pri', method=state.METHOD_POST)
 def admin_item_incdec(req, id):
-    check_login(req, '/login?referer=/admin/eshop/store/%s' % id)
+    check_login(req, '/log_in?referer=/admin/eshop/store/%s' % id)
     check_right(req, module_right)
     check_referer(req, '/admin/eshop/store/%s' % id)
 

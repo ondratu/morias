@@ -107,7 +107,7 @@ def do_check_origin(req):
 def check_login(req, redirect_uri=None):
     if req.login is None:       # do_check_login was called averytime
         if redirect_uri is None:
-            redirect_uri = "/login?referer=%s" % req.uri
+            redirect_uri = "/log_in?referer=%s" % req.uri
         redirect(req, redirect_uri)
 
 

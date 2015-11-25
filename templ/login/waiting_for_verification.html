@@ -1,0 +1,30 @@
+{# vim:set softtabstop=2: -#}
+{% set title = _('Verify your email') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <h1>{{ _('Verify your email') }}</h1>
+
+      <div class="row">
+        <div class="col-md-12">
+          <p class="lead">
+          {%- trans email=item.email%}
+            Thank you for signed up to our web. We are send you email
+            to verify your email address <b>{{ email }}</b>. There is the link
+            to finish this proccess.
+          {%- endtrans %}
+          </p>
+
+          <p class="lead">
+          {%- trans %}
+            When you can't find email from us, please wait a few minutes and or
+            check your <b>spam</b> folder. If you don't resive email, contact
+            us or you can try to sign up again.
+          {%- endtrans %}
+          </p>
+        </div>
+      </div>{# /row #}
+    </div>{# /container #}
+
+{% include "_footer.html" %}
