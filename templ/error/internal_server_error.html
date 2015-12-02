@@ -1,0 +1,26 @@
+{# vim:set softtabstop=2: -#}
+{% set title = '500 ' + _('Internal Server Error') -%}
+{% include "_header.html" %}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <div class="jumbotron http-error">
+        <h1>{{ title }}</h1>
+        <p>{% trans contact=': '+contact if contact is defined else '' %}
+          <b>We're sorry, but we have some problem on server.</b>
+          <br><br>Please wait, then we fix the problem. If you can't wait,
+          contact us{{ contact }}.
+        {% endtrans %}</p>
+      </div>
+
+    {% if debug %}
+      <h2> Exception Traceback</h2>
+      <pre class="striped">
+{%- for line in traceback -%}
+<div>{{ line }}</div>
+{%- endfor -%}
+      </pre>
+    {% endif %}
+    </div>
+
+{% include "_footer.html" %}
