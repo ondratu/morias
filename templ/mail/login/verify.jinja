@@ -1,0 +1,16 @@
+{% trans scheme=site.scheme, domain=site.domain, name=site.name, hash=item.service_hash, old_email=old_email, new_email=item.email, host=host, browser=browser %}
+Hello,
+
+We accept request for change your old login email {{ old_email }} to new
+{{ new_email }} from {{ host }} with browser:
+{{ browser }}.
+
+If you want to accept this change for {{ scheme }}://{{ domain }} just enter
+url {{ scheme }}://{{ domain }}/login/verify/{{ hash }}.
+
+If you don't do that, you could still log in to {{ name }} with your old
+login email.
+
+Best regards,
+{{ name }} team.
+{%- endtrans %}

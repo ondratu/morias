@@ -79,6 +79,12 @@ def number(obj):
     return isinstance(obj, (int, long, float))
 
 
+def is_mask(value, mask):
+    if not number(value):
+        return False
+    return value & mask
+
+
 def jinja_template(filename, path, translations=NullTranslations, **kwargs):
     missing = []
 
@@ -137,6 +143,8 @@ def jinja_template(filename, path, translations=NullTranslations, **kwargs):
     env.filters['jsonify'] = dumps
     env.filters['fill'] = fill
     env.filters['pre'] = pre
+
+    env.tests['mask'] = is_mask
 
     # morias functionality
     env.globals['check_right'] = check_right

@@ -1,0 +1,37 @@
+{# vim:set softtabstop=2: -#}
+<html id="html" lang="cs">
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Python, Jinja2, Morias"/>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Style-Type" content="text/css"/>
+    <style>
+      body { max-width: 40em; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px;}
+    </style>
+  </head>
+  <body>
+  {% trans scheme=site.scheme, domain=site.domain, name=site.name, hash=item.service_hash, old_email=old_email, new_email=item.email, host=host, browser=browser %}
+    Hello,
+    <br><br>
+
+    We accept request for change your old login email {{ old_email }} to new
+    {{ new_email }} from {{ host }} with browser:<br>
+    {{ browser }}.
+    <br><br>
+
+    If you want to accept this change for <a href="{{ scheme }}://{{ domain }}">
+    {{ scheme }}://{{ domain }}</a> just enter url
+    <a href="{{ scheme }}://{{ domain }}/login/verify/{{ hash }}">
+    {{ scheme }}://{{ domain }}/login/verify/{{ hash }}</a>.
+    <br><br>
+
+    If you don't do that, you could still log in to {{ name }} with your old
+    login email.
+    <br><br>
+
+    Best regards,
+    {{ name }} team.
+  {%- endtrans %}
+  </body>
+</html>

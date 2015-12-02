@@ -1,9 +1,9 @@
-.form-log-in {
-  max-width: 30em;
-  padding: 15px;
-  margin: auto;
-  margin-top: 40px;
-  margin-bottom: 40px;
+.login-header {
+    margin-bottom: 40px;
+    text-align: center;
+}
+.login-form {
+    margin-bottom: 40px;
 }
 
 @media (min-width: 992px) {
@@ -31,7 +31,7 @@
 }
 
 .http-error {
-  margin: 100px 0;
+  margin: 20px 0;
 }
 @media screen and (max-width: 768px) {
   .http-error {
@@ -87,6 +87,10 @@ table tr td[level="5"] { padding-left: 60px; }
 table tr td[level="6"] { padding-left: 70px; }
 table tr td[level="7"] { padding-left: 80px; }
 table tr td[level="8"] { padding-left: 90px; }
+
+pre.striped > *:nth-child(even) {
+    background: white;
+}
 
 .monospace {
     font-family: monospace, serif;

@@ -1,11 +1,12 @@
+{# vim:set softtabstop=2: -#}
 {% set title = _('Log in') -%}
 {% include "_header.html" %}
 {% set nobreadcrumb = True %}
 {% include "user/_menu.html" %} {#- could be "_menu_" + page.lang + ".html" #}
 
     <div class="container">
-      <form class="form-horizontal form-log-in" role="form" method="post">
-        <h1>{{ _('Log in please') }}</h1>
+      <h1 class="login-header">{{ _('Log in please') }}</h1>
+      <form class="login-form form-horizontal col-md-5 col-md-offset-1" role="form" method="post">
 
         <div class="form-group">
           <input name="email" type="text" class="form-control input-lg" placeholder="{{ _('Email address') }}" value="{{ data.email|e }}" autofocus>
@@ -33,10 +34,22 @@
         </div>
 
         <div class="form-group checkbox">
-          <button class="btn btn-lg btn-primary col-md-5" type="submit">{{ _('Log in') }}</button>
-          <a class="btn btn-lg btn-default col-md-5 col-md-offset-2" href="/sign_up">{{ _('Sign Up') }}</a>
+          <button class="btn btn-lg btn-primary col-sm-5" type="submit">{{ _('Log in') }}</button>
+          <a class="col-sm-6 col-sm-off-set-1 btn btn-lg pull-right" href="/login/forgotten_password">{{ _('I forgot my password') }}</a>
         </div>
-      </form>
+      </form> 
+
+      <div class="col-md-5 col-md-offset-1">
+        <div class="row">
+          <p class="lead">
+          {%- trans %}
+            Don't have login yet ? Try it free!
+          {%- endtrans  %}
+          </p>
+          <a class="btn btn-lg btn-default col-sm-5" href="/sign_up">{{ _('Sign Up') }}</a>
+        </div>
+      </div>
+
     </div>
 
 {% include "_footer.html" %}

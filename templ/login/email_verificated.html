@@ -1,9 +1,25 @@
 {# vim:set softtabstop=2: -#}
-{% set title = _('Your email was verificated') -%}
+{% set title = _('Your email was verificated') if error is not defined else _('Bad verification') -%}
 {% include "_header.html" -%}
 {% include "user/_menu.html" %}
 
     <div class="container">
+    {% if error is defined %}
+      <h1>{{ _('Bad verification') }}</h1>
+      <div class="row">
+        <div class="col-md-12">
+        <p class="lead">
+          {{ _('Something wrong on your verification proccess') }}: <b>
+        {% if error is mask (16+256) %}
+          {{ _('Your servis hash is wrong.') }}
+        {% elif error is mask 8 %}
+          {{ _('Email %s is exist in database yet.')|format(item.new_email) }}</b>.
+        {% endif %}
+        </p>
+
+        </div>
+      </div>{# /row #}
+    {% else %}
      <h1>{{ _('Your email was verificated') }}</h1>
 
       <div class="row">
@@ -17,6 +33,7 @@
 
         </div>
       </div>{# /row #}
+    {% endif %}
     </div>{# /container #}
 
 {% include "_footer.html" %}

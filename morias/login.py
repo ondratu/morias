@@ -13,7 +13,7 @@ from core.robot import robot_questions
 
 from lib.menu import Item
 from lib.pager import Pager
-from lib.login import Login
+from lib.login import Login, OK, REQUEST_FOR_EMAIL
 
 from admin import system_menu
 from user import user_info_menu
@@ -24,6 +24,9 @@ _check_conf = (
     ('morias', 'db', Sql),                          # database configuration
     ('morias', 'smtp', Smtp),                       # for password reset
     ('morias', 'sign_up', bool, False, True),       # if users can sign up
+
+    ('login', 'ttl_of_password_link', int, 30, True,
+     'Time to Live in minutes of forgotten password link.'),
 )
 
 module_right = 'users_admin'    # right admin - do anythig with users
@@ -42,7 +45,7 @@ def _call_conf(cfg, parser):
         app.set_route('/sign_up', sign_up, state.METHOD_GET_POST)
 
 
-def send_acount_created(req, login, sign_up=False):
+def send_login_created(req, login, sign_up=False):
     try:
         req.smtp.send_email_alternative(
             morias_template(req, 'mail/login/created_subject.jinja',  # subject
@@ -54,7 +57,48 @@ def send_acount_created(req, login, sign_up=False):
                             item=login, sign_up=sign_up).encode('utf-8'),
             logger=req.logger)
     except Exception:
-        req.log_error('Login acount created [%s] error: \n%s' %
+        req.log_error('Login created [%s] error: \n%s' %
+                      (login.email, format_exc()), state.LOG_ERR)
+# enddef
+
+
+def send_log_in_link(req, login, host, browser):
+    try:
+        req.smtp.send_email_alternative(
+            morias_template(req, 'mail/login/log_in_link_subject.jinja',
+                            item=login, host=host, browser=browser
+                            ).encode('utf-8'),
+            login.email,
+            morias_template(req, 'mail/login/log_in_link.jinja',        # body
+                            item=login, host=host, browser=browser
+                            ).encode('utf-8'),
+            morias_template(req, 'mail/login/log_in_link.html',         # body
+                            item=login, host=host, browser=browser
+                            ).encode('utf-8'),
+            logger=req.logger)
+    except:
+        req.log_error('Log-in link [%s] error: \n%s' %
+                      (login.email, format_exc()), state.LOG_ERR)
+        raise
+# enddef
+
+
+def send_verify_email(req, login, old_email, host, browser):
+    try:
+        req.smtp.send_email_alternative(
+            morias_template(req, 'mail/login/verify_subject.jinja',  # subject
+                            item=login, old_email=old_email, host=host,
+                            browser=browser).encode('utf-8'),
+            login.email,
+            morias_template(req, 'mail/login/verify.jinja',          # body
+                            item=login, old_email=old_email, host=host,
+                            browser=browser).encode('utf-8'),
+            morias_template(req, 'mail/login/verify.html',           # body
+                            item=login, old_email=old_email, host=host,
+                            browser=browser).encode('utf-8'),
+            logger=req.logger)
+    except Exception:
+        req.log_error('Login forget [%s] error: \n%s' %
                       (login.email, format_exc()), state.LOG_ERR)
 # enddef
 
@@ -96,8 +140,9 @@ def login(req):
 
     if req.method == 'POST':
         login = Login()
-        ip = 'ip' in req.form
         login.bind(req.form, req.cfg.morias_salt)
+
+        ip = 'ip' in req.form
         if login.find(req):
             do_login(req, login.simple(), ip)
             if referer:
@@ -177,7 +222,7 @@ def admin_logins_mod(req, id):
         login.bind(req.form, req.cfg.morias_salt)
         done = login.mod(req)
 
-        if done < 100:
+        if 0 < done < 64:
             return generate_page(req, "admin/logins_mod.html",
                                  rights=rights,
                                  item=login, error=done)
@@ -218,20 +263,27 @@ def login_mod(req):
     state = None
     if req.method == 'POST':
         login.bind(req.form, req.cfg.morias_salt)
-        state = login.pref(req)
+        email = login.email if login.email != req.login.email else None
+        state = login.pref(req, email=email)
 
-        # TODO: verify new email before changeed...
-
-        if state < 100:
+        if 0 < state < 64:
             return generate_page(req, "login/login_mod.html",
                                  item=login, error=state)
-        # endif
+
+        state = 0 if state is None else state
+        if email:
+            host = "%s (%s)" % (req.remote_host, req.remote_addr)
+            send_verify_email(req, login, req.login.email, host=host,
+                              browser=req.user_agent)
+            state |= REQUEST_FOR_EMAIL
+    else:
+        email = None
     # endif
 
     login.get(req)
     req.login = login
     return generate_page(req, "login/login_mod.html",
-                         item=login, state=state)
+                         item=login, state=state, email=email)
 # enddef
 
 
@@ -256,8 +308,7 @@ def sign_up(req):
                                  error=error, question=question, answer=answer,
                                  check=check, qid=hex(qid), form=req.form)
 
-        send_acount_created(req, login)
-        # redirect(req, '/log_in')
+        send_login_created(req, login)
         return generate_page(req, "/login/waiting_for_verification.html",
                              item=login)
     # endif
@@ -271,7 +322,43 @@ def sign_up(req):
 
 @app.route('/login/verify/<servis_hash:hex>')
 def verify(req, servis_hash):
-    if not Login.verify(req, servis_hash):
-        redirect(req, '/log_in')
-    return generate_page(req, "/login/email_verificated.html")
+    login = Login()
+    status = login.verify(req, servis_hash)
+    if status is True:
+        do_login(req, login.simple())
+        redirect(req, '/')
+    elif status == OK:
+        return generate_page(req, "/login/email_verificated.html")
+    else:
+        return generate_page(req, "/login/email_verificated.html",
+                             error=status, item=login)
 # enddef
+
+
+@app.route('/login/forgotten_password', state.METHOD_GET_POST)
+def forgotten_password(req):
+    if req.method == 'POST':
+        robot = True if req.form.getfirst("robot", "", str) else False
+        qid = int(req.form.getfirst("qid", '0', str), 16)
+        question, answer = robot_questions[qid]
+        check = req.form.getfirst("answer", "", str) == answer
+
+        login = Login()
+        login.email = req.form.getfirst("email", "", str).strip()
+
+        if robot or not check or not login.check_email():
+            return generate_page(req, "/login/forgotten_password.html",
+                                 ttl=req.cfg.login_ttl_of_password_link,
+                                 form=req.form, question=question,
+                                 answer=answer, check=check, qid=hex(qid))
+
+        login.log_in_link(req)
+        host = "%s (%s)" % (req.remote_host, req.remote_addr)
+        send_log_in_link(req, login, host=host, browser=req.user_agent)
+        return generate_page(req, "/login/verify_link_send.html", item=login)
+
+    qid = randint(0, len(robot_questions)-1)
+    question, answer = robot_questions[qid]
+    return generate_page(req, "/login/forgotten_password.html",
+                         ttl=req.cfg.login_ttl_of_password_link, form=Object(),
+                         question=question,  answer=answer, qid=hex(qid))

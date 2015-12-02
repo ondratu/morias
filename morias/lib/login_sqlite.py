@@ -4,7 +4,22 @@ from hashlib import md5
 
 import json
 
-from lib.login import Login, LOGIN_EXIST, LOGIN_NOT_EXIST
+from lib.login import Login, OK, LOGIN_EXIST, LOGIN_NOT_EXIST
+
+
+def _transaction(req):  # static methos
+    tran = req.db.transaction(req.logger)
+    tran.connection.create_function('hash', 3, login_hash)
+    c = tran.cursor()
+    return c
+
+
+def _commit(c):         # static method
+    c.transaction.commit()
+
+
+def _rollback(c):       # static method
+    c.transaction.rollback()
 
 
 def login_hash(email, passwd, enabled):
@@ -12,20 +27,31 @@ def login_hash(email, passwd, enabled):
     return md5("%s%s%s" % (email, passwd, enabled)).hexdigest()
 
 
+def _get(self, c, condition=None):
+    if condition is None:
+        condition = ('login_id', self.id)
+    if condition[0] not in ('login_id', 'service_hash'):
+        raise AssertionError('Unsuported condition %s' % condition)
+
+    c.execute("""
+        SELECT login_id, email, rights, enabled, data, history,
+            hash(email, enabled, passwd)
+        FROM logins WHERE %s = %%s
+        """ % condition[0], condition[1])
+    row = c.fetchone()
+    if not row:
+        return False
+    self.id, self.email, rights, self.enabled, data, history, self.md5 = row
+    self.rights = json.loads(rights)
+    self.data = json.loads(data)
+    self.history = json.loads(history)
+
+
 def get(self, req):
     tran = req.db.transaction(req.logger)
     tran.connection.create_function('hash', 3, login_hash)
     c = tran.cursor()
-    c.execute("""
-        SELECT email, rights, enabled, data, hash(email, enabled, passwd)
-        FROM logins WHERE login_id = %s
-        """, self.id)
-    row = c.fetchone()
-    if not row:
-        return False
-    self.email, rights, self.enabled, data, self.md5 = row
-    self.rights = json.loads(rights)
-    self.data = json.loads(data)
+    _get(self, c)
     tran.commit()
     return True
 # enddef
@@ -38,10 +64,12 @@ def add(self, req):
     try:        # email must be uniq
         c.execute("""
             INSERT INTO logins
-                    (email, rights, data, passwd, enabled, service_hash)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                    (email, rights, data, passwd, enabled, history,
+                     service_hash)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             """, (self.email, json.dumps(self.rights), json.dumps(self.data),
-                  self.passwd, getattr(self, 'enabled', 0), self.service_hash))
+                  self.passwd, getattr(self, 'enabled', 0),
+                  json.dumps(self.history), self.service_hash))
         self.id = c.lastrowid
     except IntegrityError:
         return LOGIN_EXIST
@@ -49,19 +77,25 @@ def add(self, req):
 # enddef
 
 
-def _mod(self, req, keys, vals):
-    tran = req.db.transaction(req.logger)
-    c = tran.cursor()
+def _mod(self, c, keys, vals, condition=None):
+    if condition is None:
+        condition = ('login_id', self.id)
+    if condition[0] not in ('login_id', 'email', 'service_hash'):
+        raise AssertionError('Unsuported condition %s' % condition)
 
     try:        # email must be uniq
         if 'rights' in keys:        # transfer rights to string (driver depend)
             i = keys.index('rights')
             vals[i] = json.dumps(vals[i])
 
-        if 'data' in keys:          # data will be merged
+        if 'data' in keys or 'history' in keys:     # data will be merged
+            c.execute("SELECT data, history FROM logins WHERE %s = %%s" %
+                      condition[0], condition[1])
+            row = c.fetchone()
+
+        if 'data' in keys:
             i = keys.index('data')
-            c.execute("SELECT data FROM logins WHERE login_id = %s", self.id)
-            data = json.loads(c.fetchone()[0])
+            data = json.loads(row[0])
 
             data.update(vals[i])            # append / replace keys from vals
             for k, v in data.items():    # clean empty keys
@@ -71,17 +105,26 @@ def _mod(self, req, keys, vals):
             vals[i] = json.dumps(data)
         # endif
 
+        if 'history' in keys:
+            l = keys.index('history')
+            history = json.loads(row[1])
+
+            for it in vals[l]:              # append history from vals
+                history.append(it)
+
+            vals[l] = json.dumps(history)
+        # endif
+
         keys = list('%s = %%s' % k for k in keys)
-        vals.append(self.id)
-        c.execute("UPDATE logins SET %s WHERE login_id = %%s " %
-                  ', '.join(keys), vals)
+        vals.append(condition[1])
+        c.execute("UPDATE logins SET %s WHERE %s = %%s " %
+                  (', '.join(keys), condition[0]), vals)
     except IntegrityError:
         return LOGIN_EXIST
 
     if not c.rowcount:
         return LOGIN_NOT_EXIST
-
-    tran.commit()
+    return OK
 # enddef
 
 
@@ -104,7 +147,7 @@ def find(self, req):
     tran.connection.create_function('hash', 3, login_hash)
     c = tran.cursor()
     c.execute("""
-        SELECT login_id, rights, data, hash(email, enabled, passwd)
+        SELECT login_id, rights, data, history, hash(email, enabled, passwd)
         FROM logins WHERE email = %s AND passwd = %s AND enabled = 1
         """, (self.email, self.passwd))
     row = c.fetchone()
@@ -115,22 +158,8 @@ def find(self, req):
     self.id = row[0]
     self.rights = json.loads(row[1])
     self.data = json.loads(row[2])
-    self.md5 = row[3]
-    return True
-# enddef
-
-
-def verify(req, service_hash):
-    tran = req.db.transaction(req.logger)
-    c = tran.cursor()
-    c.execute("""
-        UPDATE logins SET enabled=1, service_hash=NULL
-            WHERE service_hash = %s
-        """, service_hash)
-    if not c.rowcount:
-        return False
-
-    tran.commit()
+    self.history = json.loads(row[3])
+    self.md5 = row[4]
     return True
 # enddef
 

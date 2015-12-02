@@ -1,0 +1,18 @@
+{# vim:set softtabstop=2: -#}
+{%- macro error_message(error, _mask) %}
+  {%- if error is mask _mask -%}
+    {%- if _mask is mask 1 -%}
+      {{ _('Bad email') }}
+    {%- elif _mask is mask 2 -%}
+      {{ _('Password must be more the 6 chars long, and must contain upper case and nubmers') }}
+    {%- elif _mask is mask 4 -%}
+      {{ _('Passwords not same') }}
+    {%- elif _mask is mask 8 -%}
+      {{ _('Login exist yet') }}
+    {%- elif _mask is mask 16 -%}
+      {{ _('Login does not exist') }}
+    {%- elif _mask is mask 32 -%}
+      {{ _('Condition must be confirmed') }}
+    {%- endif -%}
+  {% endif %}
+{%- endmacro %}

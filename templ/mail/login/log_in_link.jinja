@@ -1,0 +1,16 @@
+{% trans scheme=site.scheme, domain=site.domain, name=site.name, hash=item.service_hash, host=host, browser=browser %}
+Hello,
+
+We accept request for temorary log in link for your email from {{ host }} with
+browser: {{ browser }}.
+
+If you want to log in to {{ scheme }}://{{ domain }} just enter temporary url
+{{ scheme }}://{{ domain }}/login/verify/{{ hash }}.
+
+When you don't crate this request by forgotten passsword page, you want to
+ignore it, but be careful. May be someone want to steal your login to
+{{ name }}.
+
+Best regards,
+{{ name }} team.
+{%- endtrans %}

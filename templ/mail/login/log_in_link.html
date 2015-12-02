@@ -1,0 +1,37 @@
+{# vim:set softtabstop=2: -#}
+<html id="html" lang="cs">
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Python, Jinja2, Morias"/>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Style-Type" content="text/css"/>
+    <style>
+      body { max-width: 40em; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px;}
+    </style>
+  </head>
+  <body>
+  {% trans scheme=site.scheme, domain=site.domain, name=site.name, hash=item.service_hash, host=host, browser=browser %}
+    Hello,
+    <br><br>
+
+    We accept request for temorary log in link for your email from {{ host }}
+    with browser: {{ browser }}.
+    <br><br>
+
+    If you want to log in to <a href="{{ scheme }}://{{ domain }}">
+    {{ scheme }}://{{ domain }}</a> just enter temporary url
+    <a href="{{ scheme }}://{{ domain }}/login/verify/{{ hash }}">
+    {{ scheme }}://{{ domain }}/login/verify/{{ hash }}</a>.
+    <br><br>
+
+    When you don't crate this request by forgotten passsword page, you want to
+    ignore it, but be careful. May be someone want to steal your login to
+    {{ name }}.
+    <br><br>
+
+    Best regards,
+    {{ name }} team.
+  {%- endtrans %}
+  </body>
+</html>

@@ -5,6 +5,7 @@
 {% endif -%}
 {% include "_header.html" -%}
 {% include "user/_menu.html" %}
+{% from "login/_error_message.html" import error_message %}
 
     <script src="/js/rights.js"></script>
 
@@ -22,17 +23,17 @@
         <li class="pull-right"><a href="/admin/logins">{{ _('Login list') }}</a></li>
       </ul>
 
-    {% if state is defined and state == 200 -%}
+    {% if state is defined and state is mask 64 -%}
       <div class="alert alert-info">{{ _('Password was set!') }}</div>
     {% endif -%}
 
       <form class="form-horizontal" role="form" method="post">
-        <div class="form-group {{ 'has-error' if error is defined and error in (1, 5) else '' }}">
+        <div class="form-group {{ 'has-error' if error is defined and error is mask 1+8 else '' }}">
           <label for="input_email" class="col-sm-3 control-label">{{ _('Email') }}</label>
           <div class="col-sm-4">
             <input type="email" id="input_email" name="email" class="form-control" placeholder="{{ _('Email') }}" value="{{ (item.email or '')|e }}"></div>
-        {% if error is defined and error in (1, 5) %}
-          <div class="col-sm-4 help-inline" >{% include "admin/_login_error.html" %}</div>
+        {% if error is defined and error is mask 1+8 %}
+          <div class="col-sm-4 help-inline" >{{ error_message(error, 1) }}{{ error_message(error, 8) }}</div>
         {% endif %}
         </div>
 
@@ -62,23 +63,23 @@
           </div>
         </div>
 
-        <div class="form-group {{ 'has-error' if error is defined and error == 2 else '' }}">
+        <div class="form-group {{ 'has-error' if error is defined and error is mask 2 else '' }}">
           <label for="input_passwd" class="col-sm-3 control-label">{{ _('Password') }}</label>
           <div class="col-sm-4">
             <input type="password" id="input_passwd" name="passwd" class="form-control" placeholder="{{ _('Password') }}"></div>
-        {% if error is defined and error == 2 %}
-          <div class="col-sm-4 help-inline" >{% include "admin/_login_error.html" %}</div>
+        {% if error is defined and error is mask 2 %}
+          <div class="col-sm-4 help-inline" >{{ error_message(error, 2) }}</div>
         {% elif site.this != '/admin/logins/add' %}
           <div class="col-sm-4 help-inline">{{ _('Fill it only, if you want to change.') }}</div>
         {% endif %}
         </div>
 
-        <div class="form-group {{ 'has-error' if error is defined and error == 3 else '' }}">
+        <div class="form-group {{ 'has-error' if error is defined and error is mask 4 else '' }}">
           <label for="input_again" class="col-sm-3 control-label">{{ _('Password again') }}</label>
           <div class="col-sm-4">
             <input type="password" id="input_again" name="again" class="form-control" placeholder="{{ _('Password again') }}"></div>
-        {% if error is defined and error == 3 %}
-          <div class="col-sm-4 help-inline" >{% include "admin/_login_error.html" %}</div>
+        {% if error is defined and error is mask 4 %}
+          <div class="col-sm-4 help-inline" >{{ error_message(error, 4) }}</div>
         {% endif %}
         </div>
 

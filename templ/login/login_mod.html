@@ -6,6 +6,7 @@
 {% endif -%}
 {% include "_header.html" %}
 {% include "user/_menu.html" -%}
+{% from "login/_error_message.html" import error_message %}
 
     <div class="container">
     {% if site.this == '/login' -%}
@@ -14,7 +15,7 @@
       <h1>{{ _('Sign up') }}</h1>
     {% endif -%}
 
-    {% if state is defined and state == 200 -%}
+    {% if state is defined and state is mask 64 -%}
       <div class="alert alert-info">{{ _('Password was set!') }}</div>
     {% endif -%}
 
@@ -24,17 +25,17 @@
           <div class="sign-up-margin"></div>
           {% endif %}
 
-          <div class="form-group {{ 'has-error' if error is defined and error in (1, 4) else '' }}">
+          <div class="form-group {{ 'has-error' if error is defined and error is mask 1+8 else '' }}">
             <label for="input_email" class="col-sm-5 control-label">{{ _('Email') }}</label>
             <div class="col-sm-6">
               <input type="email" id="input_email" name="email" class="form-control" placeholder="{{ _('Email') }}" value="{{ (item.email or '')|e }}">
             </div>
-        {% if error is defined and error in (1, 4) %}
-            <div class="col-sm-6 col-sm-offset-5 help-block" >{% include "admin/_login_error.html" %}</div>
-          {% if site.this == '/sign_up' and error == 4 %}
+        {% if error is defined and error is mask 1+8 %}
+            <div class="col-sm-6 col-sm-offset-5 help-block" >{{ error_message(error, 1) }}{{ error_message(error, 8) }}</div>
+          {% if site.this == '/sign_up' and error is mask 8 %}
             <div class="col-sm-6 col-sm-offset-5 help-block" >
             {%- trans email=item.email %}
-              May be, you want to <a href="/login/reset_password&email={{ email }}">reset password</a>.
+              May be, you <a href="/login/forgotten_password">forgot your password</a>.
             {%- endtrans %}
             </div>
           {% endif %}
@@ -58,7 +59,7 @@
 
           <div class="form-group shadow {{ 'has-error' if check is defined and not check else '' }}">
             <label for="input_answer" class="col-sm-5 control-label">{{ question }}</label>
-            <input type="hidden" name="qid" value="{{ qid }}">
+            <input type="hidden" name="qid" value="{{ qid or '' }}">
             <div class="col-sm-6">
               <input id="input_answer" name="answer" type="text" class="form-control" placeholder="{{ question }}" value="{{ form.get('answer', '')|e }}">
             </div>
@@ -68,39 +69,40 @@
           </div>
         {% endif %}
 
-          <div class="form-group {{ 'has-error' if error is defined and error == 2 else '' }}">
+          <div class="form-group {{ 'has-error' if error is defined and error is mask 2 else '' }}">
             <label for="input_passwd" class="col-sm-5 control-label">{{ _('Password') }}</label>
             <div class="col-sm-6">
               <input type="password" id="input_passwd" name="passwd" class="form-control" placeholder="{{ _('Password') }}">
             </div>
-          {% if error is defined and error == 2 %}
-            <div class="col-sm-6 col-sm-offset-5 help-block">{% include "admin/_login_error.html" %}</div>
+          {% if error is defined and error is mask 2 %}
+            <div class="col-sm-6 col-sm-offset-5 help-block">{{ error_message(error, 2) }}</div>
           {% endif %}
           {% if site.this == '/user/login' %}
             <div class="col-sm-6 col-sm-offset-5 help-block">{{ _('Fill it only, if you want to change.') }}</div>
           {% endif %}
           </div>
 
-          <div class="form-group {{ 'has-error' if error is defined and error == 3 else '' }}">
+          <div class="form-group {{ 'has-error' if error is defined and error is mask 4 else '' }}">
             <label for="input_again" class="col-sm-5 control-label">{{ _('Password again') }}</label>
             <div class="col-sm-6">
               <input type="password" id="input_again" name="again" class="form-control" placeholder="{{ _('Password again') }}">
             </div>
-          {% if error is defined and error == 3 %}
-            <div class="col-sm-6 col-sm-offset-5 help-block" >{% include "admin/_login_error.html" %}</div>
+          {% if error is defined and error is mask 4 %}
+            <div class="col-sm-6 col-sm-offset-5 help-block" >{{ error_message(error, 4) }}</div>
           {% endif %}
           </div>
 
         </div>{# /col-md-6 #}
 
-        {% if site.this == '/sign_up' %}
+
+      {% if site.this == '/sign_up' %}
         <div class="col-md-6">
           <h2>{{ _('Terms and conditions') }}</h2>
           <div class="conditions">
             {{ lipsum(10) }}
           </div>
 
-          <div class="form-group {{ 'has-error' if error is defined and error == 6 else '' }}">
+          <div class="form-group {{ 'has-error' if error is defined and error is mask 32 else '' }}">
             <div class="col-sm-12">
               <div class="checkbox">
                 <label class="control-label">
@@ -109,13 +111,34 @@
                 </label>
               </div>
             </div>
-          {% if error is defined and error == 6 %}
-            <div class="col-sm-12 help-block" >{% include "admin/_login_error.html" %}</div>
+          {% if error is defined and error is mask 32 %}
+            <div class="col-sm-12 help-block" >{{ error_message(error, 32) }}</div>
           {% endif %}
           </div>
 
         </div>
-      {% endif %}
+
+      {% elif state is defined and state is mask 128 -%}
+        <div class="col-md-6">
+          <div class="form-group has-success">
+            <p class="help-block lead">
+            {%- trans email=email%}
+              Request for change your login email was accept. We are send you
+              email to verify your new email address <b>{{ email }}</b>. There is
+              the link to finish this proccess.
+            {%- endtrans %}
+            </p>
+
+            <p class="help-block lead">
+            {%- trans %}
+              When you can't find email from us, please wait a few minutes and or
+              check your <b>spam</b> folder. If you don't resive email, contact
+              us or you can try to change email one more time.
+            {%- endtrans %}
+            </p>
+          </div>
+        </div>
+      {% endif -%}
 
         <div class="clearfix"></div>
         <div class="col-md-6">
