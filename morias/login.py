@@ -23,8 +23,10 @@ _check_conf = (
     ('morias', 'salt', unicode),                    # salt for passwords
     ('morias', 'db', Sql),                          # database configuration
     ('morias', 'smtp', Smtp),                       # for password reset
-    ('morias', 'sign_up', bool, False, True),       # if users can sign up
 
+    ('login', 'sign_up', bool, False),              # If user could sign up
+    # If user could get entry link when don't know password
+    ('login', 'forget_password_link', bool, False),
     ('login', 'ttl_of_password_link', int, 30, True,
      'Time to Live in minutes of forgotten password link.'),
 )
@@ -41,8 +43,11 @@ user_info_menu.append(Item('/login', label="Login", symbol='login',
 
 
 def _call_conf(cfg, parser):
-    if cfg.debug:
+    if cfg.login_sign_up:
         app.set_route('/sign_up', sign_up, state.METHOD_GET_POST)
+    if cfg.login_forget_password_link:
+        app.set_route('forgotten_password', forgotten_password,
+                      state.METHOD_GET_POST)
 
 
 def send_login_created(req, login, sign_up=False):
@@ -156,7 +161,8 @@ def login(req):
         data.error = BAD_LOGIN
 
     return generate_page(req, "login.html", data=data,
-                         sign_up=req.cfg.morias_sign_up)
+                         sign_up=req.cfg.login_sign_up,
+                         password_link=req.cfg.login_forget_password_link)
 # enddef
 
 
@@ -304,9 +310,11 @@ def sign_up(req):
 
         error = login.add(req, True)
         if error:
-            return generate_page(req, "/login/login_mod.html", item=login,
-                                 error=error, question=question, answer=answer,
-                                 check=check, qid=hex(qid), form=req.form)
+            return generate_page(
+                req, "/login/login_mod.html", item=login, error=error,
+                question=question, answer=answer, check=check, qid=hex(qid),
+                form=req.form,
+                password_link=req.cfg.login_forget_password_link)
 
         send_login_created(req, login)
         return generate_page(req, "/login/waiting_for_verification.html",
@@ -335,7 +343,6 @@ def verify(req, servis_hash):
 # enddef
 
 
-@app.route('/login/forgotten_password', state.METHOD_GET_POST)
 def forgotten_password(req):
     if req.method == 'POST':
         robot = True if req.form.getfirst("robot", "", str) else False

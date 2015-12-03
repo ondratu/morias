@@ -34,9 +34,11 @@
             <div class="col-sm-6 col-sm-offset-5 help-block" >{{ error_message(error, 1) }}{{ error_message(error, 8) }}</div>
           {% if site.this == '/sign_up' and error is mask 8 %}
             <div class="col-sm-6 col-sm-offset-5 help-block" >
+          {% if password_link %}
             {%- trans email=item.email %}
               May be, you <a href="/login/forgotten_password">forgot your password</a>.
             {%- endtrans %}
+          {% endif %}
             </div>
           {% endif %}
         {% endif %}

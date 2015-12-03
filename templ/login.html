@@ -35,11 +35,15 @@
 
         <div class="form-group checkbox">
           <button class="btn btn-lg btn-primary col-sm-5" type="submit">{{ _('Log in') }}</button>
+        {% if password_link %}
           <a class="col-sm-6 col-sm-off-set-1 btn btn-lg pull-right" href="/login/forgotten_password">{{ _('I forgot my password') }}</a>
+        {% endif %}
         </div>
-      </form> 
+      </form>
 
       <div class="col-md-5 col-md-offset-1">
+      {#- place for some addional info #}
+      {% if sign_up %}
         <div class="row">
           <p class="lead">
           {%- trans %}
@@ -48,6 +52,7 @@
           </p>
           <a class="btn btn-lg btn-default col-sm-5" href="/sign_up">{{ _('Sign Up') }}</a>
         </div>
+      {% endif %}
       </div>
 
     </div>
