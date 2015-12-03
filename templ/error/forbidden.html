@@ -1,0 +1,15 @@
+{% set title = '403 ' + _('Forbidden Access') -%}
+{% include "_header.html" %}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <div class="jumbotron http-error">
+        <h1>{{ title }}</h1>
+        <p><b>{% trans %}
+          We're sorry, but you don't have permission to access
+          <code>{{ request_uri }}</code> on this server.
+        {% endtrans %}</b></p>
+      </div>
+    </div>
+
+{% include "_footer.html" %}
