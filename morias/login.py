@@ -46,7 +46,7 @@ def _call_conf(cfg, parser):
     if cfg.login_sign_up:
         app.set_route('/sign_up', sign_up, state.METHOD_GET_POST)
     if cfg.login_forget_password_link:
-        app.set_route('forgotten_password', forgotten_password,
+        app.set_route('/login/forgotten_password', forgotten_password,
                       state.METHOD_GET_POST)
 
 
