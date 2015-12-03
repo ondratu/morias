@@ -26,7 +26,7 @@ def _call_conf(cfg, parser):
 
 timestamp = -1
 
-module_right = 'admin'
+module_right = 'super'
 system_menu.append(Item('/admin/system/options', label="Options",
                         symbol="options", rights=[module_right]))
 
