@@ -129,11 +129,18 @@ def _mod(self, c, keys, vals, condition=None):
 
 
 def enable(self, req):
+    """Disabling account clear servis_hash."""
     tran = req.db.transaction(req.logger)
     c = tran.cursor()
 
-    c.execute("UPDATE logins SET enabled = %s WHERE login_id = %s",
-              (self.enabled, self.id))
+    if not self.enabled:
+        c.execute("""
+                UPDATE logins SET enabled = %s, service_hash = NULL
+                WHERE login_id = %s""", (self.enabled, self.id))
+    else:
+        c.execute("""
+                UPDATE logins SET enabled = %s
+                WHERE login_id = %s""", (self.enabled, self.id))
 
     if not c.rowcount:
         return LOGIN_NOT_EXIST

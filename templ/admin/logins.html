@@ -43,7 +43,8 @@
         $(document).ready(function() {
           // send form after click to links with post attribut
           $('a[post]').click(function() {
-            $('<form/>',{'method':'post','action':$(this).attr('post')}).submit();
+            $('<form/>',{'method':'post','action':$(this).attr('post')})
+                    .appendTo('body').submit();
           });
         });
       </script>

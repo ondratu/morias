@@ -118,6 +118,9 @@ pre.striped > *:nth-child(even) {
     content: "\f068";
 }
 
+.navbar-header h1 {
+    margin: 0;
+}
 .navbar-brand, .navbar-text {
     margin-left: 0;
     margin-right: 0;

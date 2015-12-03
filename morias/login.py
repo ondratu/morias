@@ -29,6 +29,8 @@ _check_conf = (
     ('login', 'forget_password_link', bool, False),
     ('login', 'ttl_of_password_link', int, 30, True,
      'Time to Live in minutes of forgotten password link.'),
+    ('login', 'created_verify_link', bool, False, True,
+     "If created login must verify his/her email.")
 )
 
 module_right = 'users_admin'    # right admin - do anythig with users
@@ -197,7 +199,8 @@ def admin_logins_add(req):
     if req.method == 'POST':
         login = Login()
         login.bind(req.form, req.cfg.morias_salt)
-        login.enabled = 1
+        if not req.cfg.login_created_verify_link:
+            login.enabled = 1
         login.rights = ['user']
         error = login.add(req)
 
@@ -206,6 +209,8 @@ def admin_logins_add(req):
                                  rights=rights,
                                  item=login, error=error)
 
+        if req.cfg.login_created_verify_link:
+            send_login_created(req, login)
         redirect(req, '/admin/logins/%d' % login.id)
     # endif
 

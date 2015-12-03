@@ -220,9 +220,11 @@ class Login(object):
             return BAD_SERVIS_HASH
         last = self.history[-1]
 
-        if Login.check_verify(last, 'sign_up'):
+        if Login.check_verify(last, 'sign_up') \
+                or Login.check_verify(last, 'created'):
             m._mod(self, c, ['enabled', 'service_hash'], [1, None], condition)
             m._commit(c)
+            return OK
         elif Login.check_verify(last, 'log_in_link', ttl):
             if self.enabled:
                 m._commit(c)
