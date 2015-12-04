@@ -144,11 +144,13 @@ class Page():
         """ check if any of login.rights metch any of page.rights """
         m = driver(req)
         m.load_rights(self, req)
-        if do_check_right(req, 'pages_author') \
+        if do_match_right(req, 'pages_modify'):
+            return True     # user is editor
+        elif do_check_right(req, 'pages_author') \
                 and self.author_id == req.login.id:
-            return True
+            return True     # user is author
         elif self.rights and do_match_right(req, self.rights):
-            return True
+            return True     # user has special right which have page
         return False
     # enddef
 
