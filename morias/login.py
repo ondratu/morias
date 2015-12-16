@@ -7,8 +7,8 @@ from traceback import format_exc
 from random import randint
 
 from core.render import generate_page, morias_template
-from core.login import rights, do_login, do_logout, check_login, check_referer, \
-    check_right
+from core.login import rights, do_login, do_logout, check_login, \
+    check_right, do_create_token, check_token
 from core.robot import robot_questions
 
 from lib.menu import Item
@@ -187,6 +187,7 @@ def admin_logins(req):
 
     rows = Login.list(req, pager)
     return generate_page(req, "admin/logins.html",
+                         token=do_create_token(req, '/admin/logins'),
                          pager=pager, rows=rows, error=error)
 # enddef
 
@@ -195,8 +196,10 @@ def admin_logins(req):
 def admin_logins_add(req):
     check_login(req)
     check_right(req, R_ADMIN)
+    token = do_create_token(req, '/admin/logins/add')
 
     if req.method == 'POST':
+        check_token(req, req.form.get('token'))
         login = Login()
         login.bind(req.form, req.cfg.morias_salt)
         if not req.cfg.login_created_verify_link:
@@ -205,16 +208,15 @@ def admin_logins_add(req):
         error = login.add(req)
 
         if error:
-            return generate_page(req, "admin/logins_mod.html",
-                                 rights=rights,
-                                 item=login, error=error)
+            return generate_page(req, "admin/logins_mod.html", token=token,
+                                 rights=rights, item=login, error=error)
 
         if req.cfg.login_created_verify_link:
             send_login_created(req, login)
         redirect(req, '/admin/logins/%d' % login.id)
     # endif
 
-    return generate_page(req, "admin/logins_mod.html",
+    return generate_page(req, "admin/logins_mod.html", token=token,
                          rights=rights)
 # enddef
 
@@ -223,6 +225,7 @@ def admin_logins_add(req):
 def admin_logins_mod(req, id):
     check_login(req)
     check_right(req, R_ADMIN)
+    token = do_create_token(req, '/admin/logins/%d' % id)
 
     login = Login(id)
     if req.login.id == login.id:                    # not good idea to remove
@@ -230,21 +233,20 @@ def admin_logins_mod(req, id):
 
     done = None
     if req.method == 'POST':
+        check_token(req, req.form.get('token'))
         login.bind(req.form, req.cfg.morias_salt)
         done = login.mod(req)
 
         if 0 < done < 64:
-            return generate_page(req, "admin/logins_mod.html",
-                                 rights=rights,
-                                 item=login, error=done)
+            return generate_page(req, "admin/logins_mod.html", token=token,
+                                 rights=rights, item=login, error=done)
         # endif
     # endif
 
     if not login.get(req):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
-    return generate_page(req, "admin/logins_mod.html",
-                         rights=rights,
-                         item=login, state=done)
+    return generate_page(req, "admin/logins_mod.html",  token=token,
+                         rights=rights, item=login, state=done)
 # enddef
 
 
@@ -253,7 +255,7 @@ def admin_logins_mod(req, id):
 def admin_logins_enable(req, id):
     check_login(req, '/log_in?referer=/admin/logins')
     check_right(req, R_ADMIN)
-    check_referer(req, '/admin/logins')
+    check_token(req, req.form.get('token'))
 
     login = Login(id)
     if req.login.id == login.id:                    # not good idea to
@@ -270,15 +272,17 @@ def login_mod(req):
     check_login(req)
 
     login = Login(req.login.id)
+    token = do_create_token(req, '/login')
 
     state = None
     if req.method == 'POST':
+        check_token(req, req.form.get('token'))
         login.bind(req.form, req.cfg.morias_salt)
         email = login.email if login.email != req.login.email else None
         state = login.pref(req, email=email)
 
         if 0 < state < 64:
-            return generate_page(req, "login/login_mod.html",
+            return generate_page(req, "login/login_mod.html", token=token,
                                  item=login, error=state)
 
         state = 0 if state is None else state
@@ -293,7 +297,7 @@ def login_mod(req):
 
     login.get(req)
     req.login = login
-    return generate_page(req, "login/login_mod.html",
+    return generate_page(req, "login/login_mod.html", token=token,
                          item=login, state=state, email=email)
 # enddef
 

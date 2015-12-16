@@ -20,6 +20,7 @@
     {% endif -%}
 
       <form class="form-horizontal form-sign-up" role="form" method="post">
+        <input type="hidden" name="token" value="{{ token }}">
         <div class="col-md-6">
           {% if site.this == '/sign_up' %}
           <div class="sign-up-margin"></div>
