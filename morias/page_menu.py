@@ -5,7 +5,8 @@ from falias.sql import Sql
 
 import json
 
-from core.login import rights, check_login, check_right, check_referer
+from core.login import rights, check_login, check_right, do_create_token, \
+    check_token
 from core.render import generate_page
 
 from lib.pager import Pager
@@ -78,7 +79,9 @@ def admin_menu(req):
     pager = Pager(limit=-1)
     items = MenuItem.list(req, pager)
 
-    return generate_page(req, "admin/page_menu.html", pager=pager, items=items)
+    return generate_page(req, "admin/page_menu.html",
+                         token=do_create_token(req, '/admin/menu'),
+                         pager=pager, items=items)
 
 
 @app.route('/admin/menu/<id:int>', method=state.METHOD_PUT)
@@ -86,8 +89,7 @@ def admin_menu(req):
 def admin_menu_add_update(req, id=None):
     check_login(req)
     check_right(req, module_right)
-    check_referer(req, '/admin/menu')
-    # TODO: check origin .... :/
+    check_token(req, req.form.get('token'))
 
     item = MenuItem(id)
     item.bind(req.form)
@@ -110,7 +112,7 @@ def admin_menu_add_update(req, id=None):
 def admin_menu_delete(req, id):
     check_login(req)
     check_right(req, module_right)
-    check_referer(req, '/admin/menu')
+    check_token(req, req.args.get('token'))
 
     item = MenuItem(id)
     if item.delete(req):
@@ -126,7 +128,7 @@ def admin_menu_delete(req, id):
 def admin_menu_move(req, id):
     check_login(req)
     check_right(req, module_right)
-    check_referer(req, '/admin/menu')
+    check_token(req, req.form.get('token'))
 
     item = MenuItem(id)
     item.bind(req.form)
@@ -145,7 +147,7 @@ def admin_menu_move(req, id):
 def admin_menu_to(req, id):
     check_login(req)
     check_right(req, module_right)
-    check_referer(req, '/admin/menu')
+    check_token(req, req.form.get('token'))
 
     item = MenuItem(id)
 

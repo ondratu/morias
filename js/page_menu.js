@@ -21,7 +21,9 @@ M.page_menu = {
     dnd_move: function(){},
     remove_drop: function(){},
     drop: function(env){},
-    drag_n_drop: function (obj){}
+    drag_n_drop: function (obj){},
+
+    token: ''
 };
 
 /* Fill row with columns of item values */
@@ -303,7 +305,8 @@ M.page_menu.post = function (){
     }
     $.ajax({ url: url,
              type: method,
-             data : { 'next': $('input[name=next]', tr).val(),
+             data : { 'token': M.page_menu.token,
+                      'next': $('input[name=next]', tr).val(),
                       'title': $('input[name=title]', tr).val(),
                       'link': $('input[name=link]', tr).val(),
                       'locale':  $('input[name=locale]', tr).val()},
@@ -323,6 +326,7 @@ M.page_menu.post = function (){
 M.page_menu.put = function (){
     $.ajax({ url: $(this).attr('put'),
              type: 'put',
+             data: {'token': M.page_menu.token},
              success: function (data) {
                 M.page_menu.table(data.items);
              },
@@ -336,7 +340,7 @@ M.page_menu.put = function (){
 
 /* Send delete request by ajax */
 M.page_menu.delete = function(url) {
-    $.ajax({ url: url,
+    $.ajax({ url: url+'?token='+encodeURIComponent(M.page_menu.token),
              type: 'delete',
              success: function (data) {
                 M.page_menu.table(data.items);
@@ -406,7 +410,7 @@ M.page_menu.drop = function(env) {
         if (next != nnext){
             $.ajax({ url: '/admin/menu/' + item + '/move',
                     type: 'put',
-                    data : { 'next': nnext },
+                    data : { 'token': M.page_menu.token, 'next': nnext },
                     success: function (data) {
                         M.page_menu.table(data.items);
                     },

@@ -17,6 +17,7 @@
               <span class="popup-message"></span>
             </div>
             <div class="modal-footer" method="post" action="">
+              <input type="hidden" name="token" value="{{ token }}">
               <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Cancel") }}</button>
               <button type="button" class="btn btn-danger" data-ok="ok">{{ _("Delete") }}</button>
             </div>
@@ -56,6 +57,7 @@
       <script src="/js/i18n.js"></script>
       <script src="/js/page_menu.js"></script>
       <script>
+          M.page_menu.token = '{{ token }}';
           $.extend(M.locales, {
               'Insert'  :   "{{ _('Insert') }}",
               'Edit'    :   "{{ _('Edit') }}",
