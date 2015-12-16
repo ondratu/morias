@@ -6,8 +6,8 @@ from falias.sql import Sql
 from os.path import exists, isdir
 from os import access, R_OK, W_OK
 
-from core.login import check_login, rights, check_referer, check_right, \
-    match_right, do_check_right, do_match_right
+from core.login import check_login, rights, check_right, \
+    match_right, do_check_right, do_match_right, do_create_token, check_token
 from core.render import generate_page
 from core.errors import SUCCESS
 
@@ -151,6 +151,7 @@ def admin_pages(req):
     else:
         rows = Page.list(req, pager)
     return generate_page(req, "admin/pages.html",
+                         token=do_create_token(req, '/admin/pages'),
                          pager=pager, rows=rows, error=error)
 # enddef
 
@@ -159,20 +160,23 @@ def admin_pages(req):
 def admin_pagse_add(req):
     check_login(req)
     match_right(req, ('pages_author', 'pages_modify'))
+    token = do_create_token(req, '/admin/pages/add')
 
     if req.method == 'POST':
+        check_token(req, req.form.get('token'))
         page = Page()
         page.bind(req.form, req.login.id)
         error = page.add(req)
 
         if error:
-            return generate_page(req, "admin/pages_mod.html", rights=rights,
-                                 page=page, error=error)
+            return generate_page(req, "admin/pages_mod.html", token=token,
+                                 rights=rights, page=page, error=error)
 
         redirect(req, '/admin/pages/%d' % page.id)
     # end
 
-    return generate_page(req, "admin/pages_mod.html", rights=rights)
+    return generate_page(req, "admin/pages_mod.html", token=token,
+                         rights=rights)
 # enddef
 
 
@@ -186,6 +190,7 @@ def admin_pages_mod(req, id):
     """
     check_login(req)
     match_right(req, module_rights)
+    token = do_create_token(req, '/admin/pages/%d' % id)
 
     page = Page(id)
     if (not do_check_right(req, 'pages_modify')) \
@@ -193,15 +198,17 @@ def admin_pages_mod(req, id):
         raise SERVER_RETURN(state.HTTP_FORBIDDEN)
 
     if req.method == 'POST':
+        check_token(req, req.form.get('token'))
         page.bind(req.form)
         error = page.mod(req)
         if error:
-            return generate_page(req, "admin/pages_mod.html", page=page,
-                                 rights=rights, error=error)
+            return generate_page(req, "admin/pages_mod.html", token=token,
+                                 page=page, rights=rights, error=error)
     # endif
     if not page.get(req):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
-    return generate_page(req, "admin/pages_mod.html", rights=rights, page=page)
+    return generate_page(req, "admin/pages_mod.html", token=token,
+                         page=page, rights=rights)
 # enddef
 
 
@@ -214,7 +221,7 @@ def admin_pages_del(req, id):
 
     check_login(req, '/log_in?referer=/admin/pages')
     match_right(req, ('pages_author', 'pages_modify'))
-    check_referer(req, '/admin/pages')
+    check_token(req, req.form.get('token'))
 
     page = Page(id)
     if not page.check_right(req):

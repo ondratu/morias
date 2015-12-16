@@ -25,6 +25,7 @@
       </ul>
 
       <form class="form-horizontal" role="form" method="post">
+        <input type="hidden" name="token" value={{ token }}>
        {% if site.this != '/admin/pages/add' %}<div id="page_panel">{% endif %}
         <div class="form-group">
           <label for="input_filename" class="col-sm-2 control-label">{{ _('File name') }}</label>

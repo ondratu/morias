@@ -25,6 +25,7 @@
               <h3 id="sure_delete_label"></h3>
             </div>
             <form class="modal-footer" method="post" action="">
+              <input type="hidden" name="token" value="{{ token }}">
               <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Cancel") }}</button>
               <button type="submit" class="btn btn-danger">{{ _("Delete") }}</button>
             </form>
@@ -70,6 +71,7 @@
           // send form after click to links with post attribut
           $('a[post]').click(function() {
             $('<form/>',{'method':'post','action':$(this).attr('post')})
+                    .append($('<input/>', {'name': 'token'}).val('{{ token }}'))
                     .appendTo('body').submit();
           });
         });
