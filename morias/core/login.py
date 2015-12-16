@@ -8,6 +8,8 @@ from hashlib import sha1
 
 from falias.util import Object
 
+import csrf
+
 """
     super - super user, which can averything
     admin - view admin section
@@ -18,11 +20,16 @@ rights = set()
 rights.update(('super', 'admin', 'user', 'guest'))
 
 
+def create_referer(req, referer):
+    return "%s://%s%s" % (req.scheme, req.hostname, referer)
+
+
 def do_login(req, obj, ip=False):
     cookie = PoorSession(req, compress=None)
     # so cookie is not so long, just less then 500 chars
     cookie.data["data"] = (obj.__class__, obj.__dict__)
     cookie.data["timestamp"] = int(time())
+    cookie.data["token"] = csrf.random_string()
     if ip:
         cookie.data["ip"] = req.get_remote_host()
     cookie.header(req, req.headers_out)
@@ -59,6 +66,7 @@ def do_check_login(req):
     __class__, __dict__ = cookie.data["data"]
     req.login = __class__()
     req.login.__dict__ = __dict__.copy()
+    req.user_hash = cookie.data['token']
 
     if not req.login.check(req):
         cookie.destroy()
@@ -104,6 +112,20 @@ def do_check_origin(req):
     return False
 
 
+def do_create_token(req, uri):
+    """Creates token for uri."""
+    return csrf.get_token(req.secret_key, req.user_hash,
+                          create_referer(req, uri))
+
+
+def do_check_token(req, token):
+    """Check token creates by do_create_token."""
+    if req.referer is None:
+        return False
+    referer = req.referer.split('?')[0]
+    return csrf.check_token(token, req.secret_key, req.user_hash, referer)
+
+
 def check_login(req, redirect_uri=None):
     if req.login is None:       # do_check_login was called averytime
         if redirect_uri is None:
@@ -113,6 +135,7 @@ def check_login(req, redirect_uri=None):
 
 def check_right(req, right, redirect_uri=None):
     if not do_check_right(req, right):
+        req.log_error("Right %s not check" % right, state.LOG_ALERT)
         if redirect_uri:
             redirect(req, redirect_uri)
         raise SERVER_RETURN(state.HTTP_FORBIDDEN)
@@ -120,14 +143,16 @@ def check_right(req, right, redirect_uri=None):
 
 def match_right(req, rights, redirect_uri=None):
     if not do_match_right(req, rights):
+        req.log_error("Rights %s not match" % rights, state.LOG_ALERT)
         if redirect_uri:
             redirect(req, redirect_uri)
         raise SERVER_RETURN(state.HTTP_FORBIDDEN)
 
 
-def check_referer(req, referer, redirect=None):
-    full_referer = "%s://%s%s" % (req.scheme, req.hostname, referer)
-    if req.referer and full_referer != req.referer.split('?')[0]:
+def check_referer(req, uri, redirect=None):
+    full_referer = create_referer(uri)
+    if not req.referer or full_referer != req.referer.split('?')[0]:
+        req.log_error("Referer %s not check" % uri, state.LOG_ALERT)
         if redirect:
             redirect(req, redirect)
         req.precondition = Object()
@@ -138,10 +163,21 @@ def check_referer(req, referer, redirect=None):
 
 def check_origin(req, redirect=None):
     if not do_check_origin(req):
+        req.log_error("Origin not check", state.LOG_ALERT)
         if redirect:
             redirect(req, redirect)
         req.precondition = Object()
         req.precondition.origin = "%s://%s" % (req.scheme, req.hostname)
+        raise SERVER_RETURN(state.HTTP_PRECONDITION_FAILED)
+
+
+def check_token(req, token, redirect=None):
+    if not do_check_token(req, token):
+        req.log_error("Token %s not check" % token, state.LOG_ALERT)
+        if redirect:
+            redirect(req, redirect)
+        req.precondition = Object()
+        req.precondition.csrf = True
         raise SERVER_RETURN(state.HTTP_PRECONDITION_FAILED)
 
 
