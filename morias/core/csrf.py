@@ -2,14 +2,6 @@
 from hashlib import sha256
 from base64 import encodestring
 from time import time
-from random import randrange, seed
-
-seed()
-
-
-def random_string(length=24):
-    """Return `length` long random string."""
-    return ''.join(chr(randrange(256)) for c in range(24))
 
 
 def get_token(secret, user_hash, references, timeout=None, expired=0):

@@ -5,6 +5,7 @@ from poorwsgi.session import PoorSession
 
 from time import time
 from hashlib import sha1
+from os import urandom
 
 from falias.util import Object
 
@@ -29,7 +30,7 @@ def do_login(req, obj, ip=False):
     # so cookie is not so long, just less then 500 chars
     cookie.data["data"] = (obj.__class__, obj.__dict__)
     cookie.data["timestamp"] = int(time())
-    cookie.data["token"] = csrf.random_string()
+    cookie.data["token"] = urandom(24)
     if ip:
         cookie.data["ip"] = req.get_remote_host()
     cookie.header(req, req.headers_out)
