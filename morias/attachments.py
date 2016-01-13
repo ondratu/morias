@@ -71,7 +71,6 @@ def admin_attachments(req):
 
     kwargs = {}
 
-    # TODO: budu chit vyplnit jen jednu vec...
     if 'obty' in req.args:
         kwargs['object_type'] = req.args.getfirst('obty', fce=uni) or None
         pager.set_params(obty=kwargs['object_type'])
