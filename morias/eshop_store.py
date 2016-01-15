@@ -7,7 +7,8 @@ from falias.sql import Sql
 
 import json
 
-from core.login import rights, check_login, check_right, check_referer
+from core.login import rights, check_login, check_right, check_referer, \
+    create_token, do_check_mgc
 from core.render import generate_page
 
 from lib.menu import Item as MenuItem
@@ -192,21 +193,25 @@ def admin_item_incdec(req, id):
 
 @app.route('/eshop')
 def eshop_orders_eshop(req):
+    do_check_mgc(req)
     pager = Pager()
     pager.bind(req.args)
 
     items = Item.list(req, pager, state=STATE_VISIBLE)
     return generate_page(req, "eshop/eshop.html",
+                         token=create_token(req),
                          cfg_currency=req.cfg.eshop_currency,
                          pager=pager, items=items)
 
 
 @app.route('/eshop/<id:int>')
 def eshop_orders_detail(req, id):
+    do_check_mgc(req)
     item = Item(id)
     if not item.get(req):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
     item.attachments = Attachment.list(req, Pager(),
                                        object_type='eshop_item', object_id=id)
-    return generate_page(req, "eshop/item_detail.html", item=item,
-                              cfg_currency=req.cfg.eshop_currency)
+    return generate_page(req, "eshop/item_detail.html",
+                         token=create_token(req),
+                         item=item, cfg_currency=req.cfg.eshop_currency)

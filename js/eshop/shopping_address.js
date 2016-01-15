@@ -59,4 +59,5 @@ M.Eshop.ShoppingAddress.prototype.send_form = function(ev) {
     var spinner = new M.Spinner();
     $('input[name=way]', this.$form).val($(ev.target).attr('way'));
     this.$form.submit();
+    delete spinner.stop();
 }

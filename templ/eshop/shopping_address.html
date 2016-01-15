@@ -34,7 +34,8 @@
     {%- endif %}
 
       <form method="post" role="shopping-address">
-        <input type=hidden name="way">
+        <input type="hidden" name="way">
+        <input type="hidden" name="token" value="{{ token }}">
       <div class="col-md-6">
         <div id="billing_addr" class="form-horizontal {{ 'has-error' if error == 'no_billing_address'}}" role="form">
           <h4>{{ _('Billing Address') }}:</h4>

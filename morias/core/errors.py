@@ -26,7 +26,7 @@ def not_found(req):
     return state.DONE
 
 
-@app.http_state(state.HTTP_PRECONDITION_FAILED)
+@app.http_state(state.HTTP_PRECONDITION_FAILED, state.METHOD_ALL)
 def precondition_failed(req):
     req.state = state.HTTP_PRECONDITION_FAILED
     req.write(generate_page(req, "error/precondition_failed.html",

@@ -69,7 +69,10 @@ class Login(object):
 
     def _mod(self, req, keys, vals, condition=None):
         m = driver(req)
-        return m._mod(self, req, keys, vals, condition)
+        c = m._transaction(req)
+        retval = m._mod(self, c, keys, vals, condition)
+        m._commit(c)
+        return retval
 
     def mod(self, req):
         keys = ['email', 'rights', 'data']

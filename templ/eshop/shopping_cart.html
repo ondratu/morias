@@ -37,7 +37,9 @@
             'me_error_in_action'        : "{{ _('There is some error in action you do. We are sorry for that, we are working on fix that.') }}"
         });
 
-        var cart = new M.Eshop.ShoppingCart({{ cart.dict()|jsonify }}, '{{ cfg_currency }}');
+        var cart = new M.Eshop.ShoppingCart({{ cart.dict()|jsonify }},
+                                            '{{ cfg_currency }}',
+                                            {token: '{{ token }}'});
     </script>
 
 {% include "_footer.html" %}

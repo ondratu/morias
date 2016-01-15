@@ -1,6 +1,7 @@
 
 from falias.util import uni, dict_difference
 from poorwsgi.session import PoorSession
+from poorwsgi.state import LOG_INFO
 from collections import OrderedDict
 from time import time
 
@@ -103,10 +104,10 @@ class ShoppingCart(object):
 
     def store(self, req):
         if req.login:
-            req.log_error('storing user data')
+            req.log_error('storing user data', LOG_INFO)
             req.login._mod(req, ['data'], [{'shopping_cart': self.dict()}])
         else:
-            req.log_error('Sendig shopping_cart cookie....')
+            req.log_error('Sendig shopping_cart cookie....', LOG_INFO)
             self.cookie.data['shopping_cart'] = self.dict()
             self.cookie.data['stored'] = True
             self.cookie.header(req, req.headers_out)

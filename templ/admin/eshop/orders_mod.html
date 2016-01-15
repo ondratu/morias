@@ -166,6 +166,7 @@
           // send form after click to links with post attribut
           $('a[post]').click(function() {
             $('<form/>',{'method':'post','action':$(this).attr('post')})
+                    .append($('<input/>', {name: 'token', value: '{{ token }}'}))
                     .append($('<input/>', {name: 'note', value: $('input[name=note]').val()}))
                     .appendTo('body')
                     .submit();

@@ -1,7 +1,7 @@
 var M   = M || {};
 M.Eshop = M.Eshop || {};
 
-M.Eshop.buy = function(item_id, count, fn) {
+M.Eshop.buy = function(item_id, count, fn, token) {
     var spinner = new M.Spinner();
 
     $.ajax({url: '/eshop/cart/add',
@@ -9,7 +9,8 @@ M.Eshop.buy = function(item_id, count, fn) {
             accepts : { json: 'application/json', html: 'text/html' },
             contentType: 'application/json',
             dataType: 'json',
-            data: JSON.stringify({ 'item_id': item_id, 'count': count || 1 }),
+            data: JSON.stringify({'item_id': item_id, 'count': count || 1,
+                                  'token': token}),
             success: function(data){
                 if (fn) fn();
                 delete spinner.stop();

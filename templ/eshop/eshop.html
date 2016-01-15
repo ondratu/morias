@@ -40,7 +40,7 @@
     <script>
         $(document).ready(function() {
             $('a[role=buyone]').on('click', function(ev) {
-                M.Eshop.buy($(ev.target).attr('item-id'));
+                M.Eshop.buy($(ev.target).attr('item-id'), 1, null, '{{ token }}');
             });
         });
     </script>

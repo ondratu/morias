@@ -17,7 +17,7 @@ from hashlib import sha1
 import json
 
 from core.login import rights, check_login, check_right, check_referer, \
-    do_check_login
+    do_check_login, create_token, check_token, check_origin, do_check_mgc
 from core.render import generate_page, morias_template
 
 from lib.menu import Item as MenuItem
@@ -105,9 +105,11 @@ def send_order_status(req, order):
 
 @app.route('/eshop/cart', method=state.METHOD_GET | state.METHOD_PATCH)
 def eshop_cart(req):
+    do_check_mgc(req)
     cart = ShoppingCart(req)
 
     if req.method == 'PATCH':
+        check_token(req, req.json.get('token'), uri='/eshop/cart')
         cart.merge_items(req.json.get('items', []))
         req.content_type = 'application/json'
         cart.store(req)     # store shopping cart
@@ -116,16 +118,20 @@ def eshop_cart(req):
 
     cart.calculate()
     if req.is_xhr:
+        check_origin(req)
         req.content_type = 'application/json'
         return json.dumps({'cart': cart.dict()})
 
     # GET method only view shopping cart - no store was needed
     return generate_page(req, "eshop/shopping_cart.html",
+                         token=create_token(req),
                          cfg_currency=req.cfg.eshop_currency, cart=cart)
 
 
 @app.route('/eshop/cart/add', method=state.METHOD_PUT)
 def eshop_cart_add(req):
+    do_check_mgc(req)
+    check_token(req, req.json.get('token'))
     cart = ShoppingCart(req)
 
     item_id = req.json.getfirst('item_id', fce=nint)
@@ -162,6 +168,7 @@ def eshop_cart_wipe(req):
 
 @app.route('/eshop/cart/address')
 def eshop_cart_address(req, cart=None, error=None):
+    do_check_mgc(req)
     cart = cart or ShoppingCart(req)
 
     # get method returns HTML Form
@@ -178,11 +185,14 @@ def eshop_cart_address(req, cart=None, error=None):
 
     # GET method only view shopping cart - no store was needed
     return generate_page(req, "eshop/shopping_address.html",
+                         token=create_token(req),
                          cfg=cfg, cart=cart, error=error)
 
 
 @app.route('/eshop/cart/address', method=state.METHOD_POST)
 def eshop_cart_address_post(req):
+    do_check_mgc(req)
+    check_token(req, req.form.get('token'), uri='/eshop/cart/address')
     cart = ShoppingCart(req)
 
     way = req.form.getfirst('way', '', str)
@@ -252,6 +262,7 @@ def eshop_cart_address_post(req):
 
 @app.route('/eshop/cart/recapitulation')
 def eshop_cart_recapitulation(req):
+    do_check_mgc(req)
     cart = ShoppingCart(req)
     cart.calculate()
 
@@ -269,12 +280,15 @@ def eshop_cart_recapitulation(req):
 
     # GET method only view shopping cart - no store was needed
     return generate_page(req, "eshop/shopping_recapitulation.html",
+                         token=create_token(req),
                          cfg=cfg, cart=cart)
 # enddef /eshop/cart/recapitulation
 
 
-@app.route('/eshop/cart/pay_and_order')
+@app.route('/eshop/cart/pay_and_order', state.METHOD_POST)
 def eshop_cart_pay_and_order(req):
+    do_check_mgc(req)
+    check_token(req, req.form.get('token'), uri='/eshop/cart/recapitulation')
     cart = ShoppingCart(req)
     # TODO: payment page if could be (paypal, card, transfer)
     order = Order.from_cart(cart)
@@ -347,6 +361,7 @@ def user_orders_detail(req, id):
 @app.route('/eshop/orders/<id:int>/storno', method=state.METHOD_POST)
 def user_orders_storno(req, id):
     check_login(req)
+    # TODO: check_token
     check_referer(req, '/eshop/orders/%d' % id)
 
     message = req.form.getfirst('message', '', uni)
@@ -402,8 +417,9 @@ def admin_orders_mod(req, id):
     cfg.eshop_currency = req.cfg.eshop_currency
 
     order.calculate()
-    return generate_page(req, "admin/eshop/orders_mod.html", order=order,
-                         cfg=cfg)
+    return generate_page(req, "admin/eshop/orders_mod.html",
+                         token=create_token(req),
+                         order=order, cfg=cfg)
 # enddef /admin/eshop/orders/<id:int>
 
 
@@ -422,7 +438,7 @@ def admin_orders_mod(req, id):
            method=state.METHOD_POST)
 def admin_orders_action(req, id):
     check_login(req)
-    check_referer(req, '/admin/eshop/orders/%d' % id)
+    check_token(req, req.form.get('token'))
     check_right(req, module_right)
 
     if req.uri.endswith('/storno'):

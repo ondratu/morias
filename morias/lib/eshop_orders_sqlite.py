@@ -91,9 +91,9 @@ def item_list(req, pager, **kwargs):    # static method
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
     if client:      # client have special OR mod
         cond = cond + ' AND ' if cond else "WHERE "
-        cond += "(o.email = %s OR c.email = %s)"
-        kwargs['o.email'] = client
-        kwargs['c.email'] = client
+        cond += "(o.email LIKE %s OR c.email LIKE %s)"
+        kwargs['o.email'] = "%{0}%".format(client)
+        kwargs['c.email'] = "%{0}%".format(client)
 
     tran = req.db.transaction(req.logger)
     c = tran.cursor()

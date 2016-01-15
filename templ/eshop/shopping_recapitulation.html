@@ -7,7 +7,7 @@
       <ul class="nav nav-pills row">
         <li class="navbar-brand">{{ _('Order recapitulation') }}</li>
 
-        <li class="pull-right"><a way="next" href="/eshop/cart/pay_and_order">{{ _('Pay and Order') }}</a></li>
+        <li class="pull-right"><a way="next" post="/eshop/cart/pay_and_order">{{ _('Pay and Order') }}</a></li>
         <li class="pull-right"><a way="prev" href="/eshop/cart/address">{{ _('Back to address') }}</a></li>
       </ul>
 
@@ -101,14 +101,19 @@
       </div>{# /row #}
 
       <div class="row">
-        <a class="btn btn-primary pull-right" href="/eshop/cart/pay_and_order">{{ _('Pay and Order') }}</a>
+        <a class="btn btn-primary pull-right" post="/eshop/cart/pay_and_order">{{ _('Pay and Order') }}</a>
       </div>
 
     </div>{# /container #}
     <script src="/js/spinner.js"></script>
     <script>
       $(document).ready(function(){
-
+        // send form after click to links with post attribut
+        $('a[post]').click(function() {
+          $('<form/>',{'method':'post','action':$(this).attr('post')})
+                    .append($('<input/>', {'name': 'token'}).val('{{ token }}'))
+                    .appendTo('body').submit();
+        });
       });
     </script>
 

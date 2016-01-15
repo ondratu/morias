@@ -65,7 +65,7 @@
 
                 M.Eshop.buy($(ev.target).attr('item-id'), count, function(){
                         $count.val(1);
-                    });
+                    }, '{{ token }}');
             });
         });
     </script>

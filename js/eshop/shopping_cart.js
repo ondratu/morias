@@ -10,6 +10,7 @@ M.Eshop.ShoppingCart = function(data, currency, params){
     this.$recalculate = $('recalculate' in params ? params['recalculate'] : 'a[role=recalculate]');
     this.$next = $('next' in params ? params['next'] : 'a[way=next]');
 
+    this.token = 'token' in params ? params['token'] : null;
     this.constructor();
 }
 
@@ -80,8 +81,10 @@ M.Eshop.ShoppingCart.prototype.on_remove = function(item_id) {
              accepts : {json: 'application/json', html: 'text/html'},
              contentType: 'application/merge-patch+json',
              dataType: 'json',
-             data: JSON.stringify({'items': [
-                    [item_id, {count: this.items[item_id].count * -1}] ]}),
+             data: JSON.stringify({
+                items: [
+                    [item_id, {count: this.items[item_id].count * -1}] ],
+                token: this.token}),
              context: this,
              success: function(data){
                 this._set(data.cart);
@@ -123,7 +126,7 @@ M.Eshop.ShoppingCart.prototype.on_recalculate = function() {
              accepts : {json: 'application/json', html: 'text/html'},
              contentType: 'application/merge-patch+json',
              dataType: 'json',
-             data: JSON.stringify({'items': items }),
+             data: JSON.stringify({'items': items, token: this.token}),
              context: this,
              success: function(data){
                 this._set(data.cart);
@@ -165,10 +168,15 @@ M.Eshop.ShoppingCart.prototype.on_next = function() {
              accepts : {json: 'application/json', html: 'text/html'},
              contentType: 'application/merge-patch+json',
              dataType: 'json',
-             data: JSON.stringify({'items': items }),
+             data: JSON.stringify({'items': items, 'token': this.token}),
              context: this,
-             success: function(data){
-                window.location = "/eshop/cart/address";
+             success: function(data, status, xhr){
+                this._set(data.cart);   // update cart for back to history
+                this.refresh();
+                setTimeout(function(){  // litle wrap for working history
+    	            window.location="/eshop/cart/address";
+                    delete spinner.stop();
+                },0)
              },
              error: function(xhr, status, http_status){
                 //console.log(JSON.stringify(xhr));
