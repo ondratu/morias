@@ -7,8 +7,8 @@ from falias.sql import Sql
 
 import json
 
-from core.login import rights, check_login, check_right, check_referer, \
-    create_token, do_check_mgc
+from core.login import rights, check_login, check_right, \
+    create_token, do_check_mgc, check_token
 from core.render import generate_page
 
 from lib.menu import Item as MenuItem
@@ -65,6 +65,7 @@ def admin_store(req):
     items = Item.list(req, pager, **kwargs)
 
     return generate_page(req, "admin/eshop/store.html",
+                         token=create_token(req),
                          pager=pager, items=items, show=show)
 # enddef /admin/eshop/store
 
@@ -73,7 +74,8 @@ def admin_store(req):
 def admin_item_actions(req, item_id):
     check_login(req)
     check_right(req, module_right)
-    check_referer(req, '/admin/eshop/store/%s' % item_id)
+    check_token(req, req.args.get('token'),
+                uri='/admin/eshop/store/%s' % item_id)
 
     action_type = req.args.getfirst('type', '', uni)
     if action_type == 'inc':
@@ -102,6 +104,7 @@ def admin_item_add(req):
 
     item = Item()
     if req.method == 'POST':
+        check_token(req, req.form.get('token'), uri='/admin/eshop/store/add')
         item.bind(req.form)
         error = item.add(req)
 
@@ -112,7 +115,8 @@ def admin_item_add(req):
         redirect(req, '/admin/eshop/store/%d' % item.id)
     # endif
 
-    return generate_page(req, "admin/eshop/item_mod.html", item=item)
+    return generate_page(req, "admin/eshop/item_mod.html",
+                         token=create_token(req), item=item)
 # enddef
 
 
@@ -123,6 +127,7 @@ def admin_item_mod(req, id):
 
     item = Item(id)
     if req.method == 'POST':
+        check_token(req, req.form.get('token'))
         item.bind(req.form)
         error = item.mod(req)
         if error != item:
@@ -132,7 +137,8 @@ def admin_item_mod(req, id):
     if not item.get(req):    # still fresh data
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
 
-    return generate_page(req, "admin/eshop/item_mod.html", item=item)
+    return generate_page(req, "admin/eshop/item_mod.html",
+                         token=create_token(req), item=item)
 # enddef
 
 
@@ -142,7 +148,7 @@ def admin_item_mod(req, id):
 def admin_item_state(req, id):
     check_login(req, '/log_in?referer=/admin/eshop/store')
     check_right(req, module_right)
-    check_referer(req, '/admin/eshop/store')
+    check_token(req, req.form.get('token'), uri='/admin/eshop/store')
 
     item = Item(id)
     if not item.get(req):
@@ -165,7 +171,7 @@ def admin_item_state(req, id):
 def admin_item_incdec(req, id):
     check_login(req, '/log_in?referer=/admin/eshop/store/%s' % id)
     check_right(req, module_right)
-    check_referer(req, '/admin/eshop/store/%s' % id)
+    check_token(req, req.form.get('token'), uri='/admin/eshop/store/%s' % id)
 
     if req.uri.endswith('/inc'):
         action_type = ACTION_INC

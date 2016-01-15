@@ -1,11 +1,12 @@
 var M = M || {};
 M.Eshop = M.Eshop || {};
 
-M.Eshop.Actions = function (item_id, item_price, item_count){
+M.Eshop.Actions = function (item_id, item_price, item_count, token){
     this.item_id = item_id;
     this.$item_price = $(item_price);
     this.$item_count = $(item_count);
     this.item_price = Number(this.$item_price.html());
+    this.token = token
 
     this.$switchs = $('li>a[role=switch]');
     this.$fast = $('li>a[role=fast]');
@@ -32,7 +33,7 @@ M.Eshop.Actions.prototype._show = function(ev){
 M.Eshop.Actions.prototype.set = function(){
     var $note = $('input[name=note]', this.$form_price);
     var $value = $('input[name=value]', this.$form_price);
-    data = { 'note': $note.val(), 'price': $value.val() };
+    data = { 'note': $note.val(), 'price': $value.val(), 'token': this.token };
 
     if (data['price'] == this.item_price) {
         $value.parent().addClass('has-error');
@@ -68,7 +69,7 @@ M.Eshop.Actions.prototype.set = function(){
 M.Eshop.Actions.prototype.add = function(){
     var $note = $('input[name=note]', this.$form_count);
     var $value = $('input[name=value]', this.$form_count);
-    data = { 'note': $note.val(), 'count': $value.val() };
+    data = { 'note': $note.val(), 'count': $value.val(), 'token': this.token };
 
     if (data['count'] == 0) {
         $value.parent().addClass('has-error');
@@ -119,7 +120,7 @@ M.Eshop.Actions.prototype.refresh = function(show){
 
     this.$table.find('tr:not([role])').remove();
     $.ajax({ url: '/admin/eshop/store/'+this.item_id+'/actions',
-             data: { 'type':show },
+             data: { 'type':show, 'token': this.token },
              context: this,
              success: function(data){
                     this._view(data, show);

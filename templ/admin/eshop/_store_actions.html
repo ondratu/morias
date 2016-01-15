@@ -46,6 +46,9 @@
         });
 
         $(document).ready(function() {
-            var actions = new M.Eshop.Actions({{ item_id }}, '{{ item_price }}', '{{ item_count }}');
+            var actions = new M.Eshop.Actions({{ item_id }},
+                                              '{{ item_price }}',
+                                              '{{ item_count }}',
+                                              '{{ token }}');
         });
       </script>

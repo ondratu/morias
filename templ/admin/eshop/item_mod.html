@@ -20,6 +20,7 @@
       </ul>
 
       <form class="form-horizontal" role="form" method="post">
+        <input type="hidden" name="token" value="{{ token }}">
         <div class="form-group">
           <label for="input_name" class="col-sm-1 control-label">{{ _('Name') }}</label>
           <div class="col-sm-11 {{ 'has-error' if error is defined and error == 1 else '' }}">
@@ -50,8 +51,12 @@
           <div role="price" class="col-sm-1 help-inline">{{ item.price or 0.0 }}</div>
           <label class="col-sm-1 control-label">{{ _('Count')}}</label>
           <div role="count" class="col-sm-1 help-inline">{{ item.count or 0 }}</div>
+        {%- if site.this != '/admin/eshop/store/add' %}
           <label class="col-sm-1 control-label">{{ _('Modify Date')}}</label>
-          <div class="col-sm-1 help-inline">{{ datetime(item.modify_date or now()).strftime("%H:%M %d.%m.%Y") }}</div>
+          <div class="col-sm-1 help-inline">{{ datetime(item.modify_date).strftime("%H:%M %d.%m.%Y") }}</div>
+        {%- else %}
+          <div class="col-sm-2"></div>
+        {%- endif %}
 
           <div class="col-sm-2 col-sm-off-set-2"><button class="btn btn-default btn-block" type="submit">{{ _('Save') }}</button></div>
         </div>
