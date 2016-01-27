@@ -1,0 +1,68 @@
+{% set title = 'Admin - tags' -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('Tags list') }}</li>
+        <li><form method="get" class="form-inline">
+          <div class="form-group">
+            <input id="search-input" class="form-control" type="text" name="search" value="{{ (search or '')|e }}" placeholder="{{ _('Value') }}">
+            <a class="close in-input" clear="search-input">&times;</a>
+          </div>
+          <button class="form-control btn btn-default" type="submit">{{ _('Search') }}</button>
+        </form></li>
+
+        <li class="pull-right"><div class="form-inline">
+          <div class="form-group">
+            <input class="form-control" type="text" name="value" placeholder="{{ _('New Item') }}">
+          </div>
+          <a class="form-control btn btn-default" add="/admin/codebooks/{{ codebook }}/add">{{ _('Add') }}</a>
+        </div></li>
+      </ul>
+
+{%- from "_orderby.html" import orderby with context %}
+      <table class="table table-hover">
+        <tr><th>{{ orderby('#', 'id', 'asc') }}</th>
+            <th>{{ orderby(_('Value'), 'value', 'asc') }}</th>
+            <th>{{ _('Action' )}}</th></tr>
+        {% for item in items %}
+        <tr idx="{{ item.id }}"><td>{{ item.id }}</td>
+            <td value="{{ item.value|e }}">{{ item.value|e }}</td>
+            <td>
+              <span role="links">
+                <a edit="{{ item.id }}" class="btn-link">{{ _('Edit') }}</a>
+                / <a delete="/admin/codebooks/{{ codebook }}/{{ item.id }}" idx="{{ item.id }}" class="btn-link">{{ _('Delete') }}</a>
+              </span>
+              <span role="buttons" style="display: none;">
+                <button save="/admin/codebooks/{{ codebook }}/{{ item.id }}" type="button" class="btn btn-default btn-sm" title="{{ _('Save') }}">
+                  <i class="fa fa-save"></i></button>
+                <button cancel="cancel" type="button" class="btn btn-default btn-sm" title="{{ _('Cancel') }}">
+                  <i class="fa fa-close"></i></button>
+              </span>
+            </td></tr>
+        {% endfor %}
+      </table>
+{% include "_pager.html" %}
+    </div>
+    <script src="/js/i18n.js"></script>
+    <script src="/js/codebook.js"></script>
+    <script>
+        $(document).ready(function() {
+          $('a[clear]').click(function(ev) {
+            $('#'+$(ev.target).attr('clear')).val('');}
+          );
+          $.extend(M.locales, {
+              'Edit'    :   "{{ _('Edit') }}",
+              'Delete'  :   "{{ _('Delete') }}",
+              mpm_sure_delete:  "{{ _('Are you sure to delete `%s\' item ?') }}",
+              empty_value:   "{{ _('Empty value') }}",
+              value_exist:   "{{ _('Value exist yet') }}",
+              not_possible: "{{ _('This operation is not possible.') }}"
+          });
+          var Codebook = new M.Codebook({'token': '{{ token }}'});
+        });
+      </script>
+
+{% include "_footer.html" %}

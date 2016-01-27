@@ -47,6 +47,11 @@ table .disabled {
   color: #ccc;
 }
 
+a.disabled {
+  color: #777;
+  pointer-events: none;
+}
+
 .popup-message {
     font-size: 200%;
 }
@@ -147,6 +152,10 @@ pre.striped > *:nth-child(even) {
     position: absolute;
     top: 5px;
     right: 5px;
+}
+.form-inline .in-input {
+    position: relative;
+    margin-left: -1em;
 }
 
 /* fix attachment preview tooltip*/
