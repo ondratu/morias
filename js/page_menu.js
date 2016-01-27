@@ -1,6 +1,6 @@
 var M = M || {};
 
-M.e = function(text){
+M.e = M.e || function(text){
     return $('<textarea/>').html(text).html();
 }
 

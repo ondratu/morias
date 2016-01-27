@@ -141,6 +141,8 @@ def do_check_origin(req):
 
 def do_create_token(req, uri):
     """Creates token for uri."""
+    if isinstance(uri, unicode):
+        uri = uri.encode('utf-8')
     return csrf.get_token(req.secret_key, req.user_hash,
                           create_referer(req, uri))
 
@@ -153,6 +155,8 @@ def do_check_token(req, token, uri=None):
         referer = create_referer(req, uri)
     else:
         referer = req.referer.split('?')[0]
+    if isinstance(referer, unicode):
+        referer = referer.encode('utf-8')
     return csrf.check_token(token, req.secret_key, req.user_hash, referer)
 
 
