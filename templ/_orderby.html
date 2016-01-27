@@ -15,7 +15,7 @@
       <a href="?{{ params }}order={{ order }}&amp;sort={{ sort }}">{{ label }}</a>
     {%- else -%}
       {%- set sort = 'asc' if pager.sort == 'desc' else 'desc' -%}
-      <a href="?{{ params }}order={{ order }}&amp;sort={{ sort }}">{{ label }} {{ arrow(sort) }}</a>
+      <a href="?{{ params }}order={{ order }}&amp;sort={{ sort }}">{{ label }} {{ arrow(pager.sort) }}</a>
     {%- endif -%}
   {%- else %}{#     sort not set, default by pager in code -#}
     {%- if pager.order != order -%}
