@@ -9,7 +9,7 @@ from lib.new import New
 
 
 def test(req):
-    with req.db.transaction(req.logger, DictCursor) as c:
+    with req.db.transaction(req.log_info, DictCursor) as c:
         c.execute("SELECT strftime('%s','2013-12-09 18:19')*1")
         value = c.fetchone()[0]
         assert value == 1386613140
@@ -21,7 +21,7 @@ def test(req):
 
 
 def get(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("""
         SELECT author_id, title, locale, create_date, public_date,
@@ -46,7 +46,7 @@ def get(self, req):
 
 
 def add(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     if self.public:
@@ -71,7 +71,7 @@ def add(self, req):
 
 
 def mod(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     if self.public:
@@ -98,7 +98,7 @@ def mod(self, req):
 
 
 def set_state(self, req, state):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("UPDATE news SET state = %s WHERE new_id = %s",
               (state, self.id))
@@ -124,7 +124,7 @@ def item_list(req, pager, body, **kwargs):
 
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("""
         SELECT new_id, author_id, email, create_date, public_date,

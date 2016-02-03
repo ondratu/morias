@@ -6,7 +6,7 @@ import json
 
 def _lock(req):     # static method
     """ lock database for any read/write operatios """
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute('BEGIN EXCLUSIVE TRANSACTION')
     return c
@@ -38,7 +38,7 @@ def _get(self, c):
 
 
 def get(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     if _get(self, c) is None:
         return None
@@ -76,7 +76,7 @@ def _mod(self, c):
 
 
 def mod(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     if self._mod(c) is None:
         return None
@@ -95,7 +95,7 @@ def item_list(req, pager, **kwargs):    # static method
         kwargs['o.email'] = "%{0}%".format(client)
         kwargs['c.email'] = "%{0}%".format(client)
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT o.order_id, o.client_id, c.email, o.email, o.create_date,

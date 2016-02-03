@@ -7,7 +7,7 @@ from lib.attachments import Attachment
 
 
 def get(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("SELECT uploader_id, timestamp, mime_type, file_name, md5, data "
               "FROM attachments WHERE attachment_id = %d", self.id)
@@ -24,7 +24,7 @@ def get(self, req):
 
 
 def add(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     c.execute("""
@@ -44,7 +44,7 @@ def add(self, req):
 
 
 def detach(self, req, object_type, object_id):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     c.execute("DELETE FROM object_attachments WHERE "
@@ -57,7 +57,7 @@ def detach(self, req, object_type, object_id):
 
 
 def delete(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     c.execute("SELECT count(attachment_id) FROM object_attachments "
@@ -68,8 +68,8 @@ def delete(self, req):
         c.execute("DELETE FROM attachments WHERE attachment_id = %d", self.id)
         self.remove(req)
     else:
-        req.logger("Just another (%d) uses of attachment %d" %
-                   (count, self.id))
+        req.log_info("Just another (%d) uses of attachment %d" %
+                     (count, self.id))
 
     tran.commit()
     return count
@@ -82,7 +82,7 @@ def item_list(req, pager, **kwargs):
                 for k, v in kwargs.items())
     cond = "WHERE %s(%s)" % (n, ' AND '.join(keys)) if keys else ''
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT
@@ -117,7 +117,7 @@ def item_list(req, pager, **kwargs):
 
 
 def item_list_images(req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT attachment_id, uploader_id, timestamp, mime_type, file_name,

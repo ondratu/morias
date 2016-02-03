@@ -3,7 +3,7 @@ from sqlite3 import IntegrityError
 
 
 def get(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("SELECT * FROM %s WHERE %s = %%d" % (self.TABLE, self.ID),
               self.id)
@@ -17,7 +17,7 @@ def get(self, req):
 
 def add(self, req, **kwargs):
     """ create item record in database """
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     try:
         c.execute("INSERT INTO %s (%s) VALUES (%s)" %
@@ -32,7 +32,7 @@ def add(self, req, **kwargs):
 
 
 def mod(self, req, **kwargs):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     try:        # value could be uniq
@@ -52,7 +52,7 @@ def mod(self, req, **kwargs):
 
 
 def delete(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     try:    # value could be used
@@ -76,7 +76,7 @@ def item_list(req, cls, pager, search=None):   # static method
     if search:
         cond = "WHERE {0} LIKE '%%{1}%%'".format(cls.VALUE, search)
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("SELECT * FROM %s %s ORDER BY %s %s LIMIT %%d, %%d" %
               (cls.TABLE, cond, order, pager.sort),

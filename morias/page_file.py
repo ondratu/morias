@@ -71,7 +71,7 @@ content_menu.append(Item('/admin/pages', label="Pages", symbol="files",
 @app.route("/test/pages/db")
 def test_db(req):
     data = (None, 123, 3.14, "úspěšný test", "'; SELECT 1; SELECT")
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("SELECT %s, %s, %s, %s, %s", data)
     copy = tuple(it.encode('utf-8') if isinstance(it, unicode) else it

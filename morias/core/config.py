@@ -1,7 +1,9 @@
 from poorwsgi import app, state
 from falias.parser import Parser, Options
 from falias.util import Paths
+
 from time import strftime
+from gc import collect
 
 from login import do_check_login
 
@@ -134,7 +136,7 @@ class Config:
         return self.morias_db
 
     @property
-    def logger(self):
+    def log_info(self):
         """ baypass property for db operations at load modules """
         return self.log_error
 # endclass
@@ -147,21 +149,24 @@ def config_to_request(req):
 
     req.cfg = config
     if 'morias_db' in config.__dict__:             # fast alias to db
-        req.db = config.morias_db
+        req.db = config.morias_db.copy()
 
     if 'morias_smtp' in config.__dict__:    # fast alias to smtp
         req.smtp = config.morias_smtp
         req.smtp.xmailer = 'Morias CMS (http://morias.zeropage.cz)'
-
-    def logger(msg):
-        req.log_error(msg, state.LOG_INFO)
-    req.logger = logger
 
     if 'no_check_login' in req.uri_handler.__dict__:
         return          # do not call do_check_login before some handlers
 
     do_check_login(req)                     # load login cookie avery time
 # enddef
+
+
+@app.post_process()
+def call_gc(req):
+    """It is better run gc directly in Python2.x."""
+    collect()
+
 
 # module config instance
 config = Config()
