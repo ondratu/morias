@@ -33,22 +33,6 @@ content_menu.append(Item('/admin/news', label="News", symbol="news",
                     rights=module_rights))
 
 
-@app.route("/test/news/db")
-def test_db(req):
-    tran = req.db.transaction(req.logger)
-    c = tran.cursor()
-    c.execute("SELECT strftime('%%s','2013-12-09 18:19')*1")
-    value = c.fetchone()[0]
-    tran.commit()
-
-    req.content_type = "text/plain; charset=utf-8"
-    if value == 1386613140:
-        return "Test of DB time Ok\n%s == %s" % (value, 1386613140)
-    else:
-        return "Test of DB time failed\n%s != %s" % (value, 1386613140)
-# enddef
-
-
 @app.route('/admin/news')
 def admin_news(req):
     check_login(req)
@@ -159,8 +143,7 @@ def news_detail(req, id):
     if not new.get(req):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
 
-    return generate_page(req, "news_detail.html", new=new,
-                         staticmenu=req.cfg.get_static_menu(req))
+    return generate_page(req, "news_detail.html", new=new)
 # enddef
 
 
@@ -171,8 +154,7 @@ def news_locale_detail(req, locale, id):
     if not new.get(req):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
 
-    return generate_page(req, "news_detail.html", new=new, locale=locale,
-                         staticmenu=req.cfg.get_static_menu(req))
+    return generate_page(req, "news_detail.html", new=new, locale=locale)
 # enddef
 
 
@@ -186,5 +168,5 @@ def news_list(req, locale=None):
 
     rows = New.list(req, pager, body=True, public=1, locale=(locale, ''))
     return generate_page(req, "news_list.html", pager=pager, rows=rows,
-                         lang=locale, staticmenu=req.cfg.get_static_menu(req))
+                         lang=locale)
 # enddef

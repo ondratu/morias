@@ -8,6 +8,18 @@ import json
 from lib.new import New
 
 
+def test(req):
+    with req.db.transaction(req.logger, DictCursor) as c:
+        c.execute("SELECT strftime('%s','2013-12-09 18:19')*1")
+        value = c.fetchone()[0]
+        assert value == 1386613140
+        c.execute("""
+            SELECT new_id, author_id, create_date, public_date,
+                title, locale, body, state, data
+            FROM news LIMIT 1
+            """)
+
+
 def get(self, req):
     tran = req.db.transaction(req.logger)
     c = tran.cursor(DictCursor)
@@ -41,7 +53,7 @@ def add(self, req):
         c.execute("""
             INSERT INTO news
                     (author_id, title, locale, create_date, public_date, body,
-                     state, data) "
+                     state, data)
                 VALUES (%s, %s, %s, strftime('%%s','now')*1,
                         strftime('%%s','now')*1, %s, %s, %s)
             """, (self.author_id, self.title, self.locale, self.body,
@@ -101,7 +113,7 @@ def set_state(self, req, state):
 
 
 def item_list(req, pager, body, **kwargs):
-    body = ',body ' if body else ''
+    body = ', body ' if body else ''
 
     public = kwargs.pop('public', False)
     keys = list("%s %s %%s" % (k, 'in' if islistable(v) else '=')
@@ -115,15 +127,14 @@ def item_list(req, pager, body, **kwargs):
     tran = req.db.transaction(req.logger)
     c = tran.cursor(DictCursor)
     c.execute("""
-        SELECT new_id, author_id, email, state, create_date, public_date,
-                title, locale, state %s
+        SELECT new_id, author_id, email, create_date, public_date,
+            title, locale, state %s
         FROM news n LEFT JOIN logins l ON (n.author_id = l.login_id) %s
             ORDER BY %s %s LIMIT %%s, %%s
         """ % (body, cond, pager.order, pager.sort),
               tuple(kwargs.values()) + (pager.offset, pager.limit))
     items = []
-    row = c.fetchone()
-    while row is not None:
+    for row in iter(c.fetchone, None):
         item = New(row['new_id'])
         item.author_id = row['author_id']
         item.author = row['email']
@@ -135,8 +146,7 @@ def item_list(req, pager, body, **kwargs):
         if body:
             item.body = row['body']
         items.append(item)
-        row = c.fetchone()
-    # endwhile
+    # endfor
 
     c.execute("SELECT count(*) FROM news %s" % cond, kwargs.values())
     pager.total = c.fetchone()['count(*)']

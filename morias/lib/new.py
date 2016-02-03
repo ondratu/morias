@@ -66,4 +66,9 @@ class New():
 
         m = driver(req)
         return m.item_list(req, pager, body, **kwargs)
+
+    @staticmethod
+    def test(req):
+        m = driver(req)
+        return m.test(req)
 # endclass
