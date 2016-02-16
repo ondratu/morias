@@ -126,8 +126,7 @@ M.Eshop.Actions.prototype.refresh = function(show){
                     this._view(data, show);
              },
              error: function(xhr, status, http_status){
-                    console.error(status);
-                    console.error(http_status);
+                    alert(http_status);
              }
     });
 }
