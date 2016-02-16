@@ -66,9 +66,9 @@ def admin_codebook_view(req, codebook):
 # enddef
 
 
-def json_response(req, data={}):
+def json_response(req, data={}, **kwargs):
     req.content_type = 'application/json'
-    return json.dumps(data)
+    return json.dumps(data, **kwargs)
 
 
 @app.route('/admin/codebooks/<codebook:word>/<id:int>',

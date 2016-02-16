@@ -194,6 +194,7 @@ pre.striped > *:nth-child(even) {
 .menu-symbol.fa-address:before {content: "\f003";}      /*fa-envelop-o*/
 .menu-symbol.fa-files:before {content: "\f0c5";}        /*fa-files-o*/
 .menu-symbol.fa-news:before {content: "\f1ea";}         /*fa-newspaper-o*/
+.menu-symbol.fa-articles:before {content: "\f02d";}     /*fa-book*/
 .menu-symbol.fa-attachments:before {content: "\f0c6";}  /*fa-paperclip-o*/
 .menu-symbol.fa-options:before {content: "\f085";}      /*fa-gears-o*/
 .menu-symbol.fa-debug:before {content: "\f0f1";}        /*fa-stethoscope*/
@@ -390,4 +391,11 @@ html, body {
 }
 #push, .footer {
     height: 40px;
+}
+
+.tags {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    float: right;
+    padding: 0.5em 1em;
 }
