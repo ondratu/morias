@@ -1,0 +1,66 @@
+{% set title = 'Admin - ' + _('articles') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('News list') }}</li>
+        <li {{ 'class="active"' if not show else ''}}><a href="/admin/articles">{{ _('All') }}</a></li>
+        <li {{ 'class="active"' if show == 'ready' else ''}}><a href="/admin/articles?show=ready">{{ _('Ready to Public') }}</a></li>
+        <li {{ 'class="active"' if show == 'drafts' else ''}}><a href="/admin/articles?show=drafts">{{ _('Drafts') }}</a></li>
+
+      {% if match_right(('articles_author', 'articles_editor')) -%}
+        <li class="pull-right"><a href="/admin/articles/add">{{ _('New article') }}</a></li>
+      {% endif -%}
+      </ul>
+
+{%- from "_orderby.html" import orderby with context %}
+      <table class="table table-hover">
+        <tr><th>#</th>
+            <th>{{ orderby(_('Title'), 'title', 'asc') }}</th>
+            <th>{{ _('Author') }}</th>
+            <th>{{ orderby(_('Locale'), 'locale', 'asc') }}</th>
+            <th>{{ orderby(_('Create time'), 'create_date', 'desc') }}</th>
+            <th>{{ orderby(_('Publicated'), 'public_date', 'desc') }}</th>
+            <th>{{ _('Action' )}}</th></tr>
+        {% for item in items %}
+        <tr {{ 'class="disabled"' if item.state == 0 else '' }}><td>{{ item.id }}</td>
+            <td  >
+                <a href="/articles/{{ item.id }}">{{ item.title }}</a>
+            </td>
+            <td>{{ item.author or '' }}</td>
+            <td>{{ item.locale }}</td>
+            <td>{{ item.create_date.strftime("%H:%M %d.%m.%Y") }}</td>
+            <td>
+            {% if item.public_date.year > 1970 -%}
+              {{ item.public_date.strftime("%H:%M %d.%m.%Y") }}
+            {% elif item.state == 2 -%}
+              <i style="font-size: 100%;" title="{{ _('Ready to public') }}" class="fa fa-thumbs-o-up"></i>
+            {% endif -%}
+            </td>
+            <td>
+            {% if check_right('articles_editor') or (check_right('articles_author') and item.author_id == login.id and item.public_date.year == 1970) -%}
+              <a href="/admin/articles/{{ item.id }}">{{ _('Edit') }}</a>
+             {%- if item.state in (1, 2) %}
+              / <a href="#" post="/admin/articles/{{ item.id }}/disable">{{ _('Disable') }}</a>
+             {%- elif item.state == 0 %}
+              / <a href="#" post="/admin/articles/{{ item.id }}/enable">{{ _('Enable') }}</a>
+             {% endif -%}
+            {% endif -%}
+            </td></tr>
+        {% endfor %}
+      </table>
+{% include "_pager.html" %}
+
+      <script>
+        $(document).ready(function() {
+          // send form after click to links with post attribut
+          $('a[post]').click(function() {
+            $('<form/>',{'method':'post','action':$(this).attr('post')})
+                    .appendTo('body').submit();
+          });
+        });
+      </script>
+
+    </div>
+{% include "_footer.html" %}
