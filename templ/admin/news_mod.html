@@ -52,7 +52,7 @@
 
         <div class="form-group {{ 'has-error' if error is defined and error == 2 else '' }}">
           <div class="col-sm-12">
-            {% include "_wysiwyg.html" %}
+            {% include "_editor.html" %}
             <textarea id="input_body" data-source="#editor" name="body" class="form-control" rows="10">{{ (new.body or '')|e }}</textarea>
             {% if error is defined and error == 2 %}<div class="help-inline" >{{ _('Empty body') }}</div>{% endif %}
           </div>
