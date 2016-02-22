@@ -10,7 +10,8 @@ from core.lang import get_lang
 
 from lib.menu import Item
 from lib.pager import Pager
-from lib.articles import Article
+from lib.articles import Article, FORMAT_RST
+from lib.rst import check_rst, rst2html
 
 from user import user_sections
 from admin import content_menu
@@ -120,6 +121,13 @@ def admin_articles_mod(req, id):
 # enddef
 
 
+@app.route('/admin/articles/rst', state.METHOD_POST)
+def admin_articles_rst(req):
+    check_login(req)
+    match_right(req, module_rights)
+    return check_rst(req)
+
+
 @app.route('/admin/articles/<id:int>/disable', state.METHOD_POST)
 @app.route('/admin/articles/<id:int>/enable', state.METHOD_POST)
 def admin_articles_enable(req, id):
@@ -185,9 +193,13 @@ def articles_detail(req, id):
 
     if not article.get(req):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+    if article.format == FORMAT_RST:
+        article.perex = rst2html(article.perex)
+        article.body = rst2html(article.body)
 
     return generate_page(req, "articles_detail.html", article=article,
-                         staticmenu=req.cfg.get_static_menu(req))
+                         staticmenu=req.cfg.get_static_menu(req),
+                         styles=('tiny-writer',))
 # enddef
 
 
@@ -198,9 +210,13 @@ def articles_detail_title(req, uri):
 
     if not article.get(req, key='uri'):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+    if article.format == FORMAT_RST:
+        article.perex = rst2html(article.perex)
+        article.body = rst2html(article.body)
 
     return generate_page(req, "articles_detail.html", article=article,
-                         staticmenu=req.cfg.get_static_menu(req))
+                         staticmenu=req.cfg.get_static_menu(req),
+                         styles=('tiny-writer',))
 # enddef
 
 

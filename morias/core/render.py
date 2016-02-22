@@ -176,7 +176,7 @@ def morias_template(req, template, **kwargs):
     kwargs['site'].keywords = req.cfg.site_keywords
     kwargs['site'].author = req.cfg.site_author
     kwargs['site'].copyright = req.cfg.site_copyright
-    kwargs['site'].styles = req.cfg.site_styles
+    kwargs['site'].styles = req.cfg.site_styles + kwargs.pop('styles', ())
     kwargs['site'].this = req.uri
     kwargs['site'].scheme = req.scheme
     kwargs['site'].domain = req.server_hostname

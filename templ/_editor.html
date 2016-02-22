@@ -1,4 +1,5 @@
-            <div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
+            {% set name = editor.get('name', 'editor') if editor is defined else 'editor' %}
+            <div class="btn-toolbar" data-role="editor-toolbar" data-target="#{{ name }}" style="display: none;">
               <div class="btn-group onformated">
                 <a class="btn btn-default" cmd="source" title="{{ _('Show source code') }}"><i class="fa fa-file-code-o"></i></a>
               </div>
@@ -9,17 +10,17 @@
                 <a class="btn btn-default" data-edit="underline" title="{{ _('Underline (Ctrl/Cmd+U)') }}"><i class="fa fa-underline"></i></a>
               </div>
               <div class="btn-group onformated">
-              {% if wysiwyg is defined and wysiwyg.get('list') == True %}
+              {% if editor is defined and editor.get('list') == True %}
                 <a class="btn btn-default" data-edit="insertunorderedlist" title="{{ _('Bullet list') }}"><i class="fa fa-list-ul"></i></a>
                 <a class="btn btn-default" data-edit="insertorderedlist" title="{{ _('Number list') }}"><i class="fa fa-list-ol"></i></a>
               {% endif -%}
-              {% if wysiwyg is defined and wysiwyg.get('ident') == True %}
+              {% if editor is defined and editor.get('ident') == True %}
                 <a class="btn btn-default" data-edit="indent" title="Reduce indent (Shift+Tab)"><i class="fa fa-indent"></i></a>
                 <a class="btn btn-default" data-edit="outdent" title="Indent (Tab)"><i class="fa fa-outdent"></i></a>
               {% endif -%}
               </div>
               <div class="btn-group onformated">
-              {% if wysiwyg is defined and wysiwyg.get('header') == True %}
+              {% if editor is defined and editor.get('header') == True %}
                 <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="{{ _('Header') }}"><i class="fa fa-header"></i></a>
                 <ul class="dropdown-menu" role="menu">
                   <li><a class="btn btn-default" data-edit="formatBlock h1" title="{{ _('Header 2') }}"><h1 style="margin: 0;">Header 1</h1></a></li>
@@ -30,14 +31,14 @@
                   <li><a class="btn btn-default" data-edit="formatBlock h6" title="{{ _('Header 6') }}"><h6 style="margin: 0;">Header 6</h6></a></li>
                 </ul>
               {% endif -%}
-              {% if wysiwyg is defined and wysiwyg.get('code') == True %}
+              {% if editor is defined and editor.get('code') == True %}
                 <a class="btn btn-default" data-edit="formatBlock pre" title="{{ _('Code') }}"><i class="fa fa-code"></i></a>
               {% endif -%}
-              {% if wysiwyg is defined and (wysiwyg.get('header') == True or wysiwyg.get('code') == True) %}
+              {% if editor is defined and (editor.get('header') == True or editor.get('code') == True) %}
                 <a class="btn btn-default" data-edit="formatBlock div" title="{{ _('Normal Blok') }}"><i class="fa fa-bars"></i></a>  
               {% endif -%}
               </div>
-              {% if wysiwyg is defined and wysiwyg.get('justify') == True %}
+              {% if editor is defined and editor.get('justify') == True %}
               <div class="btn-group onformated">
                 <a class="btn btn-default" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="fa fa-align-left"></i></a>
                 <a class="btn btn-default" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="fa fa-align-center"></i></a>
@@ -64,10 +65,11 @@
                 <a class="btn btn-default" cmd="formated" title="{{ _('Show formated text') }}"><i class="fa fa-file-word-o"></i></a>
               </div>
             </div><!-- / btn toolbar -->
-            <div class="form-control" style="display:none;" id="editor"></div>
+            <div class="form-control" style="display:none;" id="{{ name }}"></div>
 
             <script src="/js/jquery.hotkeys.js"></script>
             <script src="/js/bootstrap-wysiwyg.js"></script>
+            <script src="/js/docutils-editor.js"></script>
             <script>
               $('link[rel=stylesheet]').append($('<link/>',{'href':'/css/bootstrap-wysiwyg.css','rel':'stylesheet'}));
 
@@ -79,37 +81,65 @@
                   .siblings('.dropdown-toggle').dropdown('toggle');})
                   .keydown('esc', function () {this.value='';$(this).change();});
 
-                var editor = $('#editor');
-                var textarea = $('textarea[data-source=#editor]');
-                var onformated = $('div[data-target=#editor]').find('div.onformated');
-                var onsource = $('div[data-target=#editor]').find('div.onsource');
+                WysiwygEditor = function(name){
+                    this.$wysiwyg = $('#'+ name);
+                    this.$source = $('textarea[data-source=#'+name+']');
+                    this.$btns_onformated = $('div[data-target=#'+name+']').find('div.onformated');
+                    this.$btns_onsource = $('div[data-target=#'+name+']').find('div.onsource');
+                    this.$toolbar = $('[data-role=editor-toolbar][data-target=#'+name+']');
 
-                textarea.css('resize', 'none');
-                editor.css('height', textarea.css('height'));
-                editor.html(textarea.val());
-                textarea.css('display', 'none');
-                editor.css('display', 'block')
+                    this.init(name);
+                }
 
-                $(textarea[0].form).submit(function(){
-                  if (textarea.css('display') == 'none')  // update textarea before sending
-                    textarea.val(editor.cleanHtml());
-                });
-                editor.wysiwyg();
+                WysiwygEditor.prototype.init = function(name){
+                    this.$toolbar.css('display', 'block');
+                    this.$source.css('resize', 'none');
+                    this.$wysiwyg.css('height', this.$source.css('height'));
+                    this.$wysiwyg.html(this.$source.val());
+                    this.$source.css('display', 'none');
+                    this.$wysiwyg.css('display', 'block');
 
-                $('div[data-target=#editor]').find('a[cmd=source]').click(function() {
-                  textarea.val(editor.cleanHtml())
-                  textarea.css('display', 'block');
-                  editor.css('display', 'none');
-                  onsource.css('display', 'block');
-                  onformated.css('display', 'none');
-                });
+                    $(this.$source[0].form).submit(function(){
+                        // update textarea before sending
+                        if (this.$source.css('display') == 'none')
+                            this.$source.val(this.$wysiwyg.cleanHtml());
+                    }.bind(this));
 
-                $('div[data-target=#editor]').find('a[cmd=formated]').click(function() {
-                  editor.html(textarea.val());
-                  textarea.css('display','none');
-                  editor.css('display', 'block');
-                  onsource.css('display', 'none');
-                  onformated.css('display', 'block');
-                });
+                    this.$wysiwyg.wysiwyg({'toolbarSelector':
+                                           '[data-role=editor-toolbar][data-target=#'+name+']'});
+
+                    $('div[data-target=#'+name+']')
+                        .find('a[cmd=source]').click(this.source.bind(this));
+                    $('div[data-target=#'+name+']')
+                        .find('a[cmd=formated]').click(this.editor.bind(this));
+                }
+
+                WysiwygEditor.prototype.source = function(){
+                    this.$source.val(this.$wysiwyg.cleanHtml())
+                    this.$source.css('display', 'block');
+                    this.$wysiwyg.css('display', 'none');
+                    this.$btns_onsource.css('display', 'block');
+                    this.$btns_onformated.css('display', 'none');
+                }
+
+                WysiwygEditor.prototype.editor = function(){
+                    this.$wysiwyg.html(this.$source.val());
+                    this.$source.css('display','none');
+                    this.$wysiwyg.css('display', 'block');
+                    this.$btns_onsource.css('display', 'none');
+                    this.$btns_onformated.css('display', 'block');
+                }
+
+                var format = '{{ editor.get("format", "html") if editor is defined else "html" }}';
+                if (format == 'html') {
+                    editor = new WysiwygEditor('{{ name }}');
+                } else if (format == 'rst') {
+                    console.log('you are use rst');
+                    var check_url = '{{ editor.get("rst_check_url", "/admin/rst") if editor is defined else "/admin/rst" }}';
+                    editor = new DocutilsEditor('textarea[data-source=#{{ name }}]',
+                                                check_url);
+                } else {
+                    console.error('Unknow editor format: '+ format);
+                }
               });
             </script>
