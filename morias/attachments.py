@@ -184,6 +184,15 @@ def attachments_download(req, path, webid):
                      content_type=attachment.mime_type)
 
 
+@app.route('/attachments/<path:word>/<webid:attachment>')
+def attachments_normal(req, path, webid):
+    attachment = Attachment(Attachment.web_to_id(webid))
+    attachment.get(req)
+
+    return send_file(req, req.cfg.attachments_path + '/' + path + '/' + webid,
+                     content_type=attachment.mime_type)
+
+
 @app.route('/attachments/<path:word>/<webid:attachment>/'
            '<width:int>x<height:int>')
 def attachments_resize(req, path, webid, width, height):

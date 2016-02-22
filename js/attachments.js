@@ -235,7 +235,8 @@ M.AttachmensObject.prototype._view = function(data){
                                 'object-id': this.object_id}).html(M._('Dettach'));
         remove.on('click', this._remove.bind(this));
         var row = $('<div>',{'class': 'row', md5: it.data.md5})
-                        .append($('<div>', {'class': 'col-md-5 text', webname: it.webname}).html(it.file_name))
+                        .append($('<div>', {'class': 'col-md-5 text', webname: it.webname})
+                                    .html($('<a>', {'href': '/attachments/'+ it.webname+'/realname'}).text(it.file_name)))
                         .append($('<div>', {'class': 'col-md-2 preview'}).html(preview))
                         .append($('<div>', {'class': 'col-md-3 text'}).html(it.mime_type))
                         .append($('<div>', {'class': 'col-md-2 text'}).append(remove) );
