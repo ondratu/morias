@@ -18,7 +18,7 @@
 {% endif %}
   <a name="new_comment"></a>
   <h5>{{ _('Your comment') }}:</h5>
-  <form role="form" method="post" action="{{ discussion_comment_link }}">
+  <form role="form" method="post" action="{{ discussion_comment_link }}" class="clearfix">
     <input type="hidden" name="article_id" value="{{ discussion_object_id }}">
     <div class="form-group col-sm-4 padding0 {{ 'has-error' if error is defined and error.reason == 'empty_author' }}">
       <input type="text" class="form-control" name="author" required="required" placeholder="{{ _('Your name') }}" value="{{ comment_author|e }}">
@@ -28,10 +28,47 @@
       <input type="text" class="form-control" name="title" required="required" placeholder="{{ _('Title') }}" value="{{ error.comment.title|e if error else '' }}">
     </div>
     <div class="form-group {{ 'has-error' if error is defined and error.reason == 'empty_body' }}">
-      <textarea class="form-control" name="body" rows="3" required="required" placeholder="{{ _('Your comment') }}" value="{{ error.comment.body|e if error else '' }}"></textarea>
+      <textarea class="form-control" name="body" rows="3" required="required" placeholder="{{ _('Your comment') }}">{{ error.comment.body|e if error else '' }}</textarea>
     </div>
+
+    <div class="form-group shadow {{ 'has-error' if form is defined and 'robot' in form else '' }}">
+      <div class="col-sm-8 col-sm-offset-4 padding0">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="robot" value="robot" {{'checked="checked"' if form is defined and 'robot' in form else '' }}>
+            {{ _("Yes, I'm robot.") }}
+          </label>
+        </div>
+      </div>
+    {% if 'robot' in form -%}
+      <div class="col-sm-8 col-sm-offset-4 help-block">{{ _("Robots can't send the form.") }}</div>
+    {% endif %}
+    </div>
+
+    <div class="form-group shadow {{ 'has-error' if error and 'check' in error and not error.check else '' }}">
+      <label for="input_answer" class="col-sm-4 control-label">{{ question }}</label>
+      <input type="hidden" name="qid" value="{{ qid or '' }}">
+      <div class="col-sm-8 padding0">
+        <input id="input_answer" name="answer" type="text" required="required" class="form-control" placeholder="{{ question }}" value="{{ form.get('answer', '')|e }}">
+      </div>
+    {% if error and 'check' in error and not error.check %}
+      <div class="col-sm-8 col-sm-offset-4 help-block">{{ _('Your anser is not correct.')}}</div>
+    {% endif %}
+    </div>
+
     <div class="form-group pull-right">
       <button class="btn btn-default" type="submit">{{ _('Append comment') }}</button>
     <div>
   </form>
+
+  <script>
+    function chr(o) {
+      return String.fromCharCode(o);
+    }
+
+    $(document).ready(function() {
+      $('#input_answer')[0].value = '' {% for c in answer %}+chr({{ ord(c) }}){% endfor %};
+      $('.shadow').hide();
+    });
+  </script>
 </div>
