@@ -213,6 +213,10 @@ pre.striped > *:nth-child(even) {
     padding-left: 15px;
 }
 
+.padding0{
+    padding: 0;
+}
+
 .attachments {
     height: 150px;
     overflow: auto;
@@ -416,4 +420,8 @@ html, body {
 .rst-syntax .error-line {
   color: #a33;
   background: #fbb;
+}
+
+.discussion h5 {
+  font-weight: bold;
 }

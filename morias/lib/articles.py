@@ -6,6 +6,8 @@ from re import sub
 
 import json
 
+from discussion import Comment
+
 # errors
 EMPTY_TITLE = 1
 EMPTY_PEREX = 2
@@ -22,6 +24,22 @@ def driver(req):
         raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
     m = "articles_" + req.db.driver
     return __import__("lib." + m).__getattribute__(m)
+
+
+class ArticleComment(Comment, Object):
+    TABLE = 'articles_discussion'
+    OBJECT_ID = 'article_id'
+
+    def __json__(self):
+        rv = super(ArticleComment, self).__json__()
+        dt = rv['create_date']
+        rv['create_date'] = (dt.year, dt.month, dt.day, dt.hour, dt.minute,
+                             dt.second)
+        return rv
+
+    @staticmethod
+    def list(req, article_id, pager, **kwargs):
+        return Comment.list(req, ArticleComment, article_id, pager, **kwargs)
 
 
 class Tag(Object):

@@ -1,4 +1,5 @@
 from poorwsgi import app, state
+from falias.util import Object
 
 from traceback import format_exc
 
@@ -8,6 +9,22 @@ BAD_LOGIN = 1000
 ACCESS_DENIED = 1001
 NOT_FOUND = 1002
 SUCCESS = 2000
+
+
+class ErrorValue(ValueError, Object):
+    code = 0
+    reason = 'undefined'
+    message = 'undefined'
+
+    def __init__(self, **kwargs):
+        for key, val in kwargs.items():
+            setattr(self, key, val)
+
+    def __json__(self):
+        rv = super(ErrorValue, self).__json__()
+        rv.update({'code': self.code, 'reason': self.reason,
+                   'message': self.message})
+        return rv
 
 
 @app.http_state(state.HTTP_FORBIDDEN, state.METHOD_ALL)

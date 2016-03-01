@@ -7,10 +7,11 @@ from core.login import check_login, check_referer, match_right, rights, \
     do_check_right, check_token, create_token
 from core.render import generate_page
 from core.lang import get_lang
+# from core.errors import ErrorValue
 
 from lib.menu import Item
 from lib.pager import Pager
-from lib.articles import Article, FORMAT_RST
+from lib.articles import Article, FORMAT_RST, ArticleComment
 from lib.rst import check_rst, rst2html
 
 from user import user_sections
@@ -187,36 +188,87 @@ def articles_remove_tag(req, id, tag_id):
     return '{}'
 
 
-@app.route('/articles/<id:int>')
-def articles_detail(req, id):
-    article = Article(id)
-
-    if not article.get(req):
-        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+def articles_detail_internal(req, article, **kwargs):
     if article.format == FORMAT_RST:
         article.perex = rst2html(article.perex)
         article.body = rst2html(article.body)
 
+    if article.data.get('discussion', True):
+        discussion = ArticleComment.list(req, article.id, Pager(limit=-1))
+    else:
+        discussion = []
+
     return generate_page(req, "articles_detail.html", article=article,
+                         discussion=discussion,
                          staticmenu=req.cfg.get_static_menu(req),
-                         styles=('tiny-writer',))
+                         styles=('tiny-writer',), **kwargs)
 # enddef
 
 
+@app.route('/articles/<id:int>')
 @app.route('/articles/<uri:word>')
-def articles_detail_title(req, uri):
-    article = Article()
-    article.uri = uri
-
-    if not article.get(req, key='uri'):
+def articles_detail(req, uri=None, id=None):
+    if not uri and not id:
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
-    if article.format == FORMAT_RST:
-        article.perex = rst2html(article.perex)
-        article.body = rst2html(article.body)
 
-    return generate_page(req, "articles_detail.html", article=article,
-                         staticmenu=req.cfg.get_static_menu(req),
-                         styles=('tiny-writer',))
+    article = Article(id)
+    article.uri = uri
+    if uri and not article.get(req, key='uri'):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+    if id and not article.get(req):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+
+    return articles_detail_internal(req, article)
+# enddef
+
+
+def articles_comment_internal(req, uri=None, id=None):
+    if not uri and not id:
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+
+    article = Article(id)
+    article.uri = uri
+    if uri and not article.get(req, key='uri'):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+    if id and not article.get(req):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+
+    comment = ArticleComment()
+    comment.bind(req.form, user_agent=req.user_agent, ip=req.remote_addr)
+    rv = comment.add(req, parent=req.form.getfirst('parent', '', str))
+    return (article, comment, rv)
+# enddef
+
+
+@app.route('/articles/<uri:word>', method=state.METHOD_POST)
+@app.route('/articles/<id:int>', method=state.METHOD_POST)
+def articles_comment(req, uri=None, id=None):
+    article, comment, rv = articles_comment_internal(req, uri, id)
+    if hasattr(rv, 'reason'):
+        # rv.comment = comment
+        return articles_detail_internal(req, article, error=rv)
+    elif rv is None:
+        raise SERVER_RETURN(state.HTTP_INTERNAL_SERVER_ERROR)
+    redirect(req, '/articles/%s#comment_%s' % (article.uri, rv.id))
+
+
+@app.route('/articles/<uri:word>/comment', method=state.METHOD_POST)
+@app.route('/articles/<id:int>/comment', method=state.METHOD_POST)
+def articles_comment_xhr(req, uri=None, id=None):
+    article, comment, rv = articles_comment_internal(req, uri, id)
+    # XXX: at now, isinstance not work, becouase, have another namespace
+    # that rv....
+    # if isinstance(rv, ErrorValue):
+    if hasattr(rv, 'reason'):
+        req.status = state.HTTP_BAD_REQUEST
+        return send_json(req, rv, cls=ObjectEncoder)
+    elif rv is None:
+        req.status = state.HTTP_INTERNAL_SERVER_ERROR
+        return send_json(req, {'reason': 'integrity_error'})
+
+    return send_json(req, {'discussion': ArticleComment.list(req,
+                           article.id, Pager(limit=-1)), 'last': rv.id},
+                     cls=ObjectEncoder)
 # enddef
 
 

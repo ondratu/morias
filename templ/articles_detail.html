@@ -1,3 +1,5 @@
+{#- vim: tabstop=2 softtabstop=2 expandtab
+#}
 {% set title = article.title -%}
 {% include "_header.html" -%}
 {% include "user/_menu.html" -%}
@@ -19,5 +21,10 @@
       <div itemprop="articleBody">{{ article.body }}</div>
       <div class="pull-right" itemprop="author">{{ _('Author') }}: <span itemprop="name">{{ article.email.split('@')[0] }}</span></div>
 
+    {% if article.data.get('discussion', True) %}
+      {% set discussion_object_id = article.id %}
+      {% set discussion_comment_link = '/articles/'+article.uri+'#new_comment' %}
+      {% include "_discussion.html" %}
+    {% endif -%}
     </div>
 {% include "_footer.html" %}
