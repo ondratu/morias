@@ -28,7 +28,7 @@ def sql_script(c, sql_script):
 @fixture()
 def req():
     obj = Object()
-    obj.db = Sql('sqlite:memory:', True)
+    obj.db = Sql('sqlite:memory:')
     obj.log_info = error
     with obj.db.transaction(error) as c:
         sql_script(c, 'login.sql')

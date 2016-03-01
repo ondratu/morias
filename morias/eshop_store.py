@@ -191,8 +191,6 @@ def admin_item_incdec(req, id):
         return json.dumps({'reason': 'item not found'})
 
     req.content_type = 'application/json'
-    from pprint import pprint
-    pprint(item.__dict__)
     return json.dumps({'item': item.__dict__})
 # enddef
 

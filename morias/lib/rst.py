@@ -34,7 +34,6 @@ def rst2html(source, err_stream=StringIO()):
         html = parts['html_line'] + \
             parts['html_footnotes'] + parts['html_citations']
     err_stream.seek(0)
-    print err_stream.read()
     return html
 
 
@@ -50,7 +49,6 @@ def check_rst(req):
     html = rst2html(source, err_stream)
     err_stream.seek(0)
     errors = err_stream.read()
-    print errors
 
     req.content_type = 'application/json'
     return dumps({'status': 200 if not errors else 202,
