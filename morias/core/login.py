@@ -4,7 +4,6 @@ from poorwsgi import state, redirect, SERVER_RETURN
 from poorwsgi.session import PoorSession
 
 from time import time
-from hashlib import sha1
 from os import urandom
 
 from falias.util import Object
@@ -218,9 +217,3 @@ def check_token(req, token, redirect=None, uri=None):
         req.precondition = Object()
         req.precondition.csrf = True
         raise SERVER_RETURN(state.HTTP_PRECONDITION_FAILED)
-
-
-def sha1_sdigest(text, salt):
-    # return sha1(salt + text + "0nb\xc5\x99e!\xc5\xa4\xc5\xafm@").hexdigest()
-    return sha1((salt + text + u'0nb\u0159e!\u0164\u016fm@')
-                .encode('utf-8')).hexdigest()
