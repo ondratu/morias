@@ -96,7 +96,7 @@ def send_order_status(req, order):
                             order=order, cfg=cfg).encode('utf-8'),  # body
             morias_template(req, 'mail/eshop/order.html',
                             order=order, cfg=cfg).encode('utf-8'),  # body
-            logger=req.logger)
+            logger=req.log_info)
     except Exception as e:
         req.log_error('Mailing order[%d] error: %s' % (order.id, str(e)),
                       state.LOG_ERR)

@@ -8,7 +8,7 @@ from lib.login import Login, OK, LOGIN_EXIST, LOGIN_NOT_EXIST
 
 
 def _transaction(req):  # static methos
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     tran.connection.create_function('hash', 3, login_hash)
     c = tran.cursor()
     return c
@@ -48,7 +48,7 @@ def _get(self, c, condition=None):
 
 
 def get(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     tran.connection.create_function('hash', 3, login_hash)
     c = tran.cursor()
     _get(self, c)
@@ -58,7 +58,7 @@ def get(self, req):
 
 
 def add(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     try:        # email must be uniq
@@ -130,7 +130,7 @@ def _mod(self, c, keys, vals, condition=None):
 
 def enable(self, req):
     """Disabling account clear servis_hash."""
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     if not self.enabled:
@@ -150,7 +150,7 @@ def enable(self, req):
 
 
 def find(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     tran.connection.create_function('hash', 3, login_hash)
     c = tran.cursor()
     c.execute("""
@@ -172,7 +172,7 @@ def find(self, req):
 
 
 def item_list(req, pager):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT login_id, email, rights, enabled

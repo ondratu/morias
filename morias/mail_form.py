@@ -86,7 +86,7 @@ def form_send(req):
                 menu=menu, lang=locale, required=required, robot=robot,
                 check=check)
         # else
-        kwargs = {'logger': req.logger}
+        kwargs = {'logger': req.log_info}
         if 'email' in req.form:
             kwargs['reply'] = req.form.getfirst('email', '', str)
 

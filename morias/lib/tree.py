@@ -84,7 +84,7 @@ class Item(object):
     # enddef
 
     def mod(self, req, **kwargs):
-        if not self.title:
+        if not self.title:  # that don't be there !
             return EMPTY_TITLE
         m = driver(req)
         return m.mod(self, req, **kwargs)

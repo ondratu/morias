@@ -1,0 +1,18 @@
+{% set title = _('Articles') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" -%}
+
+    <div class="container">
+
+      {% for article in items -%}
+      <div itemscope itemtype="http://schema.org/Article">
+        <h3 itemprop="headline"><a href="/articles/{{ article.uri }}">{{ article.title }}</a></h3>
+        <div class="pull-left" itemprop="author">{{ _('Author') }}: <span itemprop="name">{{ article.author.split('@')[0] }}</span></div>
+        <div class="pull-right" content="{{ article.create_date.isoformat() }}" itemprop="datePublished">{{ _('Date') }}: {{ article.create_date.strftime("%H:%M %d.%m.%Y") }}</div>
+        <div class="clear" itemprop="description">{{ article.perex }}</div>
+      </div>
+      {% endfor -%}
+{% include "_pager.html" %}
+
+    </div>
+{% include "_footer.html" %}

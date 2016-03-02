@@ -10,7 +10,7 @@ from lib.page_file import Page, PAGE_EXIST, PAGE_NOT_EXIST
 
 
 def get(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT author_id, name, title, locale, editor_rights
@@ -27,7 +27,7 @@ def get(self, req):
 
 
 def add(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     try:        # page must be uniq
@@ -47,7 +47,7 @@ def add(self, req):
 
 
 def mod(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     try:        # page name must be uniq
@@ -69,7 +69,7 @@ def mod(self, req):
 
 
 def delete(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT author_id, name, title, locale, editor_rights
@@ -88,7 +88,7 @@ def delete(self, req):
 
 
 def load_rights(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT author_id, editor_rights FROM page_files WHERE page_id = %s
@@ -107,7 +107,7 @@ def load_rights(self, req):
 
 
 def regenerate_all(req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("SELECT page_id, author_id, name, title, locale FROM page_files")
     row = c.fetchone()
@@ -129,7 +129,7 @@ def item_list(req, pager, **kwargs):
                 for k, v in kwargs.items())
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT page_id, author_id, name, title, locale, editor_rights

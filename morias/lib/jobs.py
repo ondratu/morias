@@ -97,18 +97,18 @@ def run_job(req, path, fn, singleton=None):
             stdout.write("[job: %d] <%s> %s\n" %
                          (os.getpid(), level[1], message))
 
-    def logger(msg):
+    def log_info(msg):
         log_error(msg, state.LOG_INFO)
 
     req.log_error = log_error
-    req.logger = logger
+    req.log_info = log_info
 
     #     create job record and return status to master process
     job = Job(path=path, singleton=singleton)
     job.pid = os.getpid()
     job.login_id = req.login.id if req.login else 0
     with os.fdopen(pipe_in, 'w') as pipe:
-        logger('job add..')
+        log_info('job add..')
         if job.add(req) is None:
             pipe.write('ERR')
             exit(1)             # process failed

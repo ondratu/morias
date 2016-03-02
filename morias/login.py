@@ -62,7 +62,7 @@ def send_login_created(req, login, sign_up=False):
                             item=login, sign_up=sign_up).encode('utf-8'),
             morias_template(req, 'mail/login/created.html',           # body
                             item=login, sign_up=sign_up).encode('utf-8'),
-            logger=req.logger)
+            logger=req.log_info)
     except Exception:
         req.log_error('Login created [%s] error: \n%s' %
                       (login.email, format_exc()), state.LOG_ERR)
@@ -82,7 +82,7 @@ def send_log_in_link(req, login, host, browser):
             morias_template(req, 'mail/login/log_in_link.html',         # body
                             item=login, host=host, browser=browser
                             ).encode('utf-8'),
-            logger=req.logger)
+            logger=req.log_info)
     except:
         req.log_error('Log-in link [%s] error: \n%s' %
                       (login.email, format_exc()), state.LOG_ERR)
@@ -103,7 +103,7 @@ def send_verify_email(req, login, old_email, host, browser):
             morias_template(req, 'mail/login/verify.html',           # body
                             item=login, old_email=old_email, host=host,
                             browser=browser).encode('utf-8'),
-            logger=req.logger)
+            logger=req.log_info)
     except Exception:
         req.log_error('Login forget [%s] error: \n%s' %
                       (login.email, format_exc()), state.LOG_ERR)
@@ -113,7 +113,7 @@ def send_verify_email(req, login, old_email, host, browser):
 @app.route("/test/logins/db")
 def test_db(req):
     data = (None, 123, 3.14, "user@domain.xy", "'; SELECT 1; SELECT")
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("SELECT %s, %s, %s, %s, %s", data)
     copy = tuple(it.encode('utf-8') if isinstance(it, unicode) else it

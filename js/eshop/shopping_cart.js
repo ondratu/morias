@@ -176,7 +176,7 @@ M.Eshop.ShoppingCart.prototype.on_next = function() {
                 setTimeout(function(){  // litle wrap for working history
     	            window.location="/eshop/cart/address";
                     delete spinner.stop();
-                },0)
+                },0);
              },
              error: function(xhr, status, http_status){
                 //console.log(JSON.stringify(xhr));

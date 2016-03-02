@@ -1,0 +1,30 @@
+{#- vim: tabstop=2 softtabstop=2 expandtab
+#}
+{% set tags_attached_ids = tags_attached|map(attribute='id')|list %}
+<ul class="nav nav-pills">
+  <li><select class="form-control" name="tag">
+      <option value="0" selected="selected">{{ _('Select the tag') }}</option>
+      {% for tag in tags %}
+      <option value="{{ tag.id }}" {{ 'disabled="disabled"' if tag.id in tags_attached_ids else ''}}>{{ tag.value }}</option>
+      {% endfor %}
+  </select></li>
+</ul>
+
+<table class="table table-hover" role="tags">
+  {% for tag in tags_attached %}
+  <tr><td>{{ tag.value }}</td><td><a remove="{{tag.id}}">{{ _('Remove tag') }}</a></td></tr>
+  {% endfor %}
+</table>
+<script src="/js/i18n.js"></script>
+<script src="/js/tags.js"></script>
+<script>
+  $.extend(M.locales, {
+              'Remove tag': "{{ _('Remove tag') }}"
+          });
+  $(document).ready(function(){
+    var tags = new M.Tags({'token': '{{ token }}',
+                           'tags_link': '{{ tags_link }}',
+                           'tags_link_append': '{{ tags_link_append }}',
+                           'tags_link_remove': '{{ tags_link_remove }}'});
+  });
+</script>

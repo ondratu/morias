@@ -10,7 +10,7 @@ from lib.jobs import Job
 
 
 def get(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT path, timestamp, singleton, pid, login_id, data
@@ -28,7 +28,7 @@ def get(self, req):
 
 
 def add(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     try:
         c.execute("""
@@ -45,7 +45,7 @@ def add(self, req):
 
 
 def mod(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("UPDATE jobs SET data = %s WHERE pid = %d",
               (json.dumps(self.data), self.pid))
@@ -53,7 +53,7 @@ def mod(self, req):
 
 
 def delete(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("DELETE FROM jobs WHERE pid = %d", self.pid)
     tran.commit()
@@ -64,7 +64,7 @@ def item_list(req, pager, **kwargs):
                 for k, v in kwargs.items())
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT path, timestamp, singleton, pid, j.login_id, email, j.data

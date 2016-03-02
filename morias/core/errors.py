@@ -1,4 +1,5 @@
 from poorwsgi import app, state
+from falias.util import Object
 
 from traceback import format_exc
 
@@ -10,17 +11,33 @@ NOT_FOUND = 1002
 SUCCESS = 2000
 
 
-@app.http_state(state.HTTP_FORBIDDEN)
+class ErrorValue(ValueError, Object):
+    code = 0
+    reason = 'undefined'
+    message = 'undefined'
+
+    def __init__(self, **kwargs):
+        for key, val in kwargs.items():
+            setattr(self, key, val)
+
+    def __json__(self):
+        rv = super(ErrorValue, self).__json__()
+        rv.update({'code': self.code, 'reason': self.reason,
+                   'message': self.message})
+        return rv
+
+
+@app.http_state(state.HTTP_FORBIDDEN, state.METHOD_ALL)
 def forbidden(req):
-    req.state = state.HTTP_FORBIDDEN
+    req.status = state.HTTP_FORBIDDEN
     req.write(generate_page(req, "error/forbidden.html",
                             request_uri=req.environ['REQUEST_URI']))
     return state.DONE
 
 
-@app.http_state(state.HTTP_NOT_FOUND)
+@app.http_state(state.HTTP_NOT_FOUND, state.METHOD_ALL)
 def not_found(req):
-    req.state = state.HTTP_NOT_FOUND
+    req.status = state.HTTP_NOT_FOUND
     req.write(generate_page(req, "error/not_found.html",
                             request_uri=req.environ['REQUEST_URI']))
     return state.DONE
@@ -28,19 +45,19 @@ def not_found(req):
 
 @app.http_state(state.HTTP_PRECONDITION_FAILED, state.METHOD_ALL)
 def precondition_failed(req):
-    req.state = state.HTTP_PRECONDITION_FAILED
+    req.status = state.HTTP_PRECONDITION_FAILED
     req.write(generate_page(req, "error/precondition_failed.html",
                             precondition=req.precondition))
     return state.DONE
 
 
-@app.http_state(state.HTTP_INTERNAL_SERVER_ERROR)
+@app.http_state(state.HTTP_INTERNAL_SERVER_ERROR, state.METHOD_ALL)
 def internal_server_error(req):
     traceback = format_exc()
     traceback = ''.join(traceback)
     req.log_error(traceback, state.LOG_ERR)
 
-    req.state = state.HTTP_PRECONDITION_FAILED
+    req.status = state.HTTP_INTERNAL_SERVER_ERROR
     req.write(generate_page(req, "error/internal_server_error.html",
                             traceback=traceback.split('\n')))
     return state.DONE

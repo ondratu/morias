@@ -5,7 +5,7 @@ from options import Option
 
 
 def get(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("SELECT value FROM options WHERE section = %s AND option = %s",
               (self.section, self.option))
@@ -20,7 +20,7 @@ def get(self, req):
 
 
 def add(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         INSERT INTO options (section, option, value)
@@ -32,7 +32,7 @@ def add(self, req):
 
 
 def mod(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("UPDATE options SET value = %s", self.value)
     if not c.rowcount:
@@ -43,7 +43,7 @@ def mod(self, req):
 
 
 def option_set(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         INSERT OR REPLACE INTO options (section, option, value)
@@ -55,7 +55,7 @@ def option_set(self, req):
 
 
 def delete(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("DELETE FROM options WHERE section = %s AND option = %s",
               (self.section, self.option))
@@ -68,7 +68,7 @@ def options_list(req, pager, **kwargs):
                 for k, v in kwargs.items())
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT section, option, value FROM options %s

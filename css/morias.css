@@ -47,6 +47,11 @@ table .disabled {
   color: #ccc;
 }
 
+a.disabled {
+  color: #777;
+  pointer-events: none;
+}
+
 .popup-message {
     font-size: 200%;
 }
@@ -148,6 +153,10 @@ pre.striped > *:nth-child(even) {
     top: 5px;
     right: 5px;
 }
+.form-inline .in-input {
+    position: relative;
+    margin-left: -1em;
+}
 
 /* fix attachment preview tooltip*/
 .tooltip-inner {
@@ -185,6 +194,7 @@ pre.striped > *:nth-child(even) {
 .menu-symbol.fa-address:before {content: "\f003";}      /*fa-envelop-o*/
 .menu-symbol.fa-files:before {content: "\f0c5";}        /*fa-files-o*/
 .menu-symbol.fa-news:before {content: "\f1ea";}         /*fa-newspaper-o*/
+.menu-symbol.fa-articles:before {content: "\f02d";}     /*fa-book*/
 .menu-symbol.fa-attachments:before {content: "\f0c6";}  /*fa-paperclip-o*/
 .menu-symbol.fa-options:before {content: "\f085";}      /*fa-gears-o*/
 .menu-symbol.fa-debug:before {content: "\f0f1";}        /*fa-stethoscope*/
@@ -201,6 +211,10 @@ pre.striped > *:nth-child(even) {
 
 .padding15 {
     padding-left: 15px;
+}
+
+.padding0{
+    padding: 0;
 }
 
 .attachments {
@@ -381,4 +395,33 @@ html, body {
 }
 #push, .footer {
     height: 40px;
+}
+
+.tags {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    float: right;
+    padding: 0.5em 1em;
+}
+
+.rst-source {
+  padding-left: 3em;
+  resize: none;
+  font-family: monospace;
+  background: transparent;
+}
+
+.rst-syntax {
+  color: #aaa;
+  overflow: hidden;
+  font-family: monospace;
+  background: transparent;
+}
+.rst-syntax .error-line {
+  color: #a33;
+  background: #fbb;
+}
+
+.discussion h5 {
+  font-weight: bold;
 }

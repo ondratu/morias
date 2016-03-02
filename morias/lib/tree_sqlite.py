@@ -12,7 +12,7 @@ else:
 
 def _lock(req):     # static method
     """ lock database for any read/write operatios """
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute('BEGIN EXCLUSIVE TRANSACTION')
     return c
@@ -95,7 +95,7 @@ def _del(self, c):
 
 
 def get(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("SELECT * FROM %s WHERE %s = %%d" % (self.TABLE, self.ID),
               self.id)
@@ -112,7 +112,7 @@ def get(self, req):
 
 
 def mod(self, req, **kwargs):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     try:        # page name must be uniq
@@ -136,7 +136,7 @@ def item_list(req, cls, pager, **kwargs):   # static method
                 for k, v in kwargs.items())
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("SELECT * FROM %s %s ORDER BY %s LIMIT %%d, %%d" %
               (cls.TABLE, cond, pager.order),
@@ -158,7 +158,7 @@ def full_tree(req, cls, **kwargs):      # static method
                 for k, v in kwargs.items())
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("SELECT * FROM %s %s ORDER BY %s" %
               (cls.TABLE, cond, cls.ORDER), tuple(kwargs.values()))

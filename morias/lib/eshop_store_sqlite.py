@@ -9,7 +9,7 @@ from lib.attachments import Attachment
 
 
 def get(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT modify_date, name, price, description, count, state, data,
@@ -33,7 +33,7 @@ def get(self, req):
 
 
 def add(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     c.execute("""
@@ -49,7 +49,7 @@ def add(self, req):
 
 
 def mod(self, req):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     c.execute("""
@@ -68,7 +68,7 @@ def mod(self, req):
 
 
 def set_state(self, req, state):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
 
     c.execute("UPDATE eshop_store SET state = %d WHERE item_id = %d",
@@ -126,7 +126,7 @@ def _action(self, c, action):
 
 
 def action(self, req, action):
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     rv = _action(self, c, action)
     tran.commit()
@@ -139,7 +139,7 @@ def item_list(req, pager, **kwargs):
                 for k, v in kwargs.items())
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT item_id, modify_date, name, price, description, count,
@@ -174,7 +174,7 @@ def item_list_actions(req, pager, **kwargs):
                 for k, v in kwargs.items())
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
-    tran = req.db.transaction(req.logger)
+    tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
         SELECT item_id, timestamp, action_type, data

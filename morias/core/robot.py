@@ -2,6 +2,9 @@
 from random import seed, randint
 from gettext import gettext as _
 
+from errors import ErrorValue
+
+
 robot_questions = []
 seed()
 
@@ -13,3 +16,9 @@ for i in xrange(0, 100):
     answer = str(eval(expression))
     robot_questions.append((question, answer))
 # endfor
+
+
+class RobotError(ErrorValue):
+    code = 403
+    reason = 'robot_error'
+    message = 'Robot detected from form'

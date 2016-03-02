@@ -1,0 +1,105 @@
+{#- vim: tabstop=2 softtabstop=2 expandtab
+#}
+{% if site.this == '/admin/articles/add' -%}
+    {% set title = 'Admin - '+ _('Edit article') + ' ' + article.title -%}
+{% else -%}
+    {% set title = 'Admin - '+ _('New article') -%}
+{% endif -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+      <ul class="nav nav-pills nav-sm">
+    {% if site.this == '/admin/articles/add' -%}
+        <li class="navbar-brand">{{ _('New article') }}</li>
+    {% else -%}
+        <li class="navbar-brand">{{ _('Edit article') }}</li>
+        <li class="pull-right"><a href="/admin/articles/add">{{ _('New article') }}</a></li>
+    {% endif -%}
+        <li class="pull-right"><a href="/admin/articles">{{ _('Articles list') }}</a></li>
+      </ul>
+
+      <form class="form-horizontal" role="form" method="post">
+        <div class="form-group">
+          <label for="input_title" class="col-sm-1 control-label">{{ _('Title') }}</label>
+          <div class="col-sm-11 {{ 'has-error' if error is defined and error == 1 else '' }}">
+            <input type="text" id="input_title" name="title" class="form-control" placeholder="{{ _('Title') }}" required="required" value="{{ (article.title or '')|e }}">
+            {% if error is defined and error == 1 %}<div class="help-inline" >{{ _('Empty title') }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input_locale" class="col-sm-1 control-label">{{ _('Locale') }}</label>
+          <div class="col-sm-2">
+            <input type="text" id="input_locale" name="locale" class="form-control" placeholder="{{ _('Locale') }}" value="{{ (article.locale or '')|e }}">
+          </div>
+          <label for="input_state" class="col-sm-1 control-label">{{ _('Format')}}</label>
+          <div class="col-sm-2">
+            <select id="input_state" class="form-control" name="format">
+              <option value="1" {{ 'selected="selected"' if article.format == 1 else '' }}>{{ _('HTML') }}</option>
+              <option value="2" {{ 'selected="selected"' if article.format == 2 else '' }}>{{ _('Restructured Text') }}</option>
+            </select>
+          </div>
+          <label for="input_state" class="col-sm-1 control-label">{{ _('State')}}</label>
+          <div class="col-sm-2">
+            <select id="input_state" class="form-control" name="state">
+              <option value="0" {{ 'selected="selected"' if article.state == 0 else '' }}>{{ _('Disable') }}</option>
+              <option value="1" {{ 'selected="selected"' if article.state == 1 else '' }} {{ 'disabled="disabled"' if article.public_date.year > 1970 else '' }}>{{ _('Draft') }}</option>
+              <option value="2" {{ 'selected="selected"' if article.state == 2 else '' }}>{{ _('Ready to public') }}</option>
+            </select>
+          </div>
+          <div class="col-sm-1">
+          {% if article.public_date.year > 1970 and article.state > 0 -%}
+            <i style="font-size: 200%;" title="{{ _('Public') }}" class="fa fa-eye"></i></div>
+          {% else -%}
+            <i style="font-size: 200%;" title="{{ _('Not Public') }}" class="fa fa-eye-slash"></i></div>
+          {% endif -%}
+          <div class="col-sm-2"><button class="btn btn-default btn-block" type="submit">{{ _('Save') }}</button></div>
+        </div>
+
+        <div class="form-group {{ 'has-error' if error is defined and error == 2 else '' }}">
+          <div class="col-sm-12">
+            {% set editor = dict(format=('rst' if article.format == 2 else 'html'), rst_check_url='/admin/articles/rst', code=True, name="perex") %}
+            {% include "_editor.html" %}
+            <textarea data-source="#perex" name="perex" class="form-control" rows="4">{{ (article.perex or '')|e }}</textarea>
+            {% if error is defined and error == 2 %}<div class="help-inline" >{{ _('Empty perex') }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-group {{ 'has-error' if error is defined and error == 3 else '' }}">
+          <div class="col-sm-12">
+            {% set editor = dict(format=('rst' if article.format == 2 else 'html'), rst_check_url='/admin/articles/rst',  header=True, code=True, justify=True, list=True, ident=True) %}
+            {% include "_editor.html" %}
+            <textarea data-source="#editor" name="body" class="form-control" rows="25">{{ (article.body or '')|e }}</textarea>
+            {% if error is defined and error == 3 %}<div class="help-inline" >{{ _('Empty body') }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-3 col-sm-offset-7">
+          {% if check_right('articles_editor') and article.public_date.year == 1970 -%}
+            <button class="btn btn-default btn-block" type="submit" name="public" value="1">{{ _('Save and Public') }}</button>
+          {% endif -%}
+          </div>
+          <div class="col-sm-2 col-sm-off-set-10"><button class="btn btn-default btn-block" type="submit">{{ _('Save') }}</button></div>
+        </div>
+      </form>
+      {% if site.this != '/admin/articles/add' -%}
+      <div class="row">
+        <div class="col-sm-6">
+        {% set tags_attached = article.tags %}
+        {% set tags_link = '/admin/articles/'+article.id|string+'/tags' %}
+        {% set tags_link_append = '/admin/articles/'+article.id|string+'/tags/{tag_id}/append' %}
+        {% set tags_link_remove = '/admin/articles/'+article.id|string+'/tags/{tag_id}/remove' %}
+        {% include "admin/_tags.html" %}
+        </div>
+        <div class="col-sm-6">
+        {% set attachments_object_type = 'article' %}
+        {% set attachments_object_id = article.id %}
+        {% set attachments_on_server = false %}
+        {% include "admin/_attachments_upload.html" %}
+        </div>
+      <div>
+      {% endif -%}
+    </div>
+{% include "_footer.html" %}

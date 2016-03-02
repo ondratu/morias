@@ -78,7 +78,6 @@ class Attachment(object):
         self.uploader_id = uploader_id
         self.md5 = md5(str(time())).hexdigest()
         self.data = {}
-        print "object_type", form.keys()
 
     def dumps(self):
         return {
