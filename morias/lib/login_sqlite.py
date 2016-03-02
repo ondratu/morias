@@ -1,5 +1,7 @@
 
 from sqlite3 import IntegrityError
+from bcrypt import hashpw
+
 from hashlib import md5
 
 import json
@@ -154,19 +156,27 @@ def find(self, req):
     tran.connection.create_function('hash', 3, login_hash)
     c = tran.cursor()
     c.execute("""
-        SELECT login_id, rights, data, history, hash(email, enabled, passwd)
-        FROM logins WHERE email = %s AND passwd = %s AND enabled = 1
-        """, (self.email, self.passwd))
+        SELECT login_id, rights, data, history, passwd,
+            hash(email, enabled, passwd)
+        FROM logins WHERE email = %s AND enabled = 1
+        """, self.email)
     row = c.fetchone()
     tran.commit()
 
     if not row:
         return False
+    try:
+        hspw = row[4].encode('utf-8')
+        if hspw != hashpw(self.plain, hspw):
+            return False
+    except:
+        return False
+
     self.id = row[0]
     self.rights = json.loads(row[1])
     self.data = json.loads(row[2])
     self.history = json.loads(row[3])
-    self.md5 = row[4]
+    self.md5 = row[5]
     return True
 # enddef
 

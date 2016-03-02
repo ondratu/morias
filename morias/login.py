@@ -20,12 +20,13 @@ from user import user_info_menu
 from core.errors import BAD_LOGIN
 
 _check_conf = (
-    ('morias', 'salt', unicode),                    # salt for passwords
     ('morias', 'db', Sql),                          # database configuration
     ('morias', 'smtp', Smtp),                       # for password reset
 
     ('login', 'sign_up', bool, False),              # If user could sign up
     # If user could get entry link when don't know password
+    ('login', 'rounds', int, 12, True,
+     'Rounds for bcrypt gensalt.'),
     ('login', 'forget_password_link', bool, False),
     ('login', 'ttl_of_password_link', int, 30, True,
      'Time to Live in minutes of forgotten password link.'),
@@ -147,7 +148,7 @@ def login(req):
 
     if req.method == 'POST':
         login = Login()
-        login.bind(req.form, req.cfg.morias_salt)
+        login.bind(req.form, req.cfg.login_rounds)
 
         ip = 'ip' in req.form
         if login.find(req):
@@ -201,7 +202,7 @@ def admin_logins_add(req):
     if req.method == 'POST':
         check_token(req, req.form.get('token'))
         login = Login()
-        login.bind(req.form, req.cfg.morias_salt)
+        login.bind(req.form, req.cfg.login_rounds)
         if not req.cfg.login_created_verify_link:
             login.enabled = 1
         login.rights = ['user']
@@ -234,7 +235,7 @@ def admin_logins_mod(req, id):
     done = None
     if req.method == 'POST':
         check_token(req, req.form.get('token'))
-        login.bind(req.form, req.cfg.morias_salt)
+        login.bind(req.form, req.cfg.login_rounds)
         done = login.mod(req)
 
         if 0 < done < 64:
@@ -277,7 +278,7 @@ def login_mod(req):
     state = None
     if req.method == 'POST':
         check_token(req, req.form.get('token'))
-        login.bind(req.form, req.cfg.morias_salt)
+        login.bind(req.form, req.cfg.login_rounds)
         email = login.email if login.email != req.login.email else None
         state = login.pref(req, email=email)
 
@@ -310,7 +311,7 @@ def sign_up(req):
         check = req.form.getfirst("answer", "", str) == answer
 
         login = Login()
-        login.bind(req.form, req.cfg.morias_salt)
+        login.bind(req.form, req.cfg.login_rounds)
 
         if robot or not check:
             return generate_page(req, "/login/login_mod.html", item=login,

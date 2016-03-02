@@ -1,12 +1,12 @@
 
 from falias.util import uni, nint
+from bcrypt import hashpw, gensalt
 
 from time import time
 from hashlib import sha256
 
 import re
 
-from core.login import sha1_sdigest
 
 MIN_PASSWD_LEN = 6
 
@@ -159,12 +159,12 @@ class Login(object):
         m._commit(c)
         return retval
 
-    def bind(self, form, salt):
+    def bind(self, form, rounds=12):
         self.id = form.getfirst('login_id', self.id, nint)
         self.email = form.getfirst('email', '', uni)
-        self.plain = form.getfirst('passwd', '', uni)
-        self.passwd = sha1_sdigest(form.getfirst('passwd', '', uni), salt)
-        self.again = sha1_sdigest(form.getfirst('again', '', uni), salt)
+        self.plain = form.getfirst('passwd', '', str)
+        self.passwd = hashpw(form.getfirst('passwd', '', str), gensalt(rounds))
+        self.again = hashpw(form.getfirst('again', '', str), self.passwd)
         self.rights = form.getlist('rights', uni)
         # json data
         self.data = {}  # empty dictionary for now
