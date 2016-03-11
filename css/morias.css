@@ -401,7 +401,9 @@ html, body {
     border: 1px solid #ddd;
     border-radius: 4px;
     float: right;
-    padding: 0.5em 1em;
+    padding: 0.5em 0.5em;
+    margin-left: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 .rst-source {

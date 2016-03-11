@@ -1,14 +1,24 @@
 {#- vim: tabstop=2 softtabstop=2 expandtab
 #}
-<div class="discussion">
+<div class="discussion clear">
   <a name="discussion"></a><h4>{{ _('Discussion') }}</h4>
 {% for comment in discussion %}
-  <div itemprop="comment">
+  <div itemprop="comment" class="panel panel-default">
     <a name="comment_{{ comment.id }}"></a>
-    <h5>{{ comment.title|e }}</h5>
-    <div class="pull-left">{{ _('Author') }}: {{ comment.author|e }}</div>
-    <div class="pull-right">{{ _('Date') }}: {{ comment.create_date.strftime("%H:%M %d.%m.%Y") }}</div>
-    <div class="clear">{{ comment.body|e|replace('\n', '<br>\n') }}</div>
+    <div class="panel-heading"><h5 class="panel-title">{{ comment.title|e }}</h5></div>
+    <div class="panel-body">
+      {{ comment.body|e|replace('\n', '<br>\n') }}
+    </div>
+    <div class="panel-footer small">
+      <div class="pull-left">
+        <span class="text-muted">{{ _('Author') }}:</span>
+        <span itemprop="name">{{ comment.author|e }}</span>
+      </div>
+      <div class="pull-right text-muted">
+        {{ _('Date') }}: {{ comment.create_date.strftime("%H:%M %d.%m.%Y") }}
+      </div>
+      <div class="clear"></div>
+    </div>
   </div>
 {% endfor %}
 {% if not error %}
