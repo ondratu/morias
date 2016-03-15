@@ -74,10 +74,11 @@ class Attachment(object):
             self.file = form_file.file
         self.object_type = form.getfirst('object_type', '', uni)
         self.object_id = form.getfirst('object_id', '0', int)
-        self.description = form.getfirst('description', '', uni)
         self.uploader_id = uploader_id
         self.md5 = md5(str(time())).hexdigest()
-        self.data = {}
+        self.data = {
+            'description': form.getfirst('description', '', uni)
+        }
 
     def dumps(self):
         return {
@@ -85,7 +86,7 @@ class Attachment(object):
             'mime_type': getattr(self, 'mime_type', ''),
             'object_type': getattr(self, 'object_type', ''),
             'object_id': getattr(self, 'object_id', 0),
-            'description': getattr(self, 'description', ''),
+            'description': getattr(self, 'data', {}).get('description', ''),
             'webname': self.webname()
         }
 
