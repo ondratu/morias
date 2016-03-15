@@ -182,6 +182,8 @@ def item_list(req, pager, perex=False, **kwargs):
 
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
+    print kwargs.values()
+
     tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("""

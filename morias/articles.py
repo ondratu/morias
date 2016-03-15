@@ -293,15 +293,15 @@ def articles_comment_xhr(req, uri=None, id=None):
 @app.route('/<locale:word>/articles')
 @app.route('/<locale:word>/articles/t/<tag:word>')
 def articles_list_full(req, locale=None, tag=None):
-    locale = locale if locale else get_lang(req)
-
     pager = Pager(limit=5, sort='desc', order='create_date')
     pager.bind(req.args)
 
-    items = Article.list(req, pager, perex=True, public=1, locale=(locale, ''),
-                         tag=tag)
+    kwargs = {'locale': (locale, '')} if locale else {}
+    items = Article.list(req, pager, perex=True, public=1, tag=tag, **kwargs)
+
+    lang = locale if locale else get_lang(req)
     return generate_page(req, "articles_list.html", pager=pager, items=items,
-                         lang=locale, staticmenu=req.cfg.get_static_menu(req))
+                         lang=lang, staticmenu=req.cfg.get_static_menu(req))
 # enddef
 
 
