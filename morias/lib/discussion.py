@@ -4,8 +4,8 @@ from json import dumps, loads
 from time import time
 from datetime import datetime
 
-from core.errors import ErrorValue
-from lib.wotree import WoItem
+from morias.core.errors import ErrorValue
+from wotree import WoItem
 
 
 class EmptyTitle(ErrorValue):
