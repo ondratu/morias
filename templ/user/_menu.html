@@ -16,7 +16,7 @@
         <ul class="pull-right nav navbar-nav">
         {%- if login is defined and login != none %}
           <li {{ 'class="active"' if site.this == '/user' else '' }}>{# -#}
-            <a href="/user">{{ login.email }}</a></li>
+            <a href="/user">{{ login.email|e }}</a></li>
         {%- endif %}
         {#-%- for item in menu if item.uri -%#}              {# TODO: tooltip (title) -#}
         {%- for item in menu -%}
@@ -38,7 +38,7 @@
           {%- endif %}
         {%- endfor %}
         {% if login is defined and login != none -%}
-          <li><a href="/log_out">{{ _('Log out') }} {{ login.email.split('@')[0] }}</a></li>
+          <li><a href="/log_out">{{ _('Log out') }} {{ login.email.split('@')[0]|e }}</a></li>
         {% else -%}
           <li {{ 'class="active"' if site.this == '/log_in' else '' }}><a href="/log_in">{{ _('Log in') }}</a></li>
         {% endif -%}

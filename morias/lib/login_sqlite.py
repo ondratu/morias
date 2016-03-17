@@ -36,14 +36,15 @@ def _get(self, c, condition=None):
         raise AssertionError('Unsuported condition %s' % condition)
 
     c.execute("""
-        SELECT login_id, email, rights, enabled, data, history,
+        SELECT login_id, email, name, rights, enabled, data, history,
             hash(email, enabled, passwd)
         FROM logins WHERE %s = %%s
         """ % condition[0], condition[1])
     row = c.fetchone()
     if not row:
         return False
-    self.id, self.email, rights, self.enabled, data, history, self.md5 = row
+    self.id, self.email, self.name, rights, self.enabled, data, history, \
+        self.md5 = row
     self.rights = json.loads(rights)
     self.data = json.loads(data)
     self.history = json.loads(history)
@@ -66,11 +67,12 @@ def add(self, req):
     try:        # email must be uniq
         c.execute("""
             INSERT INTO logins
-                    (email, rights, data, passwd, enabled, history,
+                    (email, name, rights, data, passwd, enabled, history,
                      service_hash)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """, (self.email, json.dumps(self.rights), json.dumps(self.data),
-                  self.passwd, getattr(self, 'enabled', 0),
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (self.email, self.name, json.dumps(self.rights),
+                  json.dumps(self.data), self.passwd,
+                  getattr(self, 'enabled', 0),
                   json.dumps(self.history), self.service_hash))
         self.id = c.lastrowid
     except IntegrityError:
@@ -156,7 +158,7 @@ def find(self, req):
     tran.connection.create_function('hash', 3, login_hash)
     c = tran.cursor()
     c.execute("""
-        SELECT login_id, rights, data, history, passwd,
+        SELECT login_id, name, rights, data, history, passwd,
             hash(email, enabled, passwd)
         FROM logins WHERE email = %s AND enabled = 1
         """, self.email)
@@ -166,17 +168,18 @@ def find(self, req):
     if not row:
         return False
     try:
-        hspw = row[4].encode('utf-8')
+        hspw = row[5].encode('utf-8')
         if hspw != hashpw(self.plain, hspw):
             return False
     except:
         return False
 
     self.id = row[0]
-    self.rights = json.loads(row[1])
-    self.data = json.loads(row[2])
-    self.history = json.loads(row[3])
-    self.md5 = row[5]
+    self.name = row[1]
+    self.rights = json.loads(row[2])
+    self.data = json.loads(row[3])
+    self.history = json.loads(row[4])
+    self.md5 = row[6]
     return True
 # enddef
 
@@ -185,15 +188,16 @@ def item_list(req, pager):
     tran = req.db.transaction(req.log_info)
     c = tran.cursor()
     c.execute("""
-        SELECT login_id, email, rights, enabled
+        SELECT login_id, email, name, rights, enabled
         FROM logins ORDER BY email %s LIMIT %%d, %%d
         """ % pager.sort, (pager.offset, pager.limit))
     items = []
     for row in iter(c.fetchone, None):
         login = Login(row[0])
         login.email = row[1]
-        login.rights = json.loads(row[2])
-        login.enabled = row[3]
+        login.name = row[2]
+        login.rights = json.loads(row[3])
+        login.enabled = row[4]
         items.append(login)
     # endfor
 

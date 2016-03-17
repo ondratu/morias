@@ -32,7 +32,7 @@ def get(self, req, key='article_id'):
     tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("""
-        SELECT *, email FROM articles A
+        SELECT *, email, l.name AS author FROM articles A
             JOIN logins l ON (a.author_id = l.login_id) WHERE %s = %%s LIMIT 1
         """ % key, value)
     row = c.fetchone()
@@ -182,12 +182,10 @@ def item_list(req, pager, perex=False, **kwargs):
 
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
-    print kwargs.values()
-
     tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("""
-        SELECT a.article_id, serial_id, author_id, email AS author,
+        SELECT a.article_id, serial_id, author_id, email, name AS author,
             create_date, public_date, title, uri, locale, state %s
         FROM articles a JOIN logins l ON (a.author_id = l.login_id)
             %s %s

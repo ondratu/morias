@@ -26,9 +26,9 @@
         {% for item in items %}
         <tr {{ 'class="disabled"' if item.state == 0 else '' }}><td>{{ item.id }}</td>
             <td  >
-                <a href="/articles/{{ item.id }}">{{ item.title }}</a>
+                <a href="/articles/{{ item.uri }}">{{ item.title|e }}</a>
             </td>
-            <td>{{ item.author or '' }}</td>
+            <td>{{ item.email or '' }}</td>
             <td>{{ item.locale }}</td>
             <td>{{ item.create_date.strftime("%H:%M %d.%m.%Y") }}</td>
             <td>

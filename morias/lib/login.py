@@ -7,7 +7,6 @@ from hashlib import sha256
 
 import re
 
-
 MIN_PASSWD_LEN = 6
 
 # states    (errors from 1, warnings from 100, info from 200)
@@ -75,8 +74,8 @@ class Login(object):
         return retval
 
     def mod(self, req):
-        keys = ['email', 'rights', 'data']
-        vals = [self.email, self.rights, self.data]
+        keys = ['email', 'name', 'rights', 'data']
+        vals = [self.email, self.name, self.rights, self.data]
 
         error = 0
         if not self.check_email():
@@ -106,8 +105,8 @@ class Login(object):
     # enddef
 
     def pref(self, req, email=None):
-        keys = ['data']
-        vals = [self.data]
+        keys = ['name', 'data']
+        vals = [self.name, self.data]
 
         error = 0
         if email and not re_email.match(email):
@@ -166,6 +165,7 @@ class Login(object):
         self.passwd = hashpw(form.getfirst('passwd', '', str), gensalt(rounds))
         self.again = hashpw(form.getfirst('again', '', str), self.passwd)
         self.rights = form.getlist('rights', uni)
+        self.name = form.getfirst('name', '', uni)
         # json data
         self.data = {}  # empty dictionary for now
         if 'conditions' in form:

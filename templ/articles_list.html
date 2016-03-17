@@ -6,10 +6,10 @@
 
       {% for article in items -%}
       <div itemscope itemtype="http://schema.org/Article">
-        <h3 itemprop="headline"><a href="/articles/{{ article.uri }}">{{ article.title }}</a></h3>
+        <h3 itemprop="headline"><a href="/articles/{{ article.uri }}">{{ article.title|e }}</a></h3>
         <div class="pull-left" itemprop="author">
             <span class="text-muted">{{ _('Author') }}:</span>
-            <span itemprop="name">{{ article.author.split('@')[0] }}</span>
+            <span itemprop="name">{{ (article.author or article.email.split('@')[0])|e }}</span>
         </div>
         <div class="pull-right text-muted" content="{{ article.create_date.isoformat() }}" itemprop="datePublished">{{ _('Date') }}: {{ article.create_date.strftime("%H:%M %d.%m.%Y") }}</div>
         <div class="clear" itemprop="description">{{ article.perex }}</div>

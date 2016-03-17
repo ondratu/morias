@@ -1,18 +1,18 @@
 {#- vim: tabstop=2 softtabstop=2 expandtab
 #}
-{% set title = article.title -%}
+{% set title = article.title|e -%}
 {% include "_header.html" -%}
 {% include "user/_menu.html" -%}
 
     <div class="container" itemscope itemtype="http://schema.org/Article">
-      <h1 itemprop="headline">{{ article.title }}</h1>
+      <h1 itemprop="headline">{{ article.title|e }}</h1>
       <div class="pull-left text-muted" content="{{ article.create_date.isoformat() }}" itemprop="datePublished">{{ _('Date') }}: {{ article.create_date.strftime("%H:%M %d.%m.%Y") }}</div>
       <div class="clear">
       {% if article.tags %}
         <ul class="list-unstyled tags">
           <b>{{ _('Tags') }}:</b>
         {% for tag in article.tags %}
-          <li><a href="/articles/t/{{ tag.value }}">{{ tag.value }}</a></li>
+          <li><a href="/articles/t/{{ tag.value|e }}">{{ tag.value|e }}</a></li>
         {% endfor %}
         </ul>
       {% endif %}
@@ -21,7 +21,7 @@
       <div itemprop="articleBody">{{ article.body }}</div>
       <div class="pull-right" itemprop="author">
         <span class="text-muted">{{ _('Author') }}:</span>
-        <span itemprop="name">{{ article.email.split('@')[0] }}</span>
+        <span itemprop="name">{{ (article.author or article.email.split('@')[0])|e }}</span>
       </div>
 
     {% if article.data.get('discussion', True) %}

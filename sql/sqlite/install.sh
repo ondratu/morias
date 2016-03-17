@@ -20,6 +20,7 @@ printf "login "
 sqlite3 $1 < ${dir}/login.sql
 sqlite3 $1 < ${dir}/logins.01.sql
 sqlite3 $1 < ${dir}/logins.02.sql
+sqlite3 $1 < ${dir}/logins.03.sql
 
 printf "options "
 sqlite3 $1 < ${dir}/options.sql
