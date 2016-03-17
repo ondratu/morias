@@ -96,6 +96,10 @@ class Article(object):
         m = driver(req)
         return m.set_state(self, req, state)
 
+    def inc_data_key(self, req, key='article_id', **kwargs):
+        m = driver(req)
+        return m.inc_data_key(self, req, key, **kwargs)
+
     def bind(self, form, author_id=None):
         self.id = form.getfirst('article_id', self.id, nint)
         self.serial_id = form.getfirst('serial_id', self.id, nint)

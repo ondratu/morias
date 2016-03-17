@@ -26,7 +26,7 @@
         {% for item in items %}
         <tr {{ 'class="disabled"' if item.state == 0 else '' }}><td>{{ item.id }}</td>
             <td  >
-                <a href="/articles/{{ item.uri }}">{{ item.title|e }}</a>
+                <a href="/articles/{{ item.id }}">{{ item.title|e }}</a>
             </td>
             <td>{{ item.email or '' }}</td>
             <td>{{ item.locale }}</td>

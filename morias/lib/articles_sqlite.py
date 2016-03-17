@@ -3,7 +3,7 @@ from falias.util import islistable
 from falias.sqlite import DictCursor
 from sqlite3 import IntegrityError
 
-from json import dumps
+from json import dumps, loads
 
 from lib.articles import Article, Tag
 
@@ -127,6 +127,32 @@ def set_state(self, req, state):
     tran.commit()
     self.state = state
     return self
+# enddef
+
+
+def inc_data_key(self, req, key='article_id', **kwargs):
+    if key == 'article_id':
+        value = self.id
+    elif key == 'uri':
+        value = self.uri
+    else:
+        raise RuntimeError('Only article_id or title could be use to get')
+
+    tran = req.db.transaction(req.log_info)
+    c = tran.cursor()
+    c.execute("SELECT article_id, data FROM articles WHERE %s = %%s LIMIT 1" %
+              key, value)
+    row = c.fetchone()
+    if not row:
+        return None
+
+    article_id, data = row[0], loads(row[1])
+    for k, v in kwargs.items():
+        data[k] = data.get(k, 0) + v
+    c.execute("UPDATE articles SET data = %s WHERE article_id = %d",
+              (dumps(data), article_id))
+    tran.commit()
+    return True
 # enddef
 
 

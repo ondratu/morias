@@ -24,6 +24,14 @@
         <span itemprop="name">{{ (article.author or article.email.split('@')[0])|e }}</span>
       </div>
 
+    <script>
+        $(document).ready(function() {
+          $.ajax({url: window.location,
+                  type: 'put',
+                  accepts : {json: 'application/json', html: 'text/html'}
+          });
+        });
+    </script>
     {% if article.data.get('discussion', True) %}
       {% set discussion_object_id = article.id %}
       {% set discussion_comment_link = '/articles/'+article.uri+'#new_comment' %}

@@ -211,14 +211,15 @@ def articles_detail_internal(req, article, **kwargs):
 # enddef
 
 
-@app.route('/articles/<id:int>')
 @app.route('/articles/<uri:word>')
-def articles_detail(req, uri=None, id=None):
-    if not uri and not id:
-        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+@app.route('/articles/<id:int>')
+def articles_detail(req, arg):
+    id = arg if isinstance(arg, int) else None
+    uri = arg if isinstance(arg, unicode) else None
 
     article = Article(id)
     article.uri = uri
+
     if uri and not article.get(req, key='uri'):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
     if id and not article.get(req):
@@ -258,9 +259,27 @@ def articles_comment_internal(req, uri=None, id=None):
 # enddef
 
 
+@app.route('/articles/<uri:word>', method=state.METHOD_PUT)
+@app.route('/articles/<id:int>', method=state.METHOD_PUT)
+def articles_stats(req, arg):
+    id = arg if isinstance(arg, int) else None
+    uri = arg if isinstance(arg, unicode) else None
+
+    article = Article(id)
+    article.uri = uri
+    if uri and not article.inc_data_key(req, key='uri', visits=1):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+    if id and not article.inc_data_key(req, visits=1):
+        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+    return send_json(req, {'Ok': True})
+
+
 @app.route('/articles/<uri:word>', method=state.METHOD_POST)
 @app.route('/articles/<id:int>', method=state.METHOD_POST)
-def articles_comment(req, uri=None, id=None):
+def articles_comment(req, arg):
+    id = arg if isinstance(arg, int) else None
+    uri = arg if isinstance(arg, unicode) else None
+
     article, rv = articles_comment_internal(req, uri, id)
     if hasattr(rv, 'reason'):
         return articles_detail_internal(req, article, error=rv, form=req.form)
@@ -271,7 +290,10 @@ def articles_comment(req, uri=None, id=None):
 
 @app.route('/articles/<uri:word>/comment', method=state.METHOD_POST)
 @app.route('/articles/<id:int>/comment', method=state.METHOD_POST)
-def articles_comment_xhr(req, uri=None, id=None):
+def articles_comment_xhr(req, arg):
+    id = arg if isinstance(arg, int) else None
+    uri = arg if isinstance(arg, unicode) else None
+
     article, rv = articles_comment_internal(req, uri, id)
     # XXX: at now, isinstance not work, becouase, have another namespace
     # that rv....
