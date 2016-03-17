@@ -3,7 +3,7 @@
 {% include "user/_menu.html" -%}
 
     <div class="container">
-     {{ text }}
+     {{ html if isdefined(html) else text }}
     </div>
 
 {% include "_footer.html" %}

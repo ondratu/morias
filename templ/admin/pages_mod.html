@@ -26,21 +26,30 @@
 
       <form class="form-horizontal" role="form" method="post">
         <input type="hidden" name="token" value="{{ token }}">
-       {% if site.this != '/admin/pages/add' %}<div id="page_panel">{% endif %}
+       {% if site.this != '/admin/pages/add' %}<div to-hidden="panel">{% endif %}
         <div class="form-group">
           <label for="input_filename" class="col-sm-2 control-label">{{ _('File name') }}</label>
-          <div class="col-sm-5 {{ 'has-error' if error is defined else '' }}">
+          <div class="col-sm-4 {{ 'has-error' if error is defined else '' }}">
             <input type="text" id="input_filename" name="name" class="form-control" placeholder="{{ _('File name on server') }}" value="{{ (page.name or '')|e }}">
             <div class="help-inline" >{% include "admin/_pages_error.html" %}</div>
           </div>
 
           <label for="input_locale" class="col-sm-1 control-label">{{ _('Locale') }}</label>
-          <div class="col-sm-3">
+          <div class="col-sm-2">
             <input type="text" id="input_locale" name="locale" class="form-control" placeholder="{{ _('Locale') }}" value="{{ (page.locale or '')|e }}">
+          </div>
+
+          <label for="format" class="col-sm-1 control-label">{{ _('Format')}}</label>
+          <div class="col-sm-2">
+            <select id="format" class="form-control" name="format">
+              <option value="1" {{ 'selected="selected"' if page.format == 1 else '' }}>{{ _('HTML') }}</option>
+              <option value="2" {{ 'selected="selected"' if page.format == 2 else '' }}>{{ _('Restructured Text') }}</option>
+            </select>
           </div>
         </div>
 
-      {% if site.this == '/admin/pages/add' %}<div id="page_panel">{% endif %}
+      {% if site.this == '/admin/pages/add' %}<div to-hidden="panel">{% endif %}
+      {% if extra_rights %}
         <div class="form-group">
             <label class="col-sm-1 control-label">{{ _('Rights') }}</label>
             <label style="text-align: center;" class="col-sm-5 control-label">{{ _('Possilbe rights') }}</label>
@@ -65,6 +74,7 @@
           {% endfor %}
           </div>
         </div>
+       {% endif %}
        </div><!-- hiddener -->
 
         <div class="form-group">
@@ -73,13 +83,13 @@
             <input type="text" id="input_title" name="title" class="form-control" placeholder="{{ _('Title') }}" value="{{ (page.title or '')|e }}">
           </div>
 
-          <div class="col-sm-1"><a class="swittcher pull-right" elm="page_panel"><i class="fa -chevron-up"></i></a></div>
+          <div class="col-sm-1"><a class="swittcher pull-right" hidden-target="panel"><i class="fa -chevron-up"></i></a></div>
           <div class="col-sm-2"><button class="btn btn-default btn-block pull-right" type="submit">{{ _('Save') }}</button></div>
         </div>
 
         <div class="form-group">
           <div class="col-sm-12">
-            {% set editor = dict(header = True, code = True, justify = True, list = True, ident = True) %}
+            {% set editor = dict(format=('rst' if page.format == 2 else 'html'), rst_check_url='/admin/pages/rst', header = True, code = True, justify = True, list = True, ident = True) %}
             {% include "_editor.html" %}
             <textarea id="input_text" data-source="#editor" name="text" class="form-control" rows="18">{{ (page.text or '')|e }}</textarea></div>
         </div>
@@ -95,7 +105,9 @@
     </div>
     <script>
         var btn = $('.swittcher');
+      {% if error is not defined %}
         M.hiddener.close(btn, 0);
+      {% endif %}
     </script>
 
 {% include "_footer.html" %}

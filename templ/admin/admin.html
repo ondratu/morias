@@ -8,13 +8,13 @@
       <div class="row">
       {%- for item in submenu %}
         <div class="col-md-4"><div class="well item">
-          <a href="{{ item.uri }}" title="{{ (item.title or item.label)|e }}"><h2>
+          <a href="{{ item.uri }}" title="{{ (item.title or item.label)|e }}"><h3>
           {%- if item.symbol %}
             <i class="fa fa-{{item.symbol}} menu-symbol"></i>
           {%- else %}
             <i class="fa fa-none menu-symbol"></i>
           {%- endif -%}
-          {{ (item.label or item.title)|e }}</h2></a>
+          {{ (item.label or item.title)|e }}</h3></a>
         </div></div>
       {%- endfor %}
       </div>{# /row #}

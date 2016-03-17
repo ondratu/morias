@@ -3,19 +3,18 @@
 from poorwsgi import app, state, redirect, SERVER_RETURN
 from falias.sql import Sql
 
-from os.path import exists, isdir
-from os import access, R_OK, W_OK
-
-from core.login import check_login, rights, check_right, \
+from morias.core.login import check_login, rights, check_right, \
     match_right, do_check_right, do_match_right, do_create_token, check_token
-from core.render import generate_page
-from core.errors import SUCCESS
+from morias.core.render import generate_page
+from morias.core.errors import SUCCESS
 
-from lib.menu import Item
-from lib.pager import Pager
-from lib.page_file import Page
+from morias.lib.menu import Item
+from morias.lib.pager import Pager
+from morias.lib.page_file import Page
+from morias.lib.rst import check_rst, rst2html
+from morias.lib.timestamp import check_timestamp
 
-from admin import content_menu
+from morias.admin import content_menu
 
 
 _check_conf = (
@@ -26,11 +25,14 @@ _check_conf = (
     ('pages', 'source', str),
     ('pages', 'out', str, ''),
     ('pages', 'history', str, ''),
+    ('pages', 'extra_rights', bool, False, True,
+              "If pages have rights settings visible in editation."),
     ('pages', 'rights', tuple, '', True,
               "User rights, which could be use for page editing."),
     ('pages', 'redirect_to_index', bool, True),
     ('pages', 'runtime', bool, False),
-    ('pages', 'runtime_without_html', bool, False)      # danger !
+    ('pages', 'runtime_without_html', bool, False),     # danger !
+    ('pages', 'timestamp', unicode, 'tmp/pages.timestamp'),
 )
 
 
@@ -46,20 +48,12 @@ def _call_conf(cfg, parser):
     if cfg.pages_redirect_to_index and not cfg.pages_runtime:
         app.set_route('/', root)                # redirect from / to index.html
 
-    if cfg.pages_runtime:                    # auto register pages url
-        if cfg.pages_redirect_to_index:
-            app.set_route('/', runtime_file)                # / will be index
-        if cfg.pages_runtime_without_html:
-            for it in Page.list(cfg, Pager()):
-                if it.name[:-5] in ('admin', 'user', 'login', 'logout'):
-                    cfg.log_error('Denied runtime file uri: %s' % it.name[:-5],
-                                  state.LOG_ERR)
-                    continue
-                app.set_route('/'+it.name[:-5], runtime_file)   # without .html
-        else:
-            for it in Page.list(cfg, Pager()):
-                app.set_route('/'+it.name, runtime_file)
+    if cfg.pages_runtime:                       # auto register pages url
+        refresh_page_files(cfg, cfg.pages_timestamp, False)
+
 # enddef _call_conf
+
+timestamp = -1
 
 module_rights = ['pages_listall', 'pages_author', 'pages_modify']
 rights.update(module_rights)
@@ -68,51 +62,46 @@ content_menu.append(Item('/admin/pages', label="Pages", symbol="files",
                     rights=module_rights))
 
 
-@app.route("/test/pages/db")
-def test_db(req):
-    data = (None, 123, 3.14, "úspěšný test", "'; SELECT 1; SELECT")
-    tran = req.db.transaction(req.log_info)
-    c = tran.cursor()
-    c.execute("SELECT %s, %s, %s, %s, %s", data)
-    copy = tuple(it.encode('utf-8') if isinstance(it, unicode) else it
-                 for it in c.fetchone())
-    tran.commit()
+@app.pre_process()
+def corect_page_files(req):
+    if req.uri_rule in ('_debug_info_', '_send_file_', '_directory_index_'):
+        return  # this methods no need this pre process
 
-    req.content_type = "text/plain; charset=utf-8"
-    if copy == data:
-        return "Test Ok\n" + str(data) + '\n' + str(copy)
-    else:
-        return "Test failed\n" + str(data) + '\n' + str(copy)
+    if req.cfg.pages_runtime:
+        refresh_page_files(req, req.cfg.pages_timestamp)
 # enddef
 
 
-@app.route("/test/pages/dirs")
-def test_dirs(req):
-    retval = ""
-    error = False
+def refresh_page_files(req, cfg_timestamp, clear=True):
+    global timestamp
+    check = check_timestamp(req, cfg_timestamp)
+    if check > timestamp:       # if last load was in past to timestamp file
+        req.log_error("file timestamp is older, refresh page_files ...",
+                      state.LOG_INFO)
 
-    def read_access(d):
-        return access(d, R_OK)
+        if clear:
+            for uri, hdls in app.handlers.items():
+                if hdls.get(state.METHOD_GET) == runtime_file:
+                    app.pop_route(uri, state.METHOD_GET)
+                    app.pop_route(uri, state.METHOD_HEAD)
 
-    def write_access(d):
-        return access(d, W_OK)
+        if req.cfg.pages_redirect_to_index:
+            app.set_route('/', runtime_file)                # / will be index
+        if req.cfg.pages_runtime_without_html:
+            for it in Page.list(req.cfg, Pager(limit=-1)):
+                name = it.name[:it.name.rfind('.')]
+                if name in ('admin', 'user', 'login', 'logout'):
+                    req.cfg.log_error('Denied runtime file uri: %s' %
+                                      it.name[:-5], state.LOG_ERR)
+                    continue
+                req.cfg.log_info("Adding /%s" % name)
+                app.set_route('/'+name, runtime_file)   # without .html
+        else:
+            for it in Page.list(req.cfg, Pager(limit=-1)):
+                # rst not work
+                app.set_route('/'+it.name, runtime_file)
 
-    dirs = [req.cfg.pages_source]
-    if not req.pages_runtime:
-        dirs.append(req.cfg.pages_out)
-    if req.cfg.pages_history:
-        dirs.append(req.cfg.pages_history)
-
-    for d in dirs:
-        for fn in (exists, isdir, read_access, write_access):
-            tmp = fn(d)
-            line = "Dir %s %s" % (d, fn.__name__)
-            retval += "%s %s %s\n" % (line, "." * (70 - len(line)), tmp)
-            error = not tmp or error
-    retval += "\nTest" + " " * 68 + ("Failed" if error else "Pass")
-
-    req.content_type = "text/plain; charset=utf-8"
-    return retval
+        timestamp = check
 # enddef
 
 
@@ -128,9 +117,11 @@ def runtime_file(req):
         text = Page.text_by_name(req, req.uri[req.uri.rfind('/')+1:])
     else:       # without .html
         text = Page.text_by_name(req, req.uri[req.uri.rfind('/')+1:]+'.html')
-
     if text is None:
-        raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+        text = Page.text_by_name(req, req.uri[req.uri.rfind('/')+1:]+'.rst')
+        if text is None:
+            raise SERVER_RETURN(state.HTTP_NOT_FOUND)
+        text = rst2html(text)
 
     return generate_page(req, 'runtime_file.html', text=text, runtime=True)
 # enddef
@@ -203,12 +194,14 @@ def admin_pages_mod(req, id):
         error = page.mod(req)
         if error:
             return generate_page(req, "admin/pages_mod.html", token=token,
-                                 page=page, rights=rights, error=error)
+                                 page=page, rights=rights, error=error,
+                                 extra_rights=req.cfg.pages_extra_rights)
     # endif
     if not page.get(req):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
     return generate_page(req, "admin/pages_mod.html", token=token,
-                         page=page, rights=rights)
+                         page=page, rights=rights,
+                         extra_rights=req.cfg.pages_extra_rights)
 # enddef
 
 
@@ -243,3 +236,10 @@ def admin_pages_regenerate_all(req):
     # TODO: redirect to same page
     redirect(req, '/admin/pages?error=%d' % SUCCESS)
 # enddef
+
+
+@app.route('/admin/pages/rst', state.METHOD_POST)
+def admin_pages_rst(req):
+    check_login(req)
+    match_right(req, module_rights)
+    return check_rst(req)

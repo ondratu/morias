@@ -33,9 +33,9 @@
           <div class="col-sm-2">
             <input type="text" id="input_locale" name="locale" class="form-control" placeholder="{{ _('Locale') }}" value="{{ (article.locale or '')|e }}">
           </div>
-          <label for="input_state" class="col-sm-1 control-label">{{ _('Format')}}</label>
+          <label for="format" class="col-sm-1 control-label">{{ _('Format')}}</label>
           <div class="col-sm-2">
-            <select id="input_state" class="form-control" name="format">
+            <select id="format" class="form-control" name="format">
               <option value="1" {{ 'selected="selected"' if article.format == 1 else '' }}>{{ _('HTML') }}</option>
               <option value="2" {{ 'selected="selected"' if article.format == 2 else '' }}>{{ _('Restructured Text') }}</option>
             </select>

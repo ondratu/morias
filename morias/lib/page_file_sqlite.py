@@ -1,26 +1,38 @@
+from sqlite3 import IntegrityError
+from falias.util import islistable
+from falias.sqlite import DictCursor
+
+from os.path import getmtime
+from datetime import datetime
 
 import json
 
-from sqlite3 import IntegrityError
-from os.path import getmtime
-from datetime import datetime
-from falias.util import islistable
+from morias.lib.page_file import Page, PAGE_EXIST, PAGE_NOT_EXIST
 
-from lib.page_file import Page, PAGE_EXIST, PAGE_NOT_EXIST
+
+def test(req):
+    with req.db.transaction(req.log_info) as c:
+        c.execute("PRAGMA stats")
+        c.execute("SELECT strftime('%s','2013-12-09 18:19')*1")
+        value = c.fetchone()[0]
+        assert value == 1386613140
+        c.execute("""
+            SELECT author_id, name, title, locale, editor_rights, format
+                FROM page_files LIMIT 1
+            """)
 
 
 def get(self, req):
     tran = req.db.transaction(req.log_info)
-    c = tran.cursor()
+    c = tran.cursor(DictCursor)
     c.execute("""
-        SELECT author_id, name, title, locale, editor_rights
+        SELECT author_id, name, title, locale, editor_rights, format
             FROM page_files WHERE page_id = %s
         """, self.id)
     row = c.fetchone()
     if not row:
         return None
-    self.author_id, self.name, self.title, self.locale, rights = row
-    self.rights = json.loads(rights)
+    self.from_row(row)
     tran.commit()
     return self
 # enddef
@@ -33,10 +45,10 @@ def add(self, req):
     try:        # page must be uniq
         c.execute("""
             INSERT INTO page_files
-                    (author_id, name, title, locale, editor_rights)
+                    (author_id, name, title, locale, editor_rights, format)
                 VALUES ( %s, %s, %s, %s, %s)
             """, (self.author_id, self.name, self.title, self.locale,
-                  json.dumps(self.rights)))
+                  json.dumps(self.rights), self.format))
         self.id = c.lastrowid
     except IntegrityError:
         return PAGE_EXIST
@@ -53,10 +65,10 @@ def mod(self, req):
     try:        # page name must be uniq
         c.execute("""
             UPDATE page_files SET
-                    name=%s, title=%s, locale=%s, editor_rights=%s
+                    name=%s, title=%s, locale=%s, editor_rights=%s, format=%d
                 WHERE page_id = %s
             """, (self.name, self.title, self.locale, json.dumps(self.rights),
-                  self.id))
+                  self.format, self.id))
     except IntegrityError:
         return PAGE_EXIST
 
@@ -70,19 +82,19 @@ def mod(self, req):
 
 def delete(self, req):
     tran = req.db.transaction(req.log_info)
-    c = tran.cursor()
+    c = tran.cursor(DictCursor)
     c.execute("""
-        SELECT author_id, name, title, locale, editor_rights
+        SELECT author_id, name, title, locale, editor_rights, format
             FROM page_files WHERE page_id = %s
         """, self.id)
-    self.author_id, self.name, self.title, self.locale, rights = c.fetchone()
+    self.from_row(c.fetchone())
 
     c.execute("DELETE FROM page_files WHERE page_id = %s", self.id)
     if not c.rowcount:
         return PAGE_NOT_EXIST
 
     # backup deleted file to history and remove target
-    self.remove(req, rights)
+    self.remove(req)
     tran.commit()
 # enddef
 
@@ -109,17 +121,14 @@ def load_rights(self, req):
 def regenerate_all(req):
     tran = req.db.transaction(req.log_info)
     c = tran.cursor()
-    c.execute("SELECT page_id, author_id, name, title, locale FROM page_files")
-    row = c.fetchone()
-    while row is not None:
-        page_id, author_id, name, title, locale = row
-        page = Page(page_id)
-        page.author_id = author_id
-        page.name = name
-        page.title = title
-        page.locale = locale
+    c.execute("""
+        SELECT page_id, author_id, name, title, locale, format
+        FROM page_files
+        """)
+    for row in iter(c.fetchone, None):
+        page = Page()
+        page.from_row(row)
         page.regenerate(req)
-        row = c.fetchone()
     tran.commit()
 # enddef
 
@@ -130,22 +139,17 @@ def item_list(req, pager, **kwargs):
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
     tran = req.db.transaction(req.log_info)
-    c = tran.cursor()
+    c = tran.cursor(DictCursor)
     c.execute("""
-        SELECT page_id, author_id, name, title, locale, editor_rights
+        SELECT page_id, author_id, name, title, locale, editor_rights, format
             FROM page_files %s
                 ORDER BY %s %s LIMIT %%s, %%s
         """ % (cond, pager.order, pager.sort),
               tuple(kwargs.values()) + (pager.offset, pager.limit))
     items = []
     for row in iter(c.fetchone, None):
-        page_id, author_id, name, title, locale, editor_rights = row
-        page = Page(page_id)
-        page.author_id = author_id
-        page.name = name
-        page.title = title
-        page.locale = locale
-        page.rights = json.loads(editor_rights)
+        page = Page()
+        page.from_row(row)
         page.modify = datetime.fromtimestamp(   # timestamp of last modify
             getmtime(req.cfg.pages_source + '/' + page.name))
         items.append(page)

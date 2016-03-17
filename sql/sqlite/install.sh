@@ -33,6 +33,7 @@ sqlite3 $1 < ${dir}/page_menu.sql
 printf "page_file "
 sqlite3 $1 < ${dir}/page_file.sql
 sqlite3 $1 < ${dir}/page_files.01.sql
+sqlite3 $1 < ${dir}/page_files.02.sql
 
 printf "attachments "
 sqlite3 $1 < ${dir}/attachments.sql
@@ -48,5 +49,10 @@ sqlite3 $1 < ${dir}/eshop_store.sql
 
 printf "eshop_orders"
 sqlite3 $1 < ${dir}/eshop_orders.sql
+
+printf "articles"
+sqlite3 $1 < ${dir}/tags.sql
+sqlite3 $1 < ${dir}/articles.sql
+sqlite3 $1 < ${dir}/articles_discussion.sql
 
 printf "\nInstalled\n"

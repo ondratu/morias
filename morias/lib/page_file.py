@@ -1,16 +1,19 @@
-
-from os import rename, remove
-from os.path import exists
-from datetime import datetime
-from shutil import copyfile
-
 from falias.util import uni, nint
 from poorwsgi import state
 
-import re
+from os import rename, remove, access, R_OK, W_OK
+from os.path import exists, isdir
+from datetime import datetime
+from shutil import copyfile
 
-from core.render import generate_page
-from core.login import do_match_right, do_check_right
+import re
+import json
+
+from morias.core.render import generate_page
+from morias.core.login import do_match_right, do_check_right
+
+from morias.lib.rst import rst2html
+from morias.lib.timestamp import write_timestamp
 
 # errors
 EMPTY_FILENAME = 1
@@ -18,7 +21,10 @@ BAD_FILENAME = 2
 PAGE_EXIST = 3
 PAGE_NOT_EXIST = 4
 
-re_filename = re.compile(r"^[\w\.-]+\.html$")
+FORMAT_HTML = 1
+FORMAT_RST = 2
+
+re_filename = re.compile(r"^[\w\.-]+\.(html|rst)$")
 
 _drivers = ("sqlite",)
 
@@ -33,6 +39,17 @@ def driver(req):
 class Page():
     def __init__(self, id=None):
         self.id = id
+
+    def from_row(self, row):
+        for key in row.keys():
+            val = row[key]
+            if key == 'page_id':
+                self.id = val
+            elif key == 'rights':
+                self.rights = json.loads(val)
+            else:
+                setattr(self, key, val)
+    # enddef
 
     def get(self, req):
         m = driver(req)
@@ -60,7 +77,9 @@ class Page():
             return BAD_FILENAME
 
         m = driver(req)
-        return m.add(self, req)
+        rv = m.add(self, req)
+        write_timestamp(req, req.cfg.pages_timestamp)
+        return rv
     # enddef
 
     def mod(self, req):
@@ -70,20 +89,23 @@ class Page():
             return BAD_FILENAME
 
         m = driver(req)
-        return m.mod(self, req)
+        rv = m.mod(self, req)
+        write_timestamp(req, req.cfg.pages_timestamp)
+        return rv
     # enddef
 
     def delete(self, req):
         m = driver(req)
-        return m.delete(self, req)
+        rv = m.delete(self, req)
+        write_timestamp(req, req.cfg.pages_timestamp)
+        return rv
 
     def bind(self, form, author_id=None):
         self.id = form.getfirst('page_id', self.id, nint)
-        self.name = form.getfirst('name', '', uni)
-        self.title = form.getfirst('title', '', uni)
-        self.locale = form.getfirst('locale', '', uni)
+        for attr in ('name', 'title', 'locale', 'text'):
+            setattr(self, attr, form.getfirst(attr, '', uni))
         self.rights = form.getlist('rights', uni)
-        self.text = form.getfirst('text', '', uni)
+        self.format = form.getfirst('format', FORMAT_HTML, int)
         if author_id:
             self.author_id = author_id
     # enddef
@@ -99,7 +121,12 @@ class Page():
 
         if req.cfg.pages_runtime:
             return              # not need when paeges are runtime generated
+
         target = req.cfg.pages_out + '/' + self.name
+        if self.format == FORMAT_RST:
+            self.html = rst2html(self.text)
+            target += '.html'
+
         with open(target + '.tmp', 'w+') as tmp:
             tmp.write(generate_page(
                 req, "page_file.html", page=self,
@@ -107,7 +134,7 @@ class Page():
         rename(target + '.tmp', target)
     # enddef
 
-    def remove(self, req, rights):
+    def remove(self, req):
         # meta file about deleted page
         backup = req.cfg.pages_history + '/' + self.name
         b_name = backup + '.' + datetime.now().isoformat() + '.deleted'
@@ -115,7 +142,8 @@ class Page():
             tmp.write("title: %s\n" % self.title.encode('utf-8'))
             tmp.write("author_id: %ds\n" % self.author_id)
             tmp.write("locale: %s\n" % self.locale)
-            tmp.write("editor_rights: %s\n" % rights)
+            tmp.write("format: %s\n" % self.format)
+            tmp.write("editor_rights: %s\n" % json.dumps(self.rights))
 
         source = req.cfg.pages_source + '/' + self.name
         if exists(source):      # backup old file
@@ -133,6 +161,10 @@ class Page():
             self.text = f.read().decode('utf-8')
 
         target = req.cfg.pages_out + '/' + self.name
+        if self.format == FORMAT_RST:
+            self.html = rst2html(self.text)
+            target += '.html'
+
         with open(target + '.tmp', 'w+') as tmp:
             tmp.write(generate_page(
                 req, "page_file.html", page=self,
@@ -169,4 +201,28 @@ class Page():
 
         m = driver(req)
         return m.item_list(req, pager, **kwargs)
+
+    @staticmethod
+    def test(req):
+        m = driver(req)
+        return m.test(req)
+
+    @staticmethod
+    def test_dirs(req):
+
+        def read_access(d):
+            return access(d, R_OK)
+
+        def write_access(d):
+            return access(d, W_OK)
+
+        dirs = [req.cfg.pages_source]
+        if not req.pages_runtime:
+            dirs.append(req.cfg.pages_out)
+        if req.cfg.pages_history:
+            dirs.append(req.cfg.pages_history)
+
+        for d in dirs:
+            for fn in (exists, isdir, read_access, write_access):
+                assert fn(d)
 # endclass

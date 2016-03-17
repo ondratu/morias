@@ -4,7 +4,7 @@ M.hiddener = {
     open : function(btn, duration) {
         var duration = (duration == null) ? 100 : duration;
         var chl = btn.children();
-        var elm = $('#'+btn.attr('elm'));
+        var elm = $('[to-hidden='+btn.attr('hidden-target')+']');
 
         elm.slideDown(duration);
         btn.attr('state', 'open');
@@ -15,7 +15,7 @@ M.hiddener = {
     close: function(btn) {
         var duration = (duration == null) ? 100 : duration;
         var chl = btn.children();
-        var elm = $('#'+btn.attr('elm'));
+        var elm = $('[to-hidden='+btn.attr('hidden-target')+']');
 
         elm.slideUp(100);
         btn.attr('state', 'close');
