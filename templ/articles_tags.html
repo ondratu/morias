@@ -1,0 +1,16 @@
+{% set title = _('Articles tags') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" -%}
+    <div class="container">
+      <h1>{{ _('All articles tags') }}:</h1>
+      <div class="row">
+    {% for tag in tags %}
+        <div class="col-md-4"><div class="well item">
+          <a href="/articles/tag/{{ tag.value }}">
+            <h3>{{ tag.value }}</h3>
+          </a>
+        </div></div>
+    {% endfor %}
+      </div>
+    </div>
+{% include "_footer.html" %}

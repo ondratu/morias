@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <atom:link href="{{ site.scheme }}://{{ site.domain }}{{ site.this }}" rel="self" type="application/rss+xml" />
+    <title>{{ site.name }}</title>
+    <link>{{ site.scheme }}://{{ site.domain }}</link>
+    <description>{{ site.description }}</description>
+    <language>{{ lang }}</language>
+    <docs>http://interval.cz/clanky/rss-20/</docs>
+    <generator>Python, Jinja2, Morias</generator>
+    <webMaster>{{ webmaster }}</webMaster>
+    {%- set last_build = items[0].create_date.strftime("%a, %d %b %Y %X "+tzname[0]) if items else datetime(now()).strftime("%a, %d %b %Y %X "+tzname[0]) %}
+    <lastBuildDate>{{ last_build }}</lastBuildDate>
+  {% for article in items -%}
+    <item>
+      <title>{{ article.title|e }}</title>
+      <description>{{ article.perex|e }}</description>
+      <pubDate>{{ article.create_date.strftime("%a, %d %b %Y %X "+tzname[0]) }}</pubDate>
+      <pubDate>{{ article.create_date.isoformat() }}</pubDate>
+      <guid>{{ site.scheme }}://{{ site.domain }}/articles/{{ article.uri }}</guid>
+      <author>{{ article.email }}</author>
+    </item>
+  {% endfor -%}
+  </channel>
+</rss>

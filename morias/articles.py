@@ -4,6 +4,7 @@ from falias.sql import Sql
 from falias.util import uni, ObjectEncoder
 
 from random import randint
+from time import tzname
 
 from core.login import check_login, check_referer, match_right, rights, \
     do_check_right, check_token, create_token
@@ -338,7 +339,7 @@ def articles_rss(req):
     items = Article.list(req, pager, perex=True, public=1)
     return generate_page(req, "articles_rss.xml",
                          content_type="application/xml", pager=pager,
-                         items=items, lang=get_lang(req),
+                         items=items, lang=get_lang(req), tzname=tzname,
                          webmaster=req.server_admin)
 
 
