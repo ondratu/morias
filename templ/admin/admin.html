@@ -14,7 +14,7 @@
           {%- else %}
             <i class="fa fa-none menu-symbol"></i>
           {%- endif -%}
-          {{ (item.label or item.title)|e }}</h3></a>
+          {{ _((item.label or item.title)|e) }}</h3></a>
         </div></div>
       {%- endfor %}
       </div>{# /row #}

@@ -7,16 +7,159 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Morias 0.0.1\n"
 "Report-Msgid-Bugs-To: mcbig@zeropage.cz\n"
-"POT-Creation-Date: 2014-10-20 06:46+0200\n"
-"PO-Revision-Date: 2014-10-20 06:46+0100\n"
+"POT-Creation-Date: 2016-03-21 08:09+0100\n"
+"PO-Revision-Date: 2016-03-21 08:09+0100\n"
 "Last-Translator: Ondřej Tůma <mcbig@zeropage.cz>\n"
 "Language-Team: Blackmouse\n"
-"Language: Czech\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Czech\n"
-"X-Poedit-Country: CZECH REPUBLIC\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#: ../templ/_discussion.html:4
+msgid "Discussion"
+msgstr "Diskuze"
+
+#: ../templ/_discussion.html:14 ../templ/articles_detail.html:23
+#: ../templ/articles_list.html:11 ../templ/admin/articles.html:21
+#: ../templ/admin/attachments.html:18 ../templ/admin/news.html:21
+msgid "Author"
+msgstr "Autor"
+
+#: ../templ/_discussion.html:18 ../templ/articles_detail.html:9
+#: ../templ/articles_list.html:14
+msgid "Date"
+msgstr "Datum"
+
+#: ../templ/_discussion.html:30 ../templ/_discussion.html:41
+msgid "Your comment"
+msgstr "Váš komentář"
+
+#: ../templ/_discussion.html:34 ../templ/forms/contact-form.html:29
+msgid "Your name"
+msgstr "Vaše jméno"
+
+#: ../templ/_discussion.html:38 ../templ/admin/articles.html:20
+#: ../templ/admin/articles_mod.html:24 ../templ/admin/articles_mod.html:26
+#: ../templ/admin/news.html:20 ../templ/admin/news_mod.html:24
+#: ../templ/admin/news_mod.html:26 ../templ/admin/page_menu.html:33
+#: ../templ/admin/pages.html:39 ../templ/admin/pages_mod.html:81
+#: ../templ/admin/pages_mod.html:83
+msgid "Title"
+msgstr "Titulek"
+
+#: ../templ/_discussion.html:49 ../templ/forms/contact-form.html:46
+#: ../templ/login/forgotten_password.html:23 ../templ/login/login_mod.html:54
+msgid "Yes, I'm robot."
+msgstr "Ano, jsem robot."
+
+#: ../templ/_discussion.html:54 ../templ/forms/contact-form.html:12
+#: ../templ/login/forgotten_password.html:28 ../templ/login/login_mod.html:59
+msgid "Robots can't send the form."
+msgstr "Roboti nemohou odesílat formulář."
+
+#: ../templ/_discussion.html:65 ../templ/forms/contact-form.html:15
+#: ../templ/login/forgotten_password.html:39 ../templ/login/login_mod.html:70
+msgid "Your anser is not correct."
+msgstr "Vaše odpověď není správná."
+
+#: ../templ/_discussion.html:70
+msgid "Append comment"
+msgstr "Přidat komentář"
+
+#: ../templ/_editor.html:4
+msgid "Show source code"
+msgstr "Zobrazit zdrojový kód"
+
+#: ../templ/_editor.html:7
+msgid "Bold (Ctrl/Cmd+B)"
+msgstr "Tučně (Ctrl/Cmd+B)"
+
+#: ../templ/_editor.html:8
+msgid "Italic (Ctrl/Cmd+I)"
+msgstr "Kurzíva (Ctrl/Cmd+I)"
+
+#: ../templ/_editor.html:9
+msgid "Strikethrough"
+msgstr "Přeškrtnuto"
+
+#: ../templ/_editor.html:10
+msgid "Underline (Ctrl/Cmd+U)"
+msgstr "Podtrženě (Ctrl/Cmd+I)"
+
+#: ../templ/_editor.html:14
+#, fuzzy
+msgid "Bullet list"
+msgstr "Seznam aktualit"
+
+#: ../templ/_editor.html:15
+msgid "Number list"
+msgstr "Číselný seznam"
+
+#: ../templ/_editor.html:24
+msgid "Header"
+msgstr ""
+
+#: ../templ/_editor.html:26 ../templ/_editor.html:27
+msgid "Header 2"
+msgstr ""
+
+#: ../templ/_editor.html:28
+msgid "Header 3"
+msgstr ""
+
+#: ../templ/_editor.html:29
+msgid "Header 4"
+msgstr ""
+
+#: ../templ/_editor.html:30
+msgid "Header 5"
+msgstr ""
+
+#: ../templ/_editor.html:31
+msgid "Header 6"
+msgstr ""
+
+#: ../templ/_editor.html:35
+msgid "Code"
+msgstr "Kód"
+
+#: ../templ/_editor.html:38
+msgid "Normal Blok"
+msgstr "Normální blok"
+
+#: ../templ/_editor.html:50
+msgid "Hyperlink"
+msgstr "Odkaz"
+
+#: ../templ/_editor.html:57
+msgid "Remove Hyperlink"
+msgstr "Ostranit Odkaz"
+
+#: ../templ/_editor.html:60
+msgid "Undo (Ctrl/Cmd+Z)"
+msgstr "Zpět (Ctrl/Cmd+Z)"
+
+#: ../templ/_editor.html:61
+msgid "Redo (Ctrl/Cmd+Y)"
+msgstr "Vrátit změnu (Ctrl/Cmd+Y)"
+
+#: ../templ/_editor.html:62
+msgid "Remove formating"
+msgstr "Odstranit formátování"
+
+#: ../templ/_editor.html:65
+msgid "Show formated text"
+msgstr "Ukázat formátovaný text"
+
+#: ../templ/_orderby.html:6
+msgid "asc"
+msgstr "vzestupně"
+
+#: ../templ/_orderby.html:8
+msgid "desc"
+msgstr "sestupně"
 
 #: ../templ/_pager.html:14 ../templ/_pager.html:17
 msgid "First"
@@ -46,178 +189,124 @@ msgstr "Poslední"
 msgid "Ok"
 msgstr ""
 
-#: ../templ/_popup.html:24 ../templ/admin/page_menu.html:20
-#: ../templ/admin/pages.html:28
+#: ../templ/_popup.html:24 ../templ/admin/codebook.html:41
+#: ../templ/admin/logins_addresses.html:87 ../templ/admin/options.html:54
+#: ../templ/admin/page_menu.html:21 ../templ/admin/pages.html:29
 msgid "Cancel"
-msgstr ""
+msgstr "Zrušit"
 
-#: ../templ/_wysiwyg.html:3
-msgid "Show source code"
-msgstr ""
+#: ../templ/articles_detail.html:13
+msgid "Tags"
+msgstr "Nálepky"
 
-#: ../templ/_wysiwyg.html:6
-msgid "Bold (Ctrl/Cmd+B)"
-msgstr ""
+#: ../templ/articles_list.html:1
+msgid "Articles"
+msgstr "Články"
 
-#: ../templ/_wysiwyg.html:7
-msgid "Italic (Ctrl/Cmd+I)"
-msgstr ""
+#: ../templ/articles_tags.html:1
+msgid "Articles tags"
+msgstr "Nálepky článků"
 
-#: ../templ/_wysiwyg.html:8
-msgid "Strikethrough"
-msgstr ""
+#: ../templ/articles_tags.html:5
+msgid "All articles tags"
+msgstr "Všechny nálepky článků"
 
-#: ../templ/_wysiwyg.html:9
-msgid "Underline (Ctrl/Cmd+U)"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:13
-#, fuzzy
-msgid "Bullet list"
-msgstr "Seznam aktualit"
-
-#: ../templ/_wysiwyg.html:14
-#, fuzzy
-msgid "Number list"
-msgstr "Seznam aktualit"
-
-#: ../templ/_wysiwyg.html:23
-msgid "Header"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:25 ../templ/_wysiwyg.html:26
-msgid "Header 2"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:27
-msgid "Header 3"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:28
-msgid "Header 4"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:29
-msgid "Header 5"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:30
-msgid "Header 6"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:34
-msgid "Code"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:37
-msgid "Normal Blok"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:49
-msgid "Hyperlink"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:56
-msgid "Remove Hyperlink"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:59
-msgid "Undo (Ctrl/Cmd+Z)"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:60
-msgid "Redo (Ctrl/Cmd+Y)"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:61
-msgid "Remove formating"
-msgstr ""
-
-#: ../templ/_wysiwyg.html:64
-msgid "Show formated text"
-msgstr ""
-
-#: ../templ/login.html:1 ../templ/login.html:17 ../templ/user/_menu.html:24
-msgid "Sign in"
+#: ../templ/login.html:2 ../templ/login.html:37
+#: ../templ/login/forgotten_password.html:2
+msgid "Log in"
 msgstr "Přihlásit se"
 
-#: ../templ/login.html:7
-msgid "Bad login email or password"
-msgstr "Špatný email nebo heslo"
+#: ../templ/login.html:8
+msgid "Log in please"
+msgstr "Přihlaste se prosím"
 
-#: ../templ/login.html:9
-msgid "Your login is banned"
-msgstr ""
-
-#: ../templ/login.html:11
-msgid "Please sign in"
-msgstr "Prosím přihlaste se"
-
-#: ../templ/login.html:12
+#: ../templ/login.html:12 ../templ/login/forgotten_password.html:12
 msgid "Email address"
 msgstr "Emailová adresa"
 
-#: ../templ/login.html:13 ../templ/admin/logins_mod.html:62
-#: ../templ/admin/logins_mod.html:64 ../templ/user/login_pref.html:32
-#: ../templ/user/login_pref.html:34
+#: ../templ/login.html:15 ../templ/admin/logins_mod.html:79
+#: ../templ/admin/logins_mod.html:81 ../templ/login/login_mod.html:94
+#: ../templ/login/login_mod.html:96
 msgid "Password"
 msgstr "Heslo"
 
-#: ../templ/login.html:15
+#: ../templ/login.html:21
+msgid "Bad login email or password"
+msgstr "Špatný email nebo heslo"
+
+#: ../templ/login.html:23
+msgid "Your login is banned"
+msgstr "Váš účet je zakázán"
+
+#: ../templ/login.html:31
 msgid "Check IP"
+msgstr "Kontrolovat IP"
+
+#: ../templ/login.html:39
+msgid "I forgot my password"
+msgstr "Zapomněl jsem heslo"
+
+#: ../templ/login.html:49
+msgid ""
+"\n"
+"            Don't have login yet ? Try it free!"
 msgstr ""
+"\n"
+"            Nemáte ještě účet ? Zkuste to zdarma!"
+
+#: ../templ/login.html:53
+msgid "Sign Up"
+msgstr "Registrovat"
 
 #: ../templ/news_detail.html:1
 msgid "News"
 msgstr "Aktuality"
 
 #: ../templ/news_list.html:1 ../templ/news_list.html:7
-#: ../templ/admin/news.html:7 ../templ/admin/news_mod.html:19
+#: ../templ/admin/articles.html:7 ../templ/admin/news.html:7
+#: ../templ/admin/news_mod.html:19
 msgid "News list"
 msgstr "Seznam aktualit"
 
 #: ../templ/admin/_attachments_upload.html:2
-msgid "Upload"
-msgstr ""
+msgid "Object Attachments"
+msgstr "Přiřazené přílohy"
 
-#: ../templ/admin/_login_error.html:3
-msgid "Bad email"
-msgstr "Špatný email"
+#: ../templ/admin/_attachments_upload.html:4
+msgid "Attachments on server"
+msgstr "Přílohy na serveru"
 
-#: ../templ/admin/_login_error.html:5
-msgid ""
-"Password must be more the 6 chars long, and must contain upper case and "
-"nubmers"
-msgstr ""
-"Heslo musí obsahovat více jak 6 znaku a musí obsahovat velké znaky a čísla"
+#: ../templ/admin/_attachments_upload.html:6
+msgid "Upload Attachmens"
+msgstr "Nahrát přílohy"
 
-#: ../templ/admin/_login_error.html:7
-msgid "Passwords not same"
-msgstr "Hesla nejsou stejná"
+#: ../templ/admin/_attachments_upload.html:13
+msgid "Select attachments"
+msgstr "Vybrat přílohy"
 
-#: ../templ/admin/_login_error.html:9
-#, fuzzy
-msgid "Login exist yet"
-msgstr "Stránka ještě neexistuje"
+#: ../templ/admin/_attachments_upload.html:14
+msgid "Upload attachments"
+msgstr "Nahrát přílohy"
 
-#: ../templ/admin/_login_error.html:11
-#, fuzzy
-msgid "Login does not exist"
-msgstr "Stránka již existuje"
+#: ../templ/admin/_attachments_upload.html:24
+msgid "Dettach"
+msgstr "Odebrat"
 
-#: ../templ/admin/_menu.html:4 ../templ/user/_menu.html:4
+#: ../templ/admin/_menu.html:4
 msgid "Toggle navigation"
 msgstr ""
 
 #: ../templ/admin/_menu.html:12 ../templ/admin/admin.html:1
+#: ../templ/admin/options.html:1 ../templ/admin/pages.html:1
 msgid "Admin"
-msgstr "Administrátor"
+msgstr "Administrace"
 
-#: ../templ/admin/_menu.html:23 ../templ/user/_menu.html:22
+#: ../templ/admin/_menu.html:23
 msgid "Logout"
 msgstr "Odhlásit"
 
 #: ../templ/admin/_menu.html:24 ../templ/admin/jobs.html:14
+#: ../templ/user/user.html:1
 msgid "User"
 msgstr "Uživatel"
 
@@ -237,64 +326,236 @@ msgstr "Stránka ještě neexistuje"
 msgid "Page does not exist"
 msgstr "Stránka již existuje"
 
+#: ../templ/admin/_tags.html:6
+msgid "Select the tag"
+msgstr "Vyberte nálepku"
+
+#: ../templ/admin/_tags.html:15 ../templ/admin/_tags.html:22
+msgid "Remove tag"
+msgstr "Odstranit nálepku"
+
+#: ../templ/admin/articles.html:1
+msgid "articles"
+msgstr "články"
+
+#: ../templ/admin/articles.html:8 ../templ/admin/news.html:8
+#: ../templ/admin/options.html:10 ../templ/admin/options.html:18
+#: ../templ/admin/eshop/_store_actions.html:2
+#: ../templ/admin/eshop/orders.html:22 ../templ/admin/eshop/store.html:8
+#: ../templ/eshop/orders.html:18
+msgid "All"
+msgstr "Všechny"
+
+#: ../templ/admin/articles.html:9 ../templ/admin/news.html:9
+msgid "Ready to Public"
+msgstr "Připraven ke zveřejnění"
+
+#: ../templ/admin/articles.html:10 ../templ/admin/news.html:10
+msgid "Drafts"
+msgstr "Návrh"
+
+#: ../templ/admin/articles.html:13 ../templ/admin/articles_mod.html:6
+#: ../templ/admin/articles_mod.html:14 ../templ/admin/articles_mod.html:17
+msgid "New article"
+msgstr "Nový článek"
+
+#: ../templ/admin/articles.html:22 ../templ/admin/articles_mod.html:32
+#: ../templ/admin/articles_mod.html:34 ../templ/admin/news.html:22
+#: ../templ/admin/news_mod.html:32 ../templ/admin/news_mod.html:34
+#: ../templ/admin/page_menu.html:35 ../templ/admin/pages.html:40
+#: ../templ/admin/pages_mod.html:37 ../templ/admin/pages_mod.html:39
+msgid "Locale"
+msgstr "Lokalizace"
+
+#: ../templ/admin/articles.html:23 ../templ/admin/news.html:23
+msgid "Create time"
+msgstr "Čas vytvoření"
+
+#: ../templ/admin/articles.html:24 ../templ/admin/news.html:24
+msgid "Publicated"
+msgstr "Zveřejněno"
+
+#: ../templ/admin/articles.html:25 ../templ/admin/attachments.html:21
+#: ../templ/admin/codebook.html:29 ../templ/admin/jobs.html:16
+#: ../templ/admin/logins.html:21 ../templ/admin/news.html:25
+#: ../templ/admin/options.html:31 ../templ/admin/page_menu.html:36
+#: ../templ/admin/pages.html:42 ../templ/admin/eshop/store.html:24
+#: ../templ/eshop/shopping_cart.html:19
+msgid "Action"
+msgstr "Akce"
+
+#: ../templ/admin/articles.html:38 ../templ/admin/articles_mod.html:48
+#: ../templ/admin/news.html:38 ../templ/admin/news_mod.html:41
+msgid "Ready to public"
+msgstr "Připraven ke zveřejnění"
+
+#: ../templ/admin/articles.html:43 ../templ/admin/attachments.html:35
+#: ../templ/admin/codebook.html:35 ../templ/admin/codebook.html:57
+#: ../templ/admin/logins.html:28 ../templ/admin/logins_addresses.html:104
+#: ../templ/admin/news.html:43 ../templ/admin/options.html:39
+#: ../templ/admin/options.html:52 ../templ/admin/page_menu.html:50
+#: ../templ/admin/page_menu.html:63 ../templ/admin/pages.html:50
+#: ../templ/admin/eshop/store.html:41
+msgid "Edit"
+msgstr "Upravit"
+
+#: ../templ/admin/articles.html:45 ../templ/admin/articles_mod.html:46
+#: ../templ/admin/logins.html:33 ../templ/admin/news.html:45
+#: ../templ/admin/news_mod.html:39 ../templ/admin/eshop/item_mod.html:36
+#: ../templ/admin/eshop/store.html:43
+msgid "Disable"
+msgstr "Zakázat"
+
+#: ../templ/admin/articles.html:47 ../templ/admin/news.html:47
+msgid "Enable"
+msgstr "Povolit"
+
+#: ../templ/admin/articles_mod.html:4 ../templ/admin/articles_mod.html:16
+msgid "Edit article"
+msgstr "Upravit článek"
+
+#: ../templ/admin/articles_mod.html:19
+msgid "Articles list"
+msgstr "Seznam článků"
+
+#: ../templ/admin/articles_mod.html:27 ../templ/admin/news_mod.html:27
+#: ../templ/admin/page_menu.html:66
+msgid "Empty title"
+msgstr "Prázdný titulek"
+
+#: ../templ/admin/articles_mod.html:36 ../templ/admin/pages_mod.html:42
+msgid "Format"
+msgstr "Formát"
+
+#: ../templ/admin/articles_mod.html:39 ../templ/admin/pages_mod.html:45
+msgid "HTML"
+msgstr ""
+
+#: ../templ/admin/articles_mod.html:40 ../templ/admin/pages_mod.html:46
+msgid "Restructured Text"
+msgstr ""
+
+#: ../templ/admin/articles_mod.html:43 ../templ/admin/news_mod.html:36
+#: ../templ/admin/eshop/item_mod.html:33 ../templ/admin/eshop/orders.html:37
+#: ../templ/admin/eshop/store.html:23 ../templ/eshop/orders.html:32
+msgid "State"
+msgstr "Stav"
+
+#: ../templ/admin/articles_mod.html:47 ../templ/admin/news_mod.html:40
+msgid "Draft"
+msgstr "Návrh"
+
+#: ../templ/admin/articles_mod.html:53 ../templ/admin/news_mod.html:46
+msgid "Public"
+msgstr "Zveřejněno"
+
+#: ../templ/admin/articles_mod.html:55 ../templ/admin/news_mod.html:48
+msgid "Not Public"
+msgstr "Nezveřejněno"
+
+#: ../templ/admin/articles_mod.html:57 ../templ/admin/articles_mod.html:84
+#: ../templ/admin/codebook.html:39 ../templ/admin/logins_addresses.html:90
+#: ../templ/admin/logins_mod.html:100 ../templ/admin/news_mod.html:50
+#: ../templ/admin/news_mod.html:67 ../templ/admin/options.html:53
+#: ../templ/admin/pages_mod.html:87 ../templ/admin/pages_mod.html:98
+#: ../templ/admin/eshop/item_mod.html:61 ../templ/admin/eshop/item_mod.html:73
+#: ../templ/login/login_mod.html:168
+msgid "Save"
+msgstr "Uložit"
+
+#: ../templ/admin/articles_mod.html:65
+msgid "Empty perex"
+msgstr "Prázdný perex"
+
+#: ../templ/admin/articles_mod.html:74 ../templ/admin/news_mod.html:57
+msgid "Empty body"
+msgstr "Prázdné tělo"
+
+#: ../templ/admin/articles_mod.html:81 ../templ/admin/news_mod.html:64
+msgid "Save and Public"
+msgstr "Uložit a zveřejnit"
+
 #: ../templ/admin/attachments.html:7
-#, fuzzy
 msgid "Attachments list"
-msgstr "Přiřazená práva"
+msgstr "Seznam příloh"
 
 #: ../templ/admin/attachments.html:10
-#, fuzzy
 msgid "Regenerate Thumbs"
-msgstr "Přegenerovat vše"
+msgstr "Přegenerovat náhleda"
 
 #: ../templ/admin/attachments.html:11 ../templ/admin/news.html:13
 #: ../templ/admin/news_mod.html:14 ../templ/admin/news_mod.html:17
 msgid "New new"
 msgstr "Nová aktualita"
 
-#: ../templ/admin/attachments.html:17 ../templ/admin/pages.html:36
-#: ../templ/admin/pages_mod.html:30
+#: ../templ/admin/attachments.html:17 ../templ/admin/pages.html:38
+#: ../templ/admin/pages_mod.html:31
 msgid "File name"
 msgstr "Jméno souboru"
 
-#: ../templ/admin/attachments.html:18 ../templ/admin/news.html:20
-msgid "Author"
-msgstr ""
-
 #: ../templ/admin/attachments.html:19
 msgid "Upload time"
-msgstr ""
+msgstr "Čas nahrání"
 
 #: ../templ/admin/attachments.html:20
 msgid "Mime type"
 msgstr ""
 
-#: ../templ/admin/attachments.html:21 ../templ/admin/jobs.html:16
-#: ../templ/admin/logins.html:19 ../templ/admin/news.html:24
-#: ../templ/admin/page_menu.html:35 ../templ/admin/pages.html:40
-msgid "Action"
-msgstr "Akce"
-
 #: ../templ/admin/attachments.html:25
 msgid "Download"
-msgstr ""
+msgstr "Stáhnout"
 
-#: ../templ/admin/attachments.html:32 ../templ/admin/jobs.html:24
-#: ../templ/admin/page_menu.html:21 ../templ/admin/page_menu.html:50
-#: ../templ/admin/page_menu.html:62 ../templ/admin/pages.html:29
-#: ../templ/admin/pages.html:51
+#: ../templ/admin/attachments.html:32 ../templ/admin/codebook.html:36
+#: ../templ/admin/codebook.html:58 ../templ/admin/jobs.html:24
+#: ../templ/admin/logins_addresses.html:105 ../templ/admin/page_menu.html:22
+#: ../templ/admin/page_menu.html:51 ../templ/admin/page_menu.html:64
+#: ../templ/admin/pages.html:30 ../templ/admin/pages.html:53
 msgid "Delete"
 msgstr "Smazat"
 
-#: ../templ/admin/attachments.html:35 ../templ/admin/logins.html:25
-#: ../templ/admin/news.html:42 ../templ/admin/page_menu.html:49
-#: ../templ/admin/page_menu.html:61 ../templ/admin/pages.html:48
-msgid "Edit"
-msgstr "Upravit"
-
-#: ../templ/admin/attachments.html:57
+#: ../templ/admin/attachments.html:58
 msgid "preview"
-msgstr ""
+msgstr "náhled"
+
+#: ../templ/admin/codebook.html:8
+msgid "Tags list"
+msgstr "Seznam nálepek"
+
+#: ../templ/admin/codebook.html:11 ../templ/admin/codebook.html:28
+#: ../templ/admin/options.html:29 ../templ/admin/eshop/_store_actions.html:14
+msgid "Value"
+msgstr "Hodnota"
+
+#: ../templ/admin/codebook.html:14 ../templ/admin/eshop/orders.html:28
+#: ../templ/eshop/orders.html:24
+msgid "Search"
+msgstr "Hledat"
+
+#: ../templ/admin/codebook.html:19
+msgid "New Item"
+msgstr "Nová položka"
+
+#: ../templ/admin/codebook.html:21 ../templ/admin/eshop/_store_actions.html:22
+msgid "Add"
+msgstr "Přidat"
+
+#: ../templ/admin/codebook.html:59
+#, python-format
+msgid "Are you sure to delete `%s' item ?"
+msgstr "Opravdu chcete smazat položku %s ?"
+
+#: ../templ/admin/codebook.html:60
+msgid "Empty value"
+msgstr "Prázdná hodnota"
+
+#: ../templ/admin/codebook.html:61
+msgid "Value exist yet"
+msgstr "Hodnota už existuje"
+
+#: ../templ/admin/codebook.html:62 ../templ/admin/page_menu.html:68
+#: ../templ/admin/eshop/_store_actions.html:45
+msgid "This operation is not possible."
+msgstr "Tato operace není možná"
 
 #: ../templ/admin/jobs.html:7
 #, fuzzy
@@ -303,7 +564,7 @@ msgstr "Seznam stránek"
 
 #: ../templ/admin/jobs.html:12
 msgid "Path"
-msgstr ""
+msgstr "Cesta"
 
 #: ../templ/admin/jobs.html:13
 msgid "Singleton"
@@ -315,161 +576,247 @@ msgstr ""
 
 #: ../templ/admin/jobs.html:20
 msgid "No"
-msgstr ""
+msgstr "Ne"
 
 #: ../templ/admin/jobs.html:20
 msgid "Yes"
-msgstr ""
+msgstr "Ano"
 
 #: ../templ/admin/logins.html:8
-#, fuzzy
 msgid "Logins list"
-msgstr "Seznam stránek"
+msgstr "Seznam účtů"
 
-#: ../templ/admin/logins.html:9 ../templ/admin/logins_mod.html:14
-#: ../templ/admin/logins_mod.html:17
-#, fuzzy
+#: ../templ/admin/logins.html:9 ../templ/admin/logins_mod.html:15
+#: ../templ/admin/logins_mod.html:25
 msgid "New login"
-msgstr "Nová aktualita"
+msgstr "Nový účet"
 
 #: ../templ/admin/logins.html:13
 msgid "Access denied"
 msgstr "Přístup odepřen"
 
-#: ../templ/admin/logins.html:18 ../templ/admin/logins_mod.html:28
-#: ../templ/admin/logins_mod.html:30 ../templ/user/login_pref.html:23
-#: ../templ/user/login_pref.html:25
+#: ../templ/admin/logins.html:19 ../templ/admin/logins_mod.html:38
+#: ../templ/admin/logins_mod.html:40 ../templ/admin/eshop/orders.html:34
+#: ../templ/eshop/orders.html:29 ../templ/eshop/shopping_address.html:207
+#: ../templ/login/login_mod.html:30 ../templ/login/login_mod.html:32
 msgid "Email"
 msgstr "Email"
 
-#: ../templ/admin/logins.html:27 ../templ/admin/news.html:44
-#: ../templ/admin/news_mod.html:39
-msgid "Disable"
-msgstr ""
+#: ../templ/admin/logins.html:20 ../templ/admin/logins_addresses.html:37
+#: ../templ/admin/logins_mod.html:47 ../templ/admin/logins_mod.html:49
+#: ../templ/admin/eshop/item_mod.html:25 ../templ/admin/eshop/item_mod.html:27
+#: ../templ/admin/eshop/orders_mod.html:69 ../templ/admin/eshop/store.html:19
+#: ../templ/eshop/orders_detail.html:70
+#: ../templ/eshop/shopping_address.html:63
+#: ../templ/eshop/shopping_address.html:147
+#: ../templ/eshop/shopping_cart.html:15
+#: ../templ/eshop/shopping_recapitulation.html:62
+#: ../templ/login/login_mod.html:87 ../templ/login/login_mod.html:89
+#: ../templ/mail/eshop/order.html:87 ../templ/mail/eshop/order.jinja:34
+msgid "Name"
+msgstr "Název"
 
-#: ../templ/admin/logins.html:29
+#: ../templ/admin/logins.html:30 ../templ/admin/logins_addresses.html:12
+#: ../templ/admin/logins_mod.html:23
+msgid "Addresses"
+msgstr "Adresa"
+
+#: ../templ/admin/logins.html:35
 msgid "Enabled"
+msgstr "Povoleno"
+
+#: ../templ/admin/logins_addresses.html:14
+msgid "New address"
+msgstr "Nová adresa"
+
+#: ../templ/admin/logins_addresses.html:15
+msgid "Address list"
+msgstr "Seznam adres"
+
+#: ../templ/admin/logins_addresses.html:17 ../templ/admin/logins_mod.html:17
+msgid "Edit login"
+msgstr "Editace účtu"
+
+#: ../templ/admin/logins_addresses.html:18 ../templ/admin/logins_mod.html:27
+msgid "Login list"
+msgstr "Seznam účtů"
+
+#: ../templ/admin/logins_addresses.html:26
+msgid "Address Type"
+msgstr "Typ adresy"
+
+#: ../templ/admin/logins_addresses.html:30
+msgid "Home"
+msgstr "Doma"
+
+#: ../templ/admin/logins_addresses.html:31
+msgid "Work"
+msgstr "Práce"
+
+#: ../templ/admin/logins_addresses.html:39
+#: ../templ/eshop/shopping_address.html:65
+#: ../templ/eshop/shopping_address.html:149
+msgid "Fox Mulder"
 msgstr ""
 
-#: ../templ/admin/logins_mod.html:16
-#, fuzzy
-msgid "Edit login"
-msgstr "Editace aktuality"
+#: ../templ/admin/logins_addresses.html:44
+#: ../templ/admin/logins_addresses.html:51
+#: ../templ/eshop/shopping_address.html:70
+#: ../templ/eshop/shopping_address.html:77
+#: ../templ/eshop/shopping_address.html:154
+#: ../templ/eshop/shopping_address.html:161
+msgid "Address line"
+msgstr "Adresní řádek"
 
-#: ../templ/admin/logins_mod.html:19
-#, fuzzy
-msgid "Login list"
-msgstr "Seznam stránek"
+#: ../templ/admin/logins_addresses.html:46
+#: ../templ/eshop/shopping_address.html:72
+#: ../templ/eshop/shopping_address.html:156
+msgid "FBI"
+msgstr ""
 
-#: ../templ/admin/logins_mod.html:23 ../templ/user/login_pref.html:18
+#: ../templ/admin/logins_addresses.html:53
+#: ../templ/eshop/shopping_address.html:79
+#: ../templ/eshop/shopping_address.html:163
+msgid "935 Pennsylvania Avenue"
+msgstr ""
+
+#: ../templ/admin/logins_addresses.html:58
+#: ../templ/eshop/shopping_address.html:84
+#: ../templ/eshop/shopping_address.html:168
+msgid "City"
+msgstr "Město"
+
+#: ../templ/admin/logins_addresses.html:60
+#: ../templ/eshop/shopping_address.html:86
+#: ../templ/eshop/shopping_address.html:170
+msgid "Washington"
+msgstr ""
+
+#: ../templ/admin/logins_addresses.html:65
+#: ../templ/eshop/shopping_address.html:92
+#: ../templ/eshop/shopping_address.html:176
+msgid "Region"
+msgstr "Region"
+
+#: ../templ/admin/logins_addresses.html:67
+#: ../templ/eshop/shopping_address.html:94
+#: ../templ/eshop/shopping_address.html:178
+msgid "D.C."
+msgstr ""
+
+#: ../templ/admin/logins_addresses.html:72
+#: ../templ/eshop/shopping_address.html:100
+#: ../templ/eshop/shopping_address.html:184
+msgid "Zip code"
+msgstr "PSČ"
+
+#: ../templ/admin/logins_addresses.html:74
+#: ../templ/eshop/shopping_address.html:102
+#: ../templ/eshop/shopping_address.html:186
+msgid "20535"
+msgstr ""
+
+#: ../templ/admin/logins_addresses.html:79
+#: ../templ/eshop/shopping_address.html:108
+#: ../templ/eshop/shopping_address.html:192
+msgid "Country"
+msgstr "Země"
+
+#: ../templ/admin/logins_addresses.html:81
+#: ../templ/eshop/shopping_address.html:110
+#: ../templ/eshop/shopping_address.html:194
+msgid "United States"
+msgstr ""
+
+#: ../templ/admin/logins_addresses.html:106
+msgid "Address"
+msgstr "Adresa"
+
+#: ../templ/admin/logins_addresses.html:107
+msgid "Work address"
+msgstr "Adresa domu"
+
+#: ../templ/admin/logins_addresses.html:108
+msgid "Home address"
+msgstr "Adresa do práce"
+
+#: ../templ/admin/logins_addresses.html:109
+#, python-format
+msgid "Are you sure to delete %s ?"
+msgstr "Opravdu chcete smazat %s ?"
+
+#: ../templ/admin/logins_mod.html:31 ../templ/login/login_mod.html:19
 msgid "Password was set!"
 msgstr "Heslo bylo nastaveno!"
 
-#: ../templ/admin/logins_mod.html:37 ../templ/admin/pages_mod.html:43
+#: ../templ/admin/logins_mod.html:53 ../templ/admin/pages_mod.html:54
 msgid "Rights"
 msgstr "Práva"
 
-#: ../templ/admin/logins_mod.html:38 ../templ/admin/pages_mod.html:44
+#: ../templ/admin/logins_mod.html:56 ../templ/admin/pages_mod.html:55
 msgid "Possilbe rights"
 msgstr "Možná práva"
 
-#: ../templ/admin/logins_mod.html:39 ../templ/admin/pages_mod.html:45
+#: ../templ/admin/logins_mod.html:67 ../templ/admin/pages_mod.html:56
 msgid "Attache rights"
 msgstr "Přiřazená práva"
 
-#: ../templ/admin/logins_mod.html:68 ../templ/user/login_pref.html:38
+#: ../templ/admin/logins_mod.html:85 ../templ/login/login_mod.html:102
 msgid "Fill it only, if you want to change."
 msgstr "Vyplň, pouze pokud chceš měnit."
 
-#: ../templ/admin/logins_mod.html:73 ../templ/admin/logins_mod.html:75
-#: ../templ/user/login_pref.html:43 ../templ/user/login_pref.html:45
+#: ../templ/admin/logins_mod.html:90 ../templ/admin/logins_mod.html:92
+#: ../templ/login/login_mod.html:107 ../templ/login/login_mod.html:109
 msgid "Password again"
 msgstr "Znovu heslo"
 
-#: ../templ/admin/logins_mod.html:83 ../templ/admin/news_mod.html:50
-#: ../templ/admin/news_mod.html:67 ../templ/admin/pages_mod.html:75
-#: ../templ/admin/pages_mod.html:86 ../templ/user/login_pref.html:53
-msgid "Save"
-msgstr "Uložit"
+#: ../templ/admin/logins_mod.html:105 ../templ/admin/eshop/orders_mod.html:111
+#: ../templ/eshop/orders_detail.html:112
+msgid "History"
+msgstr "Historie"
 
-#: ../templ/admin/news.html:8
-msgid "All"
-msgstr ""
+#: ../templ/admin/logins_mod.html:106
+msgid "Time"
+msgstr "Čas"
 
-#: ../templ/admin/news.html:9
-msgid "Ready to Public"
-msgstr ""
-
-#: ../templ/admin/news.html:10
-msgid "Drafts"
-msgstr ""
-
-#: ../templ/admin/news.html:19 ../templ/admin/news_mod.html:24
-#: ../templ/admin/news_mod.html:26 ../templ/admin/page_menu.html:32
-#: ../templ/admin/pages.html:37 ../templ/admin/pages_mod.html:69
-#: ../templ/admin/pages_mod.html:71
-msgid "Title"
-msgstr "Titulek"
-
-#: ../templ/admin/news.html:21 ../templ/admin/news_mod.html:32
-#: ../templ/admin/news_mod.html:34 ../templ/admin/page_menu.html:34
-#: ../templ/admin/pages.html:38 ../templ/admin/pages_mod.html:36
-#: ../templ/admin/pages_mod.html:38
-msgid "Locale"
-msgstr "Lokalizace"
-
-#: ../templ/admin/news.html:22
-msgid "Create time"
-msgstr "Čas vytvoření"
-
-#: ../templ/admin/news.html:23
-msgid "Publicated"
-msgstr ""
-
-#: ../templ/admin/news.html:37 ../templ/admin/news_mod.html:41
-msgid "Ready to public"
-msgstr ""
-
-#: ../templ/admin/news.html:46
-msgid "Enable"
-msgstr ""
+#: ../templ/admin/logins_mod.html:108
+msgid "Values"
+msgstr "Hodnoty"
 
 #: ../templ/admin/news_mod.html:16
 msgid "Edit new"
 msgstr "Editace aktuality"
 
-#: ../templ/admin/news_mod.html:27 ../templ/admin/page_menu.html:64
-msgid "Empty title"
-msgstr "Prázdný titulek"
+#: ../templ/admin/options.html:1 ../templ/admin/options.html:7
+#, fuzzy
+msgid "Options"
+msgstr "Akce"
 
-#: ../templ/admin/news_mod.html:36
-msgid "State"
+#: ../templ/admin/options.html:8
+msgid "Sections:"
+msgstr "Sekce"
+
+#: ../templ/admin/options.html:16
+msgid "Modules:"
 msgstr ""
 
-#: ../templ/admin/news_mod.html:40
-msgid "Draft"
-msgstr ""
+#: ../templ/admin/options.html:27
+#, fuzzy
+msgid "Section"
+msgstr "Akce"
 
-#: ../templ/admin/news_mod.html:46
-msgid "Public"
-msgstr ""
+#: ../templ/admin/options.html:28
+#, fuzzy
+msgid "Option"
+msgstr "Akce"
 
-#: ../templ/admin/news_mod.html:48
-msgid "Not Public"
-msgstr ""
-
-#: ../templ/admin/news_mod.html:57
-msgid "Empty body"
-msgstr "Prázdné tělo"
-
-#: ../templ/admin/news_mod.html:64
-msgid "Save and Public"
+#: ../templ/admin/options.html:30
+msgid "Modules"
 msgstr ""
 
 #: ../templ/admin/page_menu.html:8
-#, fuzzy
 msgid "Page menu items list"
-msgstr "Seznam stránek"
+msgstr "Seznam polože menu stránek"
 
 #: ../templ/admin/page_menu.html:9
 msgid "Reorder menu items and store it to backend"
@@ -477,29 +824,28 @@ msgstr ""
 
 #: ../templ/admin/page_menu.html:9
 msgid "Optimize menu"
-msgstr ""
+msgstr "Optimalizovat menu"
 
-#: ../templ/admin/page_menu.html:33
+#: ../templ/admin/page_menu.html:34
 msgid "Link"
-msgstr ""
+msgstr "Odkaz"
 
-#: ../templ/admin/page_menu.html:48 ../templ/admin/page_menu.html:60
+#: ../templ/admin/page_menu.html:49 ../templ/admin/page_menu.html:62
 msgid "Insert"
-msgstr ""
-
-#: ../templ/admin/page_menu.html:63
-#, fuzzy, python-format
-msgid "Are you sure to `delete' %s item ?"
-msgstr "Opravdu chceš smazat stránku %s ?"
+msgstr "Vložit"
 
 #: ../templ/admin/page_menu.html:65
-#, fuzzy
-msgid "Title exist yet"
-msgstr "Stránka ještě neexistuje"
+#, python-format
+msgid "Are you sure to `delete' %s item ?"
+msgstr "Opravdu chcete smazat položku %s ?"
 
-#: ../templ/admin/page_menu.html:66
-msgid "This operation is not possible."
-msgstr ""
+#: ../templ/admin/page_menu.html:67
+msgid "Title exist yet"
+msgstr "Titulek už existuje"
+
+#: ../templ/admin/pages.html:1
+msgid "Pages"
+msgstr "Stránky"
 
 #: ../templ/admin/pages.html:8 ../templ/admin/pages_mod.html:23
 msgid "Pages list"
@@ -518,11 +864,11 @@ msgstr "Přegenerovat vše"
 msgid "Operation success"
 msgstr "Operace byla úspěšná"
 
-#: ../templ/admin/pages.html:39
+#: ../templ/admin/pages.html:41
 msgid "Last modify"
 msgstr "Poslední změna"
 
-#: ../templ/admin/pages.html:62
+#: ../templ/admin/pages.html:64
 #, python-format
 msgid "Are you sure to delete %s page ?"
 msgstr "Opravdu chceš smazat stránku %s ?"
@@ -531,15 +877,321 @@ msgstr "Opravdu chceš smazat stránku %s ?"
 msgid "Edit page"
 msgstr "Upravit stránku"
 
-#: ../templ/admin/pages_mod.html:32
+#: ../templ/admin/pages_mod.html:33
 msgid "File name on server"
 msgstr "Jméno souboru na sereveru"
+
+#: ../templ/admin/eshop/_store_actions.html:3
+#: ../templ/admin/eshop/_store_actions.html:43
+msgid "Stored"
+msgstr "Naskladněno"
+
+#: ../templ/admin/eshop/_store_actions.html:4
+msgid "Sold"
+msgstr "Prodáno"
+
+#: ../templ/admin/eshop/_store_actions.html:5
+msgid "Pricings"
+msgstr "Naceněno"
+
+#: ../templ/admin/eshop/_store_actions.html:7
+msgid "Set price"
+msgstr "Nastavit cenu"
+
+#: ../templ/admin/eshop/_store_actions.html:8
+msgid "Store up"
+msgstr "Naskladnit"
+
+#: ../templ/admin/eshop/_store_actions.html:12
+msgid "Timestamp"
+msgstr ""
+
+#: ../templ/admin/eshop/_store_actions.html:15
+#: ../templ/admin/eshop/_store_actions.html:21
+#: ../templ/admin/eshop/_store_actions.html:31
+#: ../templ/admin/eshop/orders_mod.html:127
+#: ../templ/eshop/orders_detail.html:128
+msgid "Note"
+msgstr "Poznámka"
+
+#: ../templ/admin/eshop/_store_actions.html:32
+msgid "Set"
+msgstr "Nastavit"
+
+#: ../templ/admin/eshop/_store_actions.html:44
+msgid "Pricing"
+msgstr ""
+
+#: ../templ/admin/eshop/item_mod.html:14 ../templ/admin/eshop/item_mod.html:17
+#: ../templ/admin/eshop/store.html:13
+msgid "New item"
+msgstr "Nová položka"
+
+#: ../templ/admin/eshop/item_mod.html:16
+msgid "Edit item"
+msgstr "Editace položky"
+
+#: ../templ/admin/eshop/item_mod.html:19 ../templ/admin/eshop/store.html:7
+msgid "eShop store"
+msgstr ""
+
+#: ../templ/admin/eshop/item_mod.html:28
+msgid "Empty Name"
+msgstr "Prázdné jméno"
+
+#: ../templ/admin/eshop/item_mod.html:37 ../templ/admin/eshop/item_mod.html:43
+#: ../templ/admin/eshop/store.html:35 ../templ/admin/eshop/store.html:49
+msgid "Visible"
+msgstr "Viditělný"
+
+#: ../templ/admin/eshop/item_mod.html:38 ../templ/admin/eshop/item_mod.html:45
+#: ../templ/admin/eshop/store.html:37 ../templ/admin/eshop/store.html:46
+msgid "Hidden"
+msgstr "Schovaný"
+
+#: ../templ/admin/eshop/item_mod.html:47
+msgid "Disabled"
+msgstr "Zakázaný"
+
+#: ../templ/admin/eshop/item_mod.html:50
+#: ../templ/admin/eshop/orders_mod.html:70 ../templ/admin/eshop/store.html:20
+#: ../templ/eshop/item_detail.html:10 ../templ/eshop/orders_detail.html:71
+#: ../templ/eshop/shopping_cart.html:16
+#: ../templ/eshop/shopping_recapitulation.html:63
+#: ../templ/mail/eshop/order.html:88 ../templ/mail/eshop/order.jinja:34
+msgid "Price"
+msgstr "Cena"
+
+#: ../templ/admin/eshop/item_mod.html:52
+#: ../templ/admin/eshop/orders_mod.html:71 ../templ/admin/eshop/store.html:21
+#: ../templ/eshop/orders_detail.html:72 ../templ/eshop/shopping_cart.html:17
+#: ../templ/eshop/shopping_recapitulation.html:64
+#: ../templ/mail/eshop/order.html:89 ../templ/mail/eshop/order.jinja:34
+msgid "Count"
+msgstr "Počet"
+
+#: ../templ/admin/eshop/item_mod.html:55 ../templ/admin/eshop/orders.html:36
+#: ../templ/admin/eshop/store.html:22 ../templ/eshop/orders.html:31
+msgid "Modify Date"
+msgstr "Datum změny"
+
+#: ../templ/admin/eshop/orders.html:5 ../templ/admin/eshop/orders_mod.html:5
+#: ../templ/eshop/orders.html:5 ../templ/eshop/orders_detail.html:5
+msgid "Storned"
+msgstr "Stornováno"
+
+#: ../templ/admin/eshop/orders.html:6 ../templ/admin/eshop/orders_mod.html:6
+#: ../templ/eshop/orders.html:6 ../templ/eshop/orders_detail.html:6
+msgid "Accept"
+msgstr ""
+
+#: ../templ/admin/eshop/orders.html:7 ../templ/admin/eshop/orders_mod.html:7
+#: ../templ/eshop/orders.html:7 ../templ/eshop/orders_detail.html:7
+msgid "Proccess"
+msgstr ""
+
+#: ../templ/admin/eshop/orders.html:8 ../templ/admin/eshop/orders_mod.html:8
+#: ../templ/admin/eshop/orders_mod.html:153 ../templ/eshop/orders.html:8
+#: ../templ/eshop/orders_detail.html:8
+msgid "Sent"
+msgstr "Posláno"
+
+#: ../templ/admin/eshop/orders.html:9 ../templ/admin/eshop/orders_mod.html:9
+#: ../templ/eshop/orders.html:9 ../templ/eshop/orders_detail.html:9
+msgid "Closed"
+msgstr "Zavřeno"
+
+#: ../templ/admin/eshop/orders.html:10 ../templ/admin/eshop/orders_mod.html:10
+#: ../templ/admin/eshop/orders_mod.html:147 ../templ/eshop/orders.html:10
+#: ../templ/eshop/orders_detail.html:10
+msgid "Wait for paid"
+msgstr "Čekáme na zaplacení"
+
+#: ../templ/admin/eshop/orders.html:11 ../templ/admin/eshop/orders_mod.html:11
+#: ../templ/admin/eshop/orders_mod.html:154 ../templ/eshop/orders.html:11
+#: ../templ/eshop/orders_detail.html:11
+msgid "Wait for pick up"
+msgstr "Čekáme na vyzvednutí"
+
+#: ../templ/admin/eshop/orders.html:16 ../templ/eshop/orders.html:16
+#: ../templ/eshop/orders_for_logined.html:8
+msgid "eShop orders"
+msgstr ""
+
+#: ../templ/admin/eshop/orders.html:18 ../templ/admin/eshop/orders.html:33
+msgid "Client"
+msgstr "Klient"
+
+#: ../templ/admin/eshop/orders.html:35 ../templ/eshop/orders.html:30
+msgid "Create Date"
+msgstr "Čas vytvoření"
+
+#: ../templ/admin/eshop/orders_mod.html:16
+#: ../templ/eshop/orders_detail.html:16
+#: ../templ/mail/eshop/order_subject.jinja:9
+msgid "Order"
+msgstr "Objednávka"
+
+#: ../templ/admin/eshop/orders_mod.html:17
+#: ../templ/eshop/orders_detail.html:18
+msgid "Orders list"
+msgstr "Seznam objednávek"
+
+#: ../templ/admin/eshop/orders_mod.html:22
+#: ../templ/eshop/orders_detail.html:24
+#: ../templ/eshop/shopping_address.html:41
+#: ../templ/eshop/shopping_recapitulation.html:16
+#: ../templ/mail/eshop/order.html:48 ../templ/mail/eshop/order.jinja:19
+msgid "Billing Address"
+msgstr "Fakturační adresa"
+
+#: ../templ/admin/eshop/orders_mod.html:38
+#: ../templ/eshop/orders_detail.html:40
+#: ../templ/eshop/shopping_address.html:117
+#: ../templ/eshop/shopping_recapitulation.html:32
+#: ../templ/mail/eshop/order.html:64 ../templ/mail/eshop/order.jinja:19
+msgid "Shipping Address"
+msgstr "Adresa doručení"
+
+#: ../templ/admin/eshop/orders_mod.html:56
+#: ../templ/eshop/orders_detail.html:58
+#: ../templ/eshop/shopping_address.html:204
+#: ../templ/eshop/shopping_recapitulation.html:50
+msgid "Send order status to"
+msgstr "Poslat stav objednávky na"
+
+#: ../templ/admin/eshop/orders_mod.html:57
+msgid "Send email to client"
+msgstr "Poslat email klientovi"
+
+#: ../templ/admin/eshop/orders_mod.html:66
+#: ../templ/eshop/orders_detail.html:67
+#: ../templ/eshop/shopping_recapitulation.html:59
+#: ../templ/mail/eshop/order.html:84
+msgid "Ordered items"
+msgstr "Objednané zboží"
+
+#: ../templ/admin/eshop/orders_mod.html:72
+#: ../templ/admin/eshop/orders_mod.html:83
+#: ../templ/eshop/orders_detail.html:73 ../templ/eshop/orders_detail.html:84
+#: ../templ/eshop/shopping_cart.html:18 ../templ/eshop/shopping_cart.html:34
+#: ../templ/eshop/shopping_recapitulation.html:65
+#: ../templ/eshop/shopping_recapitulation.html:76
+#: ../templ/mail/eshop/order.html:90 ../templ/mail/eshop/order.html:101
+#: ../templ/mail/eshop/order.jinja:34 ../templ/mail/eshop/order.jinja:40
+msgid "Summary"
+msgstr "Celkem"
+
+#: ../templ/admin/eshop/orders_mod.html:101
+#: ../templ/eshop/orders_detail.html:102
+#: ../templ/eshop/shopping_recapitulation.html:94
+#: ../templ/mail/eshop/order.html:119 ../templ/mail/eshop/order.jinja:44
+msgid "Total"
+msgstr "Celkem"
+
+#: ../templ/admin/eshop/orders_mod.html:112
+#: ../templ/eshop/orders_detail.html:113
+msgid "Change time"
+msgstr "Čas změny"
+
+#: ../templ/admin/eshop/orders_mod.html:114
+#: ../templ/eshop/orders_detail.html:115
+msgid "Old value"
+msgstr "Původní hodnota"
+
+#: ../templ/admin/eshop/orders_mod.html:115
+#: ../templ/eshop/orders_detail.html:116
+msgid "New value"
+msgstr "Nová hodnota"
+
+#: ../templ/admin/eshop/orders_mod.html:129
+#: ../templ/eshop/orders_detail.html:130
+msgid "Note from client"
+msgstr "Poznámka klienta"
+
+#: ../templ/admin/eshop/orders_mod.html:141
+#: ../templ/eshop/orders_detail.html:142
+msgid "State is:"
+msgstr "Stav je:"
+
+#: ../templ/admin/eshop/orders_mod.html:141
+msgid "Next state will be"
+msgstr ""
+
+#: ../templ/admin/eshop/orders_mod.html:142
+msgid "Note about action"
+msgstr ""
+
+#: ../templ/admin/eshop/orders_mod.html:144
+msgid "Storno"
+msgstr ""
+
+#: ../templ/admin/eshop/orders_mod.html:150
+msgid "Process"
+msgstr ""
+
+#: ../templ/admin/eshop/orders_mod.html:157
+msgid "Close"
+msgstr "Zavřít"
+
+#: ../templ/admin/eshop/orders_mod.html:160
+msgid "Reopen"
+msgstr "Znovu otevřít"
+
+#: ../templ/admin/eshop/store.html:9
+msgid "Visible only"
+msgstr "Pouze viditelné"
+
+#: ../templ/admin/eshop/store.html:10
+msgid "Hidden only"
+msgstr "Pouze schované"
+
+#: ../templ/admin/eshop/store.html:11
+msgid "Disabled only"
+msgstr "Pouze zakázané"
+
+#: ../templ/error/forbidden.html:1
+msgid "Forbidden Access"
+msgstr "Přístup odepřen"
+
+#: ../templ/error/forbidden.html:8
+#, python-format
+msgid ""
+"\n"
+"          We're sorry, but you don't have permission to access\n"
+"          <code>%(request_uri)s</code> on this server.\n"
+"        "
+msgstr ""
+"\n"
+"          Omlouváme se, ale nemáte dostatečná práva pro přístup\n"
+"          k <code>%(request_uri)s</code> na tomto serveru.\n"
+"        "
+
+#: ../templ/error/internal_server_error.html:2
+msgid "Internal Server Error"
+msgstr "Interní chyba serveru"
+
+#: ../templ/error/internal_server_error.html:9
+#, python-format
+msgid ""
+"\n"
+"          <b>We're sorry, but we have some problem on server.</b>\n"
+"          <br><br>Please wait, then we fix the problem. If you can't wait,\n"
+"          contact us%(contact)s.\n"
+"        "
+msgstr ""
+"\n"
+"          <b>Omlouváme se, ale na serveru nastal problém.</b>\n"
+"          <br><br>Prosím vyčkejte, než problém odstraníme. Pokud nemůžete "
+"čekat,\n"
+"          kontaktujte nás %(contact)s.\n"
+"        "
 
 #: ../templ/error/not_found.html:1
 msgid "Page Not Found"
 msgstr "Stránka nenalezena"
 
-#: ../templ/error/not_found.html:7
+#: ../templ/error/not_found.html:8
 #, python-format
 msgid ""
 "\n"
@@ -558,19 +1210,285 @@ msgstr ""
 msgid "Precondition Failed"
 msgstr "Podmínka nebyla splněna"
 
-#: ../templ/error/precondition_failed.html:8
+#: ../templ/error/precondition_failed.html:9
 msgid "Your request can't be call direct or from another page then"
 msgstr "Váš požadavek nemohl být volán přímo nebo z jiné adresy než"
 
-#: ../templ/error/precondition_failed.html:11
-#, fuzzy
+#: ../templ/error/precondition_failed.html:12
 msgid "Your request can't be call direct or from another domain then"
-msgstr "Váš požadavek nemohl být volán přímo nebo z jiné adresy než"
+msgstr "Váš požadavek nemohl být volán přímo nebo z jiné domény než"
 
-#: ../templ/error/precondition_failed.html:14
-#, fuzzy
+#: ../templ/error/precondition_failed.html:15
 msgid "Your request can't be call direct."
-msgstr "Váš požadavek nemohl být volán přímo nebo z jiné adresy než"
+msgstr "Váš požadavek nemohl být volán přímo."
+
+#: ../templ/eshop/_footer.html:6 ../templ/eshop/item_detail.html:55
+#: ../templ/eshop/shopping_cart.html:36
+msgid "Error in Action"
+msgstr "Chyba v Akci"
+
+#: ../templ/eshop/_footer.html:7 ../templ/eshop/item_detail.html:56
+#: ../templ/eshop/shopping_address.html:355
+#: ../templ/eshop/shopping_cart.html:37
+msgid ""
+"There is some error in action you do. We are sorry for that, we are working "
+"on fix that."
+msgstr "V prováděné akci nastala chyba. Omlouváme se, na pracujeme na opravě."
+
+#: ../templ/eshop/_tp_methods.jinja:2
+msgid "Transportation by post"
+msgstr ""
+
+#: ../templ/eshop/_tp_methods.jinja:3
+msgid "Pick up personally"
+msgstr ""
+
+#: ../templ/eshop/_tp_methods.jinja:4
+msgid "Transportation by haulier"
+msgstr ""
+
+#: ../templ/eshop/_tp_methods.jinja:5
+msgid "Transportation by messenger"
+msgstr ""
+
+#: ../templ/eshop/_tp_methods.jinja:6
+msgid "Payment on delivery"
+msgstr ""
+
+#: ../templ/eshop/_tp_methods.jinja:7
+msgid "Payment on pick up"
+msgstr ""
+
+#: ../templ/eshop/_tp_methods.jinja:8
+msgid "Payment by transfer"
+msgstr ""
+
+#: ../templ/eshop/_tp_methods.jinja:9
+msgid "Payment by card"
+msgstr ""
+
+#: ../templ/eshop/_tp_methods.jinja:10
+msgid "Payment by paypal"
+msgstr ""
+
+#: ../templ/eshop/eshop.html:1 ../templ/eshop/eshop.html:7
+msgid "Eshop items"
+msgstr ""
+
+#: ../templ/eshop/eshop.html:9
+msgid "Dle abecedy"
+msgstr ""
+
+#: ../templ/eshop/eshop.html:10
+msgid "First nejdražší"
+msgstr ""
+
+#: ../templ/eshop/eshop.html:11
+msgid "First nejlevnějšího"
+msgstr ""
+
+#: ../templ/eshop/eshop.html:22
+msgid "Preview"
+msgstr "Náhled"
+
+#: ../templ/eshop/eshop.html:29
+msgid "Buy one"
+msgstr ""
+
+#: ../templ/eshop/item_detail.html:11
+msgid "At store"
+msgstr ""
+
+#: ../templ/eshop/item_detail.html:14
+msgid "Buy"
+msgstr "Koupit"
+
+#: ../templ/eshop/item_detail.html:30
+msgid "Description"
+msgstr "Popois"
+
+#: ../templ/eshop/item_detail.html:31
+msgid "Attachments"
+msgstr "Přílohy"
+
+#: ../templ/eshop/orders_detail.html:145
+msgid "Message from you"
+msgstr "Zpráva od Vás"
+
+#: ../templ/eshop/orders_detail.html:146
+msgid "Please storno order"
+msgstr "Prosím, stornujte objednávku"
+
+#: ../templ/eshop/orders_for_logined.html:12
+msgid "This view is only for registred user."
+msgstr "Tento přehled je pouze pro registrované."
+
+#: ../templ/eshop/orders_for_logined.html:13
+msgid "Here you could show all of your orders."
+msgstr ""
+
+#: ../templ/eshop/shopping_accept.html:2
+#: ../templ/eshop/shopping_recapitulation.html:2
+msgid "Check order"
+msgstr ""
+
+#: ../templ/eshop/shopping_accept.html:8 ../templ/mail/eshop/order.html:27
+#: ../templ/mail/eshop/order.jinja:2
+msgid "Order was accept"
+msgstr ""
+
+#: ../templ/eshop/shopping_accept.html:14
+#, python-format
+msgid ""
+"\n"
+"        <b>Thank you</b> for your order. You can see detail of order in your "
+"user section\n"
+"        or at address <a href=\"%(scheme)s://%(domain)s/eshop/orders/"
+"%(order_id)s%(order_sha)s\">\n"
+"        %(scheme)s://%(domain)s/eshop/orders/%(order_id)s%(order_sha)s</a>.\n"
+"\n"
+"        You will be also inform by mail to address, which you entered to "
+"your\n"
+"        order."
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:2
+msgid "Sending address"
+msgstr "Doručovací adresa"
+
+#: ../templ/eshop/shopping_address.html:8
+msgid "Shipping address"
+msgstr "Doručovací adresa"
+
+#: ../templ/eshop/shopping_address.html:10
+#: ../templ/eshop/shopping_address.html:342
+#: ../templ/eshop/shopping_cart.html:9 ../templ/eshop/shopping_cart.html:24
+msgid "Continue in Order"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:11
+msgid "Back to cart"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:16
+msgid "Billing address is important to order. Please fill the billing address."
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:20
+msgid ""
+"Shipping address is important to order. Please fill the shipping address or "
+"check the same as billing one."
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:24
+msgid "No transportation method was selected, please select one."
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:28
+msgid "No payment method was selected, please select one."
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:32
+msgid ""
+"No email, bad email or emails are not same. Please fill the right email "
+"address for sendig order state."
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:46
+#: ../templ/eshop/shopping_address.html:130
+msgid "Select address"
+msgstr "Vyberte adresu"
+
+#: ../templ/eshop/shopping_address.html:123
+msgid "Same as Billing address"
+msgstr "Stejná jako fakturační"
+
+#: ../templ/eshop/shopping_address.html:210
+msgid "This email was be store for comunication with you about order state."
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:215
+msgid "Email again"
+msgstr "Email znovu"
+
+#: ../templ/eshop/shopping_address.html:218
+msgid "One more time your email."
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:225
+msgid "Mode of transportation"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:232
+msgid "By post"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:244
+msgid "Personally"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:256
+msgid "Haulier"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:268
+msgid "Messenger"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:277
+msgid "Payment type"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:284
+msgid "Cash on delivery"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:296
+msgid "Payment upon pick-up"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:308
+msgid "By bank transfer"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:320
+msgid "By credit card"
+msgstr ""
+
+#: ../templ/eshop/shopping_address.html:332
+msgid "By PayPal"
+msgstr ""
+
+#: ../templ/eshop/shopping_cart.html:1 ../templ/eshop/shopping_cart.html:7
+msgid "Shopping cart"
+msgstr ""
+
+#: ../templ/eshop/shopping_cart.html:10
+msgid "Recalculate"
+msgstr "Přepočítat"
+
+#: ../templ/eshop/shopping_cart.html:33
+msgid "Remove"
+msgstr "Odstranit"
+
+#: ../templ/eshop/shopping_cart.html:35
+msgid "Not enough items at store"
+msgstr ""
+
+#: ../templ/eshop/shopping_recapitulation.html:8
+#: ../templ/mail/eshop/order.jinja:18
+msgid "Order recapitulation"
+msgstr ""
+
+#: ../templ/eshop/shopping_recapitulation.html:10
+#: ../templ/eshop/shopping_recapitulation.html:104
+msgid "Pay and Order"
+msgstr ""
+
+#: ../templ/eshop/shopping_recapitulation.html:11
+#, fuzzy
+msgid "Back to address"
+msgstr "Emailová adresa"
 
 #: ../templ/forms/contact-form.html:1 ../templ/forms/contact-form.html:25
 msgid "Contact form"
@@ -580,14 +1498,6 @@ msgstr "Kontaktní formulář"
 msgid "Some valid values are require."
 msgstr "Některé hodnoty jsou vyžadovány validní."
 
-#: ../templ/forms/contact-form.html:12
-msgid "Robots can't send the form."
-msgstr "Roboti nemohou odesílat formulář."
-
-#: ../templ/forms/contact-form.html:15
-msgid "Your anser is not correct."
-msgstr "Vaše odpověď není správná."
-
 #: ../templ/forms/contact-form.html:19
 msgid "Your form was send successful"
 msgstr "Váš formulář byl odeslán úspěšně."
@@ -595,10 +1505,6 @@ msgstr "Váš formulář byl odeslán úspěšně."
 #: ../templ/forms/contact-form.html:21
 msgid "Sorry, there was error when sendig."
 msgstr "Omlouváme se, při odesílání formuláře došlo k chybě."
-
-#: ../templ/forms/contact-form.html:29
-msgid "Your name"
-msgstr "Vaše jméno"
 
 #: ../templ/forms/contact-form.html:34
 msgid "Your email"
@@ -608,10 +1514,6 @@ msgstr "Váš email"
 msgid "Your message"
 msgstr "Vaše zpráva"
 
-#: ../templ/forms/contact-form.html:46
-msgid "Yes, I'm robot."
-msgstr "Ano, jsem robot."
-
 #: ../templ/forms/contact-form.html:58
 msgid "Valid value is require."
 msgstr "Hodnota musí být správně vyplněná."
@@ -620,24 +1522,476 @@ msgstr "Hodnota musí být správně vyplněná."
 msgid "Send"
 msgstr "Odeslat"
 
-#: ../templ/user/login_pref.html:2 ../templ/user/login_pref.html:13
-msgid "Login profile"
-msgstr "Profil"
+#: ../templ/login/_error_message.html:5
+msgid "Bad email"
+msgstr "Špatný email"
 
-#: ../templ/user/login_pref.html:4 ../templ/user/login_pref.html:11
-#, fuzzy
-msgid "Register login"
-msgstr "Editace aktuality"
+#: ../templ/login/_error_message.html:7
+msgid ""
+"Password must be more the 6 chars long, and must contain upper case and "
+"nubmers"
+msgstr ""
+"Heslo musí obsahovat více jak 6 znaku a musí obsahovat velké znaky a čísla"
 
-#: ../templ/user/login_pref.html:53
-msgid "Register"
+#: ../templ/login/_error_message.html:9
+msgid "Passwords not same"
+msgstr "Hesla nejsou stejná"
+
+#: ../templ/login/_error_message.html:11
+msgid "Login exist yet"
+msgstr "Účet už existuje"
+
+#: ../templ/login/_error_message.html:13
+msgid "Login does not exist"
+msgstr "Účet (email) neexistuje"
+
+#: ../templ/login/_error_message.html:15
+msgid "Condition must be confirmed"
+msgstr "Podmínky musí být odsouhlaseny"
+
+#: ../templ/login/email_verificated.html:2
+#: ../templ/login/email_verificated.html:23
+msgid "Your email was verificated"
+msgstr "Vás email byl ověřen"
+
+#: ../templ/login/email_verificated.html:2
+#: ../templ/login/email_verificated.html:8
+msgid "Bad verification"
+msgstr "Špatné ověření"
+
+#: ../templ/login/email_verificated.html:12
+msgid "Something wrong on your verification proccess"
+msgstr ""
+
+#: ../templ/login/email_verificated.html:14
+msgid "Your servis hash is wrong."
+msgstr ""
+
+#: ../templ/login/email_verificated.html:16
+#, python-format
+msgid "Email %s is exist in database yet."
+msgstr ""
+
+#: ../templ/login/email_verificated.html:28
+msgid ""
+"\n"
+"          Your email was verificated. You can log in now on\n"
+"          <a href=\"/log_in\">Log in page</a>."
+msgstr ""
+
+#: ../templ/login/forgotten_password.html:8
+msgid "Forgotten passsword"
+msgstr "Zapomenuté heslo"
+
+#: ../templ/login/forgotten_password.html:44
+msgid "Send me log-in link"
+msgstr "Zaslat přihlašovací odkaz"
+
+#: ../templ/login/forgotten_password.html:63
+#, python-format
+msgid ""
+"\n"
+"            Do you forgot your password ? Never mind. Fill your email, we "
+"send\n"
+"            you special log-in link, to your email. You will have %(ttl)s\n"
+"            minutes to log in and change your password."
+msgstr ""
+
+#: ../templ/login/login_mod.html:3 ../templ/login/login_mod.html:13
+msgid "Login edit"
+msgstr "Editace účtu"
+
+#: ../templ/login/login_mod.html:5 ../templ/login/login_mod.html:15
+#: ../templ/login/login_mod.html:168
+msgid "Sign up"
+msgstr "Registrovat se"
+
+#: ../templ/login/login_mod.html:39
+msgid ""
+"\n"
+"              May be, you <a href=\"/login/forgotten_password\">forgot your "
+"password</a>."
+msgstr ""
+
+#: ../templ/login/login_mod.html:121
+msgid "Terms and conditions"
+msgstr ""
+
+#: ../templ/login/login_mod.html:131
+msgid "Condition allowed"
+msgstr "Podmínka splněna"
+
+#: ../templ/login/login_mod.html:146
+#, python-format
+msgid ""
+"\n"
+"              Request for change your login email was accept. We are send "
+"you\n"
+"              email to verify your new email address <b>%(email)s</b>. There "
+"is\n"
+"              the link to finish this proccess."
+msgstr ""
+
+#: ../templ/login/login_mod.html:154
+msgid ""
+"\n"
+"              When you can't find email from us, please wait a few minutes "
+"and or\n"
+"              check your <b>spam</b> folder. If you don't resive email, "
+"contact\n"
+"              us or you can try to change email one more time."
+msgstr ""
+
+#: ../templ/login/verify_link_send.html:2
+#: ../templ/login/verify_link_send.html:7
+msgid "Verify link send"
+msgstr "Ověřovací odkaz poslán"
+
+#: ../templ/login/verify_link_send.html:12
+#, python-format
+msgid ""
+"\n"
+"            We are send you email with verify link to email address\n"
+"            <b>%(email)s</b>. Please click to this link to finish this\n"
+"            proccess."
+msgstr ""
+
+#: ../templ/login/verify_link_send.html:20
+msgid ""
+"\n"
+"            When you can't find email from us, please wait a few minutes and "
+"or\n"
+"            check your <b>spam</b> folder. If you don't resive email, "
+"contact\n"
+"            us or you can proccess this one more time."
+msgstr ""
+
+#: ../templ/login/waiting_for_verification.html:2
+#: ../templ/login/waiting_for_verification.html:7
+msgid "Verify your email"
+msgstr "Ověření vašeho emailu"
+
+#: ../templ/login/waiting_for_verification.html:12
+#, python-format
+msgid ""
+"\n"
+"            Thank you for signed up to our web. We are send you email\n"
+"            to verify your email address <b>%(email)s</b>. There is the "
+"link\n"
+"            to finish this proccess."
+msgstr ""
+
+#: ../templ/login/waiting_for_verification.html:20
+msgid ""
+"\n"
+"            When you can't find email from us, please wait a few minutes and "
+"or\n"
+"            check your <b>spam</b> folder. If you don't resive email, "
+"contact\n"
+"            us or you can try to sign up again."
+msgstr ""
+
+#: ../templ/mail/eshop/order.html:26 ../templ/mail/eshop/order.jinja:1
+msgid "Order was storned"
+msgstr "Objednávka byla stornována"
+
+#: ../templ/mail/eshop/order.html:28 ../templ/mail/eshop/order.jinja:3
+msgid "Order is in proccess"
+msgstr ""
+
+#: ../templ/mail/eshop/order.html:29 ../templ/mail/eshop/order.jinja:4
+msgid "Order was sent"
+msgstr "Objednávka byla odeslána"
+
+#: ../templ/mail/eshop/order.html:30 ../templ/mail/eshop/order.jinja:5
+msgid "Order was closed"
+msgstr "Objednávka byla zavřena"
+
+#: ../templ/mail/eshop/order.html:31 ../templ/mail/eshop/order.jinja:6
+msgid "Order is waiting for paid"
+msgstr ""
+
+#: ../templ/mail/eshop/order.html:32 ../templ/mail/eshop/order.jinja:7
+msgid "Order is waiting for pick up"
+msgstr ""
+
+#: ../templ/mail/eshop/order.html:35 ../templ/mail/eshop/order.jinja:10
+#: ../templ/mail/login/created.html:14 ../templ/mail/login/created.jinja:1
+msgid "Hello"
+msgstr ""
+
+#: ../templ/mail/eshop/order.html:39
+#, python-format
+msgid ""
+"\n"
+"    <b>thank you</b> for your order. You can see detail of order in your "
+"user section\n"
+"    or at address <a href=\"%(scheme)s://%(domain)s/eshop/orders/%(order_id)s"
+"%(order_sha)s\">\n"
+"    %(scheme)s://%(domain)s/eshop/orders/%(order_id)s%(order_sha)s</a>."
+msgstr ""
+
+#: ../templ/mail/eshop/order.html:129
+#, python-format
+msgid ""
+"Your order %(order_id)s from <a href=\"%(scheme)s://%(domain)s\">"
+"%(scheme)s://%(domain)s</a>\n"
+"    has new state. For more information, you can see to order in your user\n"
+"    section or at address: <a href=\"%(scheme)s://%(domain)s/eshop/orders/"
+"%(order_id)s%(order_sha)s\">\n"
+"    %(scheme)s://%(domain)s/eshop/orders/%(order_id)s%(order_sha)s</a>."
+msgstr ""
+
+#: ../templ/mail/eshop/order.html:138 ../templ/mail/eshop/order.jinja:54
+msgid "Order state"
+msgstr "Stav objednávky"
+
+#: ../templ/mail/eshop/order.html:141
+#, python-format
+msgid ""
+"Best regards,<br>\n"
+"  %(name)s team."
+msgstr ""
+
+#: ../templ/mail/eshop/order.jinja:13
+#, python-format
+msgid ""
+"\n"
+"thank you for your order. You can see detail of order in your user section\n"
+"or at address %(scheme)s://%(domain)s/eshop/orders/%(order_id)s%(order_sha)s."
+msgstr ""
+
+#: ../templ/mail/eshop/order.jinja:47
+#, python-format
+msgid ""
+"Your order %(order_id)s from %(scheme)s://%(domain)s has new state.\n"
+"For more information, you can see to order in your user section or at\n"
+"address: %(scheme)s://%(domain)s/eshop/orders/%(order_id)s%(order_sha)s."
+msgstr ""
+
+#: ../templ/mail/eshop/order.jinja:56 ../templ/mail/login/created.jinja:21
+#, python-format
+msgid ""
+"Best regards,\n"
+"%(name)s team."
+msgstr ""
+
+#: ../templ/mail/eshop/order_subject.jinja:1
+msgid "was storned"
+msgstr ""
+
+#: ../templ/mail/eshop/order_subject.jinja:2
+msgid "was accept"
+msgstr ""
+
+#: ../templ/mail/eshop/order_subject.jinja:3
+msgid "is in proccess"
+msgstr ""
+
+#: ../templ/mail/eshop/order_subject.jinja:4
+msgid "was sent"
+msgstr ""
+
+#: ../templ/mail/eshop/order_subject.jinja:5
+msgid "was closed"
+msgstr ""
+
+#: ../templ/mail/eshop/order_subject.jinja:6
+msgid "is waiting for paid"
+msgstr ""
+
+#: ../templ/mail/eshop/order_subject.jinja:7
+msgid "is waiting for pick up"
+msgstr ""
+
+#: ../templ/mail/login/created.html:18
+#, python-format
+msgid ""
+"\n"
+"    You are signed up to <a href=\"%(scheme)s://%(domain)s\">\n"
+"    %(scheme)s://%(domain)s</a>. For finish this proccess, please verify\n"
+"    your email on <a href=\"%(scheme)s://%(domain)s/login/verify/%(hash)s"
+"\">\n"
+"    %(scheme)s://%(domain)s/login/verify/%(hash)s</a>."
+msgstr ""
+
+#: ../templ/mail/login/created.html:25
+#, python-format
+msgid ""
+"\n"
+"    Your login for <a href=\"%(scheme)s://%(domain)s\">\n"
+"    %(scheme)s://%(domain)s</a> was created. For finish this proccess,\n"
+"    please verify your email on <a href=\"%(scheme)s://%(domain)s/login/"
+"verify/%(hash)s\">\n"
+"    %(scheme)s://%(domain)s/login/verify/%(hash)s</a>."
+msgstr ""
+
+#: ../templ/mail/login/created.html:34
+#, python-format
+msgid ""
+"\n"
+"    When your email was verified, you are able to log in at address\n"
+"    <a href=\"%(scheme)s://%(domain)s/log_in\">\n"
+"    %(scheme)s://%(domain)s/log_in</a>."
+msgstr ""
+
+#: ../templ/mail/login/created.html:41
+#, python-format
+msgid ""
+"Best regards,\n"
+"    %(name)s team."
+msgstr ""
+
+#: ../templ/mail/login/created.jinja:4
+#, python-format
+msgid ""
+"\n"
+"You are signed up to %(scheme)s://%(domain)s. For finish this proccess,\n"
+"please verify your email on %(scheme)s://%(domain)s/login/verify/%(hash)s."
+msgstr ""
+
+#: ../templ/mail/login/created.jinja:9
+#, python-format
+msgid ""
+"\n"
+"Your login for %(scheme)s://%(domain)s was created. For finish this\n"
+"proccess, please verify you email on\n"
+"%(scheme)s://%(domain)s/login/verify/%(hash)s."
+msgstr ""
+
+#: ../templ/mail/login/created.jinja:16
+#, python-format
+msgid ""
+"\n"
+"When your email was verified, you are able to log in at address\n"
+"%(scheme)s://%(domain)s/log_in."
+msgstr ""
+
+#: ../templ/mail/login/created_subject.jinja:2
+#, python-format
+msgid ""
+"\n"
+"Signed up to %(scheme)s://%(domain)s"
+msgstr ""
+
+#: ../templ/mail/login/created_subject.jinja:6
+#, python-format
+msgid ""
+"\n"
+"Login created on %(scheme)s://%(domain)s"
+msgstr ""
+
+#: ../templ/mail/login/log_in_link.html:14
+#, python-format
+msgid ""
+"\n"
+"    Hello,\n"
+"    <br><br>\n"
+"\n"
+"    We accept request for temorary log in link for your email from %(host)s\n"
+"    with browser: %(browser)s.\n"
+"    <br><br>\n"
+"\n"
+"    If you want to log in to <a href=\"%(scheme)s://%(domain)s\">\n"
+"    %(scheme)s://%(domain)s</a> just enter temporary url\n"
+"    <a href=\"%(scheme)s://%(domain)s/login/verify/%(hash)s\">\n"
+"    %(scheme)s://%(domain)s/login/verify/%(hash)s</a>.\n"
+"    <br><br>\n"
+"\n"
+"    When you don't crate this request by forgotten passsword page, you want "
+"to\n"
+"    ignore it, but be careful. May be someone want to steal your login to\n"
+"    %(name)s.\n"
+"    <br><br>\n"
+"\n"
+"    Best regards,\n"
+"    %(name)s team."
+msgstr ""
+
+#: ../templ/mail/login/log_in_link.jinja:1
+#, python-format
+msgid ""
+"\n"
+"Hello,\n"
+"\n"
+"We accept request for temorary log in link for your email from %(host)s "
+"with\n"
+"browser: %(browser)s.\n"
+"\n"
+"If you want to log in to %(scheme)s://%(domain)s just enter temporary url\n"
+"%(scheme)s://%(domain)s/login/verify/%(hash)s.\n"
+"\n"
+"When you don't crate this request by forgotten passsword page, you want to\n"
+"ignore it, but be careful. May be someone want to steal your login to\n"
+"%(name)s.\n"
+"\n"
+"Best regards,\n"
+"%(name)s team."
+msgstr ""
+
+#: ../templ/mail/login/log_in_link_subject.jinja:1
+#, python-format
+msgid ""
+"\n"
+"Temporary access to %(scheme)s://%(domain)s"
+msgstr ""
+
+#: ../templ/mail/login/verify.html:14
+#, python-format
+msgid ""
+"\n"
+"    Hello,\n"
+"    <br><br>\n"
+"\n"
+"    We accept request for change your old login email %(old_email)s to new\n"
+"    %(new_email)s from %(host)s with browser:<br>\n"
+"    %(browser)s.\n"
+"    <br><br>\n"
+"\n"
+"    If you want to accept this change for <a href=\"%(scheme)s://%(domain)s"
+"\">\n"
+"    %(scheme)s://%(domain)s</a> just enter url\n"
+"    <a href=\"%(scheme)s://%(domain)s/login/verify/%(hash)s\">\n"
+"    %(scheme)s://%(domain)s/login/verify/%(hash)s</a>.\n"
+"    <br><br>\n"
+"\n"
+"    If you don't do that, you could still log in to %(name)s with your old\n"
+"    login email.\n"
+"    <br><br>\n"
+"\n"
+"    Best regards,\n"
+"    %(name)s team."
+msgstr ""
+
+#: ../templ/mail/login/verify.jinja:1
+#, python-format
+msgid ""
+"\n"
+"Hello,\n"
+"\n"
+"We accept request for change your old login email %(old_email)s to new\n"
+"%(new_email)s from %(host)s with browser:\n"
+"%(browser)s.\n"
+"\n"
+"If you want to accept this change for %(scheme)s://%(domain)s just enter\n"
+"url %(scheme)s://%(domain)s/login/verify/%(hash)s.\n"
+"\n"
+"If you don't do that, you could still log in to %(name)s with your old\n"
+"login email.\n"
+"\n"
+"Best regards,\n"
+"%(name)s team."
+msgstr ""
+
+#: ../templ/mail/login/verify_subject.jinja:1
+#, python-format
+msgid ""
+"\n"
+"Email verifing from %(scheme)s://%(domain)s"
 msgstr ""
 
 #~ msgid "Not found"
 #~ msgstr "Nebylo nalezeno"
-
-#~ msgid "Close"
-#~ msgstr "Zavřít"
 
 #~ msgid "Login"
 #~ msgstr "Přihlášení"
