@@ -29,7 +29,7 @@ _check_conf = (
               "If pages have rights settings visible in editation."),
     ('pages', 'rights', tuple, '', True,
               "User rights, which could be use for page editing."),
-    ('pages', 'redirect_to_index', bool, True),
+    ('pages', 'index_is_root', bool, True),
     ('pages', 'runtime', bool, False),
     ('pages', 'runtime_without_html', bool, False),     # danger !
     ('pages', 'timestamp', unicode, 'tmp/pages.timestamp'),
@@ -45,7 +45,7 @@ def _call_conf(cfg, parser):
         cfg.get_static_menu = empty             # set empty static menu
     if not cfg.pages_out:
         cfg.pages_runtime = True                # fallback for dynamic page
-    if cfg.pages_redirect_to_index and not cfg.pages_runtime:
+    if cfg.pages_index_is_root and not cfg.pages_runtime:
         app.set_route('/', root)                # redirect from / to index.html
 
     if cfg.pages_runtime:                       # auto register pages url
@@ -85,7 +85,7 @@ def refresh_page_files(req, cfg_timestamp, clear=True):
                     app.pop_route(uri, state.METHOD_GET)
                     app.pop_route(uri, state.METHOD_HEAD)
 
-        if req.cfg.pages_redirect_to_index:
+        if req.cfg.pages_index_is_root:
             app.set_route('/', runtime_file)                # / will be index
         if req.cfg.pages_runtime_without_html:
             for it in Page.list(req.cfg, Pager(limit=-1)):

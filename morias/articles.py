@@ -25,12 +25,17 @@ _check_conf = (
     # morias common block
     ('morias', 'db', Sql),
     ('articles', 'in_menu',  bool, True),
+    ('articles', 'is_root',  bool, False)
 )
+
+app.set_filter('tag', r'[\w\ ]+', uni)
 
 
 def _call_conf(cfg, parser):
     if cfg.articles_in_menu:
         user_sections.append(Item('/articles', label="Articles"))
+    if cfg.articles_is_root:
+        app.set_route('/', articles_list_full)
 
 right_editor = 'articles_editor'
 right_author = 'articles_author'
@@ -313,7 +318,7 @@ def articles_comment_xhr(req, arg):
 
 @app.route('/articles')
 @app.route('/<locale:word>/articles')
-@app.route('/<locale:word>/articles/t/<tag:word>')
+@app.route('/<locale:word>/articles/t/<tag:tag>')
 def articles_list_full(req, locale=None, tag=None):
     pager = Pager(limit=5, sort='desc', order='create_date')
     pager.bind(req.args)
@@ -327,7 +332,26 @@ def articles_list_full(req, locale=None, tag=None):
 # enddef
 
 
-@app.route('/articles/t/<tag:word>')
-@app.route('/articles/tag/<tag:word>')
+@app.route('/articles/rss.xml')
+def articles_rss(req):
+    pager = Pager(limit=5, sort='desc', order='create_date')
+    items = Article.list(req, pager, perex=True, public=1)
+    return generate_page(req, "articles_rss.xml",
+                         content_type="application/xml", pager=pager,
+                         items=items, lang=get_lang(req),
+                         webmaster=req.server_admin)
+
+
+@app.route('/articles/t')
+@app.route('/articles/tag')
+def articles_tags_list(req):
+    Codebook = build_class('tags')
+    pager = Pager(order='value', limit=-1)
+    tags = Codebook.list(req, Codebook, pager)
+    return generate_page(req, "articles_tags.html", tags=tags)
+
+
+@app.route('/articles/t/<tag:tag>')
+@app.route('/articles/tag/<tag:tag>')
 def articles_list(req, tag=None):
     return articles_list_full(req, tag=tag)

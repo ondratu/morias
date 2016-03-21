@@ -211,7 +211,7 @@ def item_list(req, pager, perex=False, **kwargs):
     tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
     c.execute("""
-        SELECT a.article_id, serial_id, author_id, email, name AS author,
+        SELECT a.article_id, serial_id, author_id, email, l.name AS author,
             create_date, public_date, title, uri, locale, state %s
         FROM articles a JOIN logins l ON (a.author_id = l.login_id)
             %s %s

@@ -66,7 +66,7 @@ class Page():
             with open(req.cfg.pages_source + '/' + name, 'r') as f:
                 return f.read().decode('utf-8')
         except IOError as e:
-            req.log_error(str(e), state.LOG_ERR)
+            req.log_error(str(e), state.LOG_INFO)
             return None
     # enddef
 
