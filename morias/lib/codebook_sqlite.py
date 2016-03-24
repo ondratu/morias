@@ -74,7 +74,8 @@ def item_list(req, cls, pager, search=None):   # static method
 
     cond = ''
     if search:
-        cond = "WHERE {0} LIKE '%%{1}%%'".format(cls.VALUE, search)
+        cond = "WHERE {0} LIKE '%%{1}%%'".format(
+            cls.VALUE, search.replace("'", "''"))
 
     tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
