@@ -191,6 +191,7 @@ pre.striped > *:nth-child(even) {
 .menu-symbol.fa-none:before { content: "\f500";}        /* looks like space */
 .menu-symbol.fa-login:before {content: "\f1fa";}        /*fa-at*/
 .menu-symbol.fa-admin:before {content: "\f085";}        /*fa-gears*/
+.menu-symbol.fa-redirects:before {content: "\f08e";}    /*fa-external-link*/
 .menu-symbol.fa-address:before {content: "\f003";}      /*fa-envelop-o*/
 .menu-symbol.fa-files:before {content: "\f0c5";}        /*fa-files-o*/
 .menu-symbol.fa-news:before {content: "\f1ea";}         /*fa-newspaper-o*/

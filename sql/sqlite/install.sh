@@ -56,4 +56,7 @@ sqlite3 $1 < ${dir}/tags.sql
 sqlite3 $1 < ${dir}/articles.sql
 sqlite3 $1 < ${dir}/articles_discussion.sql
 
+printf "redirects"
+sqlite3 $1 < ${dir}/redirects.sql
+
 printf "\nInstalled\n"

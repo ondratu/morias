@@ -1,0 +1,95 @@
+{#- vim: tabstop=2 softtabstop=2 expandtab
+#}
+{% set title = _('Admin') + ' - ' + _('Redirects') -%}
+{% include "_header.html" -%}
+{% include "user/_menu.html" %}
+
+    <div class="container">
+
+      <ul class="nav nav-pills nav-sm">
+        <li class="navbar-brand">{{ _('Redirects list') }}</li>
+        <li><form method="get" class="form-inline">
+          <div class="form-group">
+            <input id="search-input" class="form-control" type="text" name="search" value="{{ (search or '')|e }}" placeholder="{{ _('Value') }}">
+            <a class="close in-input" clear="search-input">&times;</a>
+          </div>
+          <button class="form-control btn btn-default" type="submit">{{ _('Search') }}</button>
+        </form></li>
+      </ul>
+
+{% set codes = {301: _('301 Moved Permanently'),
+                302: _('302 Moved Temporarily')}
+
+-%}
+
+{%- from "_orderby.html" import orderby with context %}
+      <table class="table table-hover">
+        <tr><th>{{ orderby('#', 'id', 'asc') }}</th>
+            <th>{{ orderby(_('Source'), 'src', 'asc') }}</th>
+            <th>{{ orderby(_('Destination'), 'dst', 'asc') }}</th>
+            <th>{{ _('Code') }}</th>
+            <th>{{ _('State') }}</th>
+            <th>{{ _('Action' )}}</th></tr>
+        <tr><td></td>
+            <td><input class="form-control" type="text" name="src" placeholder="{{ _('Source url') }}"></td>
+            <td><input class="form-control" type="text" name="dst" placeholder="{{ _('Destination url') }}"></td>
+            <td><select class="form-control" name="code">
+                  <option value="301">{{ _('301 Moved Permanently') }}</option>
+                  <option value="302">{{ _('302 Moved Temporarily') }}</option>
+                </select></td>
+            <td><div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="state" checked="checked">
+                    {{ _('Enabled') }}
+                  </label>
+                </div></td>
+            <td><a class="form-control btn btn-default" add="/admin/redirects/add">{{ _('Add') }}</a></td>
+        </tr>
+        {% for item in items %}
+        <tr idx="{{ item.id }}" {{ 'class="disabled"' if item.state == 0 else '' }}><td>{{ item.id }}</td>
+            <td src="{{ item.src|e }}">{{ item.src|e }}</td>
+            <td dst="{{ item.dst|e }}">{{ item.dst|e }}</td>
+            <td code="{{ item.code }}">{{ codes.get(item.code, item.code) }}</td>
+            <td state="{{ item.state }}">{{ _('Enabled') if item.state else _('Disabled') }}</td>
+            <td>
+              <span role="links">
+                <a edit="{{ item.id }}" class="btn-link">{{ _('Edit') }}</a>
+                / <a delete="/admin/redirects/{{ item.id }}" idx="{{ item.id }}" class="btn-link">{{ _('Delete') }}</a>
+              </span>
+              <span role="buttons" style="display: none;">
+                <button save="/admin/redirects/{{ item.id }}" type="button" class="btn btn-default btn-sm" title="{{ _('Save') }}">
+                  <i class="fa fa-save"></i></button>
+                <button cancel="cancel" type="button" class="btn btn-default btn-sm" title="{{ _('Cancel') }}">
+                  <i class="fa fa-close"></i></button>
+              </span>
+            </td></tr>
+        {% endfor %}
+      </table>
+{% include "_pager.html" %}
+    </div>
+    <script src="/js/i18n.js"></script>
+    <script src="/js/redirects.js"></script>
+    <script>
+        $(document).ready(function() {
+          $('a[clear]').click(function(ev) {
+            $('#'+$(ev.target).attr('clear')).val('');}
+          );
+          $.extend(M.locales, {
+              'Edit'    :   "{{ _('Edit') }}",
+              'Delete'  :   "{{ _('Delete') }}",
+              mpm_sure_delete:  "{{ _('Are you sure to delete `%s\' item ?') }}",
+              empty_src:    "{{ _('Empty source') }}",
+              bad_src:      "{{ _('Bad source') }}",
+              src_exist:    "{{ _('Source exist yet') }}",
+              empty_dst:    "{{ _('Empty destination') }}",
+              not_possible: "{{ _('This operation is not possible.') }}",
+              '301 Moved Permanently': "{{ _('301 Moved Permanently') }}",
+              '302 Moved Temporarily': "{{ _('302 Moved Temporarily') }}",
+              'Enabled':    "{{ _('Enabled') }}",
+              'Disabled':   "{{ _('Disabled') }}"
+          });
+          var redirect = new M.Redirect({'token': '{{ token }}'});
+        });
+      </script>
+
+{% include "_footer.html" %}
