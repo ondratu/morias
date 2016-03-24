@@ -4,7 +4,7 @@
     <atom:link href="{{ site.scheme }}://{{ site.domain }}{{ site.this }}" rel="self" type="application/rss+xml" />
     <title>{{ site.name }}</title>
     <link>{{ site.scheme }}://{{ site.domain }}</link>
-    <description>{{ site.description }}</description>
+    <description>{{ site.description|e }}</description>
     <language>{{ lang }}</language>
     <docs>http://interval.cz/clanky/rss-20/</docs>
     <generator>Python, Jinja2, Morias</generator>
@@ -16,7 +16,6 @@
       <title>{{ article.title|e }}</title>
       <description>{{ article.perex|e }}</description>
       <pubDate>{{ article.create_date.strftime("%a, %d %b %Y %X "+tzname[0]) }}</pubDate>
-      <pubDate>{{ article.create_date.isoformat() }}</pubDate>
       <guid>{{ site.scheme }}://{{ site.domain }}/a/{{ article.uri }}</guid>
       <author>{{ article.email }}</author>
     </item>

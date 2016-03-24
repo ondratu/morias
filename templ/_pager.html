@@ -17,7 +17,7 @@
         <li class="disabled"><a>&laquo; {{ _("First") }}</a></li>
         <li class="disabled"><a>&#60; {{ _("Previous") }}</a></li>
 {%- endif %}
-        <span class="pages"><!--{{ _("Page") }}: {{ pager.page }} {{ _("from") }} {{ pager.pages }} --></span>
+        <li class="pages"><!-- {{ _("Page") }}: {{ pager.page }} {{ _("from") }} {{ pager.pages }} --></li>
 {%- if pager.page < pager.pages %}
         <li><a href="?{{ params }}{{ ordering }}offset={{ pager.limit * (pager.page + 1) }}">{{ _("Next") }} &#62;</a></li>
         <li><a href="?{{ params }}{{ ordering }}offset={{ pager.limit * pager.pages }}">{{ _("Last") }} &raquo;</a></li>

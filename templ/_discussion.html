@@ -1,20 +1,19 @@
-{#- vim: tabstop=2 softtabstop=2 expandtab
-#}
-<div class="discussion clear">
-  <a name="discussion"></a><h4>{{ _('Discussion') }}</h4>
+{# vim: tabstop=2 softtabstop=2 expandtab
+-#}
+<div class="discussion clear" itemscope itemtype="http://schema.org/UserComments">
+  <h4 id="discussion">{{ _('Discussion') }}</h4>
 {% for comment in discussion %}
-  <div itemprop="comment" class="panel panel-default">
-    <a name="comment_{{ comment.id }}"></a>
+  <div class="panel panel-default" id="comment_{{ comment.id }}">
     <div class="panel-heading"><h5 class="panel-title">{{ comment.title|e }}</h5></div>
-    <div class="panel-body">
+    <div class="panel-body" itemprop="commentText">
       {{ comment.body|e|replace('\n', '<br>\n') }}
     </div>
     <div class="panel-footer small">
-      <div class="pull-left">
+      <div class="pull-left" itemprop="creator" itemscope itemtype="http://schema.org/Person">
         <span class="text-muted">{{ _('Author') }}:</span>
         <span itemprop="name">{{ comment.author|e }}</span>
       </div>
-      <div class="pull-right text-muted">
+      <div class="pull-right text-muted" itemprop="commentTime">
         {{ _('Date') }}: {{ comment.create_date.strftime("%H:%M %d.%m.%Y") }}
       </div>
       <div class="clear"></div>
@@ -26,8 +25,7 @@
 {% else %}
   {% set comment_author = error.comment.author %}
 {% endif %}
-  <a name="new_comment"></a>
-  <h5>{{ _('Your comment') }}:</h5>
+  <h5 id="new_comment">{{ _('Your comment') }}:</h5>
   <form role="form" method="post" action="{{ discussion_comment_link }}" class="clearfix">
     <input type="hidden" name="article_id" value="{{ discussion_object_id }}">
     <div class="form-group col-sm-4 padding0 {{ 'has-error' if error is defined and error.reason == 'empty_author' }}">
@@ -68,7 +66,7 @@
 
     <div class="form-group pull-right">
       <button class="btn btn-default" type="submit">{{ _('Append comment') }}</button>
-    <div>
+    </div>
   </form>
 
   <script>

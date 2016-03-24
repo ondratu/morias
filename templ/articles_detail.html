@@ -1,5 +1,5 @@
-{#- vim: tabstop=2 softtabstop=2 expandtab
-#}
+{# vim: tabstop=2 softtabstop=2 expandtab
+-#}
 {% set title = article.title|e -%}
 {% include "_header.html" -%}
 {% include "user/_menu.html" -%}
@@ -9,29 +9,31 @@
       <div class="pull-left text-muted" content="{{ article.create_date.isoformat() }}" itemprop="datePublished">{{ _('Date') }}: {{ article.create_date.strftime("%H:%M %d.%m.%Y") }}</div>
       <div class="clear">
       {% if article.tags %}
-        <ul class="list-unstyled tags">
+        <div class="tags">
           <b>{{ _('Tags') }}:</b>
-        {% for tag in article.tags %}
-          <li><a href="/a/t/{{ tag.value|e }}">{{ tag.value|e }}</a></li>
-        {% endfor %}
-        </ul>
+          <ul class="list-unstyled">
+          {% for tag in article.tags %}
+            <li><a href="/a/t/{{ tag.value|e|urlencode }}">{{ tag.value|e }}</a></li>
+          {% endfor %}
+          </ul>
+        </div>
       {% endif %}
         <div itemprop="description">{{ article.perex }}</div>
-      </div>
+      </div>{# /clear #}
       <div itemprop="articleBody">{{ article.body }}</div>
       <div class="pull-right" itemprop="author">
         <span class="text-muted">{{ _('Author') }}:</span>
         <span itemprop="name">{{ (article.author or article.email.split('@')[0])|e }}</span>
       </div>
 
-    <script>
+      <script>
         $(document).ready(function() {
           $.ajax({url: window.location,
                   type: 'put',
                   accepts : {json: 'application/json', html: 'text/html'}
           });
         });
-    </script>
+      </script>
     {% if article.data.get('discussion', True) %}
       {% set discussion_object_id = article.id %}
       {% set discussion_comment_link = '/a/'+article.uri+'#new_comment' %}
