@@ -89,10 +89,10 @@ class Comment(WoItem):
     def bind(self, form, **kwargs):
         self.id = form.getfirst(self.ID, self.id, nint)
         self.object_id = form.getfirst(self.OBJECT_ID, fce=int)
-        self.author = form.getfirst('author', '', uni)
+        self.author = form.getfirst('author', '', uni).strip()
         self.author_id = form.getfirst('author_id', None, nint)
-        self.title = form.getfirst('title', '', uni)
-        self.body = form.getfirst('body', '', uni)
+        self.title = form.getfirst('title', '', uni).strip()
+        self.body = form.getfirst('body', '', uni).strip()
         self.data = kwargs
 
     @staticmethod

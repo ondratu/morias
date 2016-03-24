@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Morias 0.0.1\n"
 "Report-Msgid-Bugs-To: mcbig@zeropage.cz\n"
-"POT-Creation-Date: 2016-03-21 08:09+0100\n"
-"PO-Revision-Date: 2016-03-21 08:09+0100\n"
+"POT-Creation-Date: 2016-03-24 12:42+0100\n"
+"PO-Revision-Date: 2016-03-24 12:41+0100\n"
 "Last-Translator: Ondřej Tůma <mcbig@zeropage.cz>\n"
 "Language-Team: Blackmouse\n"
 "Language: cs\n"
@@ -89,9 +89,8 @@ msgid "Underline (Ctrl/Cmd+U)"
 msgstr "Podtrženě (Ctrl/Cmd+I)"
 
 #: ../templ/_editor.html:14
-#, fuzzy
 msgid "Bullet list"
-msgstr "Seznam aktualit"
+msgstr "Odrážky"
 
 #: ../templ/_editor.html:15
 msgid "Number list"
@@ -121,7 +120,7 @@ msgstr ""
 msgid "Header 6"
 msgstr ""
 
-#: ../templ/_editor.html:35
+#: ../templ/_editor.html:35 ../templ/admin/redirects.html:30
 msgid "Code"
 msgstr "Kód"
 
@@ -192,6 +191,7 @@ msgstr ""
 #: ../templ/_popup.html:24 ../templ/admin/codebook.html:41
 #: ../templ/admin/logins_addresses.html:87 ../templ/admin/options.html:54
 #: ../templ/admin/page_menu.html:21 ../templ/admin/pages.html:29
+#: ../templ/admin/redirects.html:62
 msgid "Cancel"
 msgstr "Zrušit"
 
@@ -298,6 +298,7 @@ msgstr ""
 
 #: ../templ/admin/_menu.html:12 ../templ/admin/admin.html:1
 #: ../templ/admin/options.html:1 ../templ/admin/pages.html:1
+#: ../templ/admin/redirects.html:3
 msgid "Admin"
 msgstr "Administrace"
 
@@ -379,8 +380,8 @@ msgstr "Zveřejněno"
 #: ../templ/admin/codebook.html:29 ../templ/admin/jobs.html:16
 #: ../templ/admin/logins.html:21 ../templ/admin/news.html:25
 #: ../templ/admin/options.html:31 ../templ/admin/page_menu.html:36
-#: ../templ/admin/pages.html:42 ../templ/admin/eshop/store.html:24
-#: ../templ/eshop/shopping_cart.html:19
+#: ../templ/admin/pages.html:42 ../templ/admin/redirects.html:32
+#: ../templ/admin/eshop/store.html:24 ../templ/eshop/shopping_cart.html:19
 msgid "Action"
 msgstr "Akce"
 
@@ -395,6 +396,7 @@ msgstr "Připraven ke zveřejnění"
 #: ../templ/admin/news.html:43 ../templ/admin/options.html:39
 #: ../templ/admin/options.html:52 ../templ/admin/page_menu.html:50
 #: ../templ/admin/page_menu.html:63 ../templ/admin/pages.html:50
+#: ../templ/admin/redirects.html:56 ../templ/admin/redirects.html:78
 #: ../templ/admin/eshop/store.html:41
 msgid "Edit"
 msgstr "Upravit"
@@ -436,8 +438,9 @@ msgid "Restructured Text"
 msgstr ""
 
 #: ../templ/admin/articles_mod.html:43 ../templ/admin/news_mod.html:36
-#: ../templ/admin/eshop/item_mod.html:33 ../templ/admin/eshop/orders.html:37
-#: ../templ/admin/eshop/store.html:23 ../templ/eshop/orders.html:32
+#: ../templ/admin/redirects.html:31 ../templ/admin/eshop/item_mod.html:33
+#: ../templ/admin/eshop/orders.html:37 ../templ/admin/eshop/store.html:23
+#: ../templ/eshop/orders.html:32
 msgid "State"
 msgstr "Stav"
 
@@ -458,8 +461,8 @@ msgstr "Nezveřejněno"
 #: ../templ/admin/logins_mod.html:100 ../templ/admin/news_mod.html:50
 #: ../templ/admin/news_mod.html:67 ../templ/admin/options.html:53
 #: ../templ/admin/pages_mod.html:87 ../templ/admin/pages_mod.html:98
-#: ../templ/admin/eshop/item_mod.html:61 ../templ/admin/eshop/item_mod.html:73
-#: ../templ/login/login_mod.html:168
+#: ../templ/admin/redirects.html:60 ../templ/admin/eshop/item_mod.html:61
+#: ../templ/admin/eshop/item_mod.html:73 ../templ/login/login_mod.html:168
 msgid "Save"
 msgstr "Uložit"
 
@@ -510,6 +513,7 @@ msgstr "Stáhnout"
 #: ../templ/admin/logins_addresses.html:105 ../templ/admin/page_menu.html:22
 #: ../templ/admin/page_menu.html:51 ../templ/admin/page_menu.html:64
 #: ../templ/admin/pages.html:30 ../templ/admin/pages.html:53
+#: ../templ/admin/redirects.html:57 ../templ/admin/redirects.html:79
 msgid "Delete"
 msgstr "Smazat"
 
@@ -522,12 +526,13 @@ msgid "Tags list"
 msgstr "Seznam nálepek"
 
 #: ../templ/admin/codebook.html:11 ../templ/admin/codebook.html:28
-#: ../templ/admin/options.html:29 ../templ/admin/eshop/_store_actions.html:14
+#: ../templ/admin/options.html:29 ../templ/admin/redirects.html:13
+#: ../templ/admin/eshop/_store_actions.html:14
 msgid "Value"
 msgstr "Hodnota"
 
-#: ../templ/admin/codebook.html:14 ../templ/admin/eshop/orders.html:28
-#: ../templ/eshop/orders.html:24
+#: ../templ/admin/codebook.html:14 ../templ/admin/redirects.html:16
+#: ../templ/admin/eshop/orders.html:28 ../templ/eshop/orders.html:24
 msgid "Search"
 msgstr "Hledat"
 
@@ -535,11 +540,12 @@ msgstr "Hledat"
 msgid "New Item"
 msgstr "Nová položka"
 
-#: ../templ/admin/codebook.html:21 ../templ/admin/eshop/_store_actions.html:22
+#: ../templ/admin/codebook.html:21 ../templ/admin/redirects.html:46
+#: ../templ/admin/eshop/_store_actions.html:22
 msgid "Add"
 msgstr "Přidat"
 
-#: ../templ/admin/codebook.html:59
+#: ../templ/admin/codebook.html:59 ../templ/admin/redirects.html:80
 #, python-format
 msgid "Are you sure to delete `%s' item ?"
 msgstr "Opravdu chcete smazat položku %s ?"
@@ -553,6 +559,7 @@ msgid "Value exist yet"
 msgstr "Hodnota už existuje"
 
 #: ../templ/admin/codebook.html:62 ../templ/admin/page_menu.html:68
+#: ../templ/admin/redirects.html:85
 #: ../templ/admin/eshop/_store_actions.html:45
 msgid "This operation is not possible."
 msgstr "Tato operace není možná"
@@ -621,7 +628,8 @@ msgstr "Název"
 msgid "Addresses"
 msgstr "Adresa"
 
-#: ../templ/admin/logins.html:35
+#: ../templ/admin/logins.html:35 ../templ/admin/redirects.html:43
+#: ../templ/admin/redirects.html:53 ../templ/admin/redirects.html:88
 msgid "Enabled"
 msgstr "Povoleno"
 
@@ -881,6 +889,61 @@ msgstr "Upravit stránku"
 msgid "File name on server"
 msgstr "Jméno souboru na sereveru"
 
+#: ../templ/admin/redirects.html:3
+msgid "Redirects"
+msgstr "Přesměrování"
+
+#: ../templ/admin/redirects.html:10
+msgid "Redirects list"
+msgstr "Seznam přesměrování"
+
+#: ../templ/admin/redirects.html:20 ../templ/admin/redirects.html:37
+#: ../templ/admin/redirects.html:86
+msgid "301 Moved Permanently"
+msgstr "301 Trvale přesunuto"
+
+#: ../templ/admin/redirects.html:21 ../templ/admin/redirects.html:38
+#: ../templ/admin/redirects.html:87
+msgid "302 Moved Temporarily"
+msgstr "302 Dočasně přesunuto"
+
+#: ../templ/admin/redirects.html:28
+msgid "Source"
+msgstr "Zdroj"
+
+#: ../templ/admin/redirects.html:29
+msgid "Destination"
+msgstr "Cíl"
+
+#: ../templ/admin/redirects.html:34
+msgid "Source url"
+msgstr "Zdrojová url"
+
+#: ../templ/admin/redirects.html:35
+msgid "Destination url"
+msgstr "Cílová url"
+
+#: ../templ/admin/redirects.html:53 ../templ/admin/redirects.html:89
+#: ../templ/admin/eshop/item_mod.html:47
+msgid "Disabled"
+msgstr "Zakázáno"
+
+#: ../templ/admin/redirects.html:81
+msgid "Empty source"
+msgstr "Prázdný zdroj"
+
+#: ../templ/admin/redirects.html:82
+msgid "Bad source"
+msgstr "Špatný zdroj"
+
+#: ../templ/admin/redirects.html:83
+msgid "Source exist yet"
+msgstr "Zdroj již existuje"
+
+#: ../templ/admin/redirects.html:84
+msgid "Empty destination"
+msgstr "Prázdný cíl"
+
 #: ../templ/admin/eshop/_store_actions.html:3
 #: ../templ/admin/eshop/_store_actions.html:43
 msgid "Stored"
@@ -942,16 +1005,12 @@ msgstr "Prázdné jméno"
 #: ../templ/admin/eshop/item_mod.html:37 ../templ/admin/eshop/item_mod.html:43
 #: ../templ/admin/eshop/store.html:35 ../templ/admin/eshop/store.html:49
 msgid "Visible"
-msgstr "Viditělný"
+msgstr "Viditělné"
 
 #: ../templ/admin/eshop/item_mod.html:38 ../templ/admin/eshop/item_mod.html:45
 #: ../templ/admin/eshop/store.html:37 ../templ/admin/eshop/store.html:46
 msgid "Hidden"
-msgstr "Schovaný"
-
-#: ../templ/admin/eshop/item_mod.html:47
-msgid "Disabled"
-msgstr "Zakázaný"
+msgstr "Schováno"
 
 #: ../templ/admin/eshop/item_mod.html:50
 #: ../templ/admin/eshop/orders_mod.html:70 ../templ/admin/eshop/store.html:20

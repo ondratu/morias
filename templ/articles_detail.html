@@ -12,7 +12,7 @@
         <ul class="list-unstyled tags">
           <b>{{ _('Tags') }}:</b>
         {% for tag in article.tags %}
-          <li><a href="/articles/t/{{ tag.value|e }}">{{ tag.value|e }}</a></li>
+          <li><a href="/a/t/{{ tag.value|e }}">{{ tag.value|e }}</a></li>
         {% endfor %}
         </ul>
       {% endif %}
@@ -34,7 +34,7 @@
     </script>
     {% if article.data.get('discussion', True) %}
       {% set discussion_object_id = article.id %}
-      {% set discussion_comment_link = '/articles/'+article.uri+'#new_comment' %}
+      {% set discussion_comment_link = '/a/'+article.uri+'#new_comment' %}
       {% include "_discussion.html" %}
     {% endif -%}
     </div>

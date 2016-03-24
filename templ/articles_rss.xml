@@ -17,7 +17,7 @@
       <description>{{ article.perex|e }}</description>
       <pubDate>{{ article.create_date.strftime("%a, %d %b %Y %X "+tzname[0]) }}</pubDate>
       <pubDate>{{ article.create_date.isoformat() }}</pubDate>
-      <guid>{{ site.scheme }}://{{ site.domain }}/articles/{{ article.uri }}</guid>
+      <guid>{{ site.scheme }}://{{ site.domain }}/a/{{ article.uri }}</guid>
       <author>{{ article.email }}</author>
     </item>
   {% endfor -%}

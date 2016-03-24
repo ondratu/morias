@@ -6,21 +6,21 @@ from falias.util import uni, ObjectEncoder
 from random import randint
 from time import tzname
 
-from core.login import check_login, check_referer, match_right, rights, \
+from morias.core.login import check_login, check_referer, match_right, rights,\
     do_check_right, check_token, create_token
-from core.render import generate_page
-from core.lang import get_lang
-# from core.errors import ErrorValue
-from core.robot import robot_questions, RobotError
+from morias.core.render import generate_page
+from morias.core.lang import get_lang
+from morias.core.errors import ErrorValue
+from morias.core.robot import robot_questions, RobotError
 
-from lib.menu import Item
-from lib.pager import Pager
-from lib.articles import Article, FORMAT_RST, ArticleComment
-from lib.rst import check_rst, rst2html
+from morias.lib.menu import Item
+from morias.lib.pager import Pager
+from morias.lib.articles import Article, FORMAT_RST, ArticleComment
+from morias.lib.rst import check_rst, rst2html
 
-from user import user_sections
-from admin import content_menu
-from codebooks import build_class
+from morias.user import user_sections
+from morias.admin import content_menu
+from morias.codebooks import build_class
 
 _check_conf = (
     # morias common block
@@ -217,6 +217,8 @@ def articles_detail_internal(req, article, **kwargs):
 # enddef
 
 
+@app.route('/a/<uri:word>')
+@app.route('/a/<id:int>')
 @app.route('/articles/<uri:word>')
 @app.route('/articles/<id:int>')
 def articles_detail(req, arg):
@@ -265,6 +267,8 @@ def articles_comment_internal(req, uri=None, id=None):
 # enddef
 
 
+@app.route('/a/<uri:word>', method=state.METHOD_PUT)
+@app.route('/a/<id:int>', method=state.METHOD_PUT)
 @app.route('/articles/<uri:word>', method=state.METHOD_PUT)
 @app.route('/articles/<id:int>', method=state.METHOD_PUT)
 def articles_stats(req, arg):
@@ -280,6 +284,8 @@ def articles_stats(req, arg):
     return send_json(req, {'Ok': True})
 
 
+@app.route('/a/<uri:word>', method=state.METHOD_POST)
+@app.route('/a/<id:int>', method=state.METHOD_POST)
 @app.route('/articles/<uri:word>', method=state.METHOD_POST)
 @app.route('/articles/<id:int>', method=state.METHOD_POST)
 def articles_comment(req, arg):
@@ -291,9 +297,11 @@ def articles_comment(req, arg):
         return articles_detail_internal(req, article, error=rv, form=req.form)
     elif rv is None:
         raise SERVER_RETURN(state.HTTP_INTERNAL_SERVER_ERROR)
-    redirect(req, '/articles/%s#comment_%s' % (article.uri, rv.id))
+    redirect(req, req.uri+'#comment_%s' % rv.id)
 
 
+@app.route('/a/<uri:word>/comment', method=state.METHOD_POST)
+@app.route('/a/<id:int>/comment', method=state.METHOD_POST)
 @app.route('/articles/<uri:word>/comment', method=state.METHOD_POST)
 @app.route('/articles/<id:int>/comment', method=state.METHOD_POST)
 def articles_comment_xhr(req, arg):
@@ -303,8 +311,8 @@ def articles_comment_xhr(req, arg):
     article, rv = articles_comment_internal(req, uri, id)
     # XXX: at now, isinstance not work, becouase, have another namespace
     # that rv....
-    # if isinstance(rv, ErrorValue):
-    if hasattr(rv, 'reason'):
+    # if hasattr(rv, 'reason'):
+    if isinstance(rv, ErrorValue):
         req.status = state.HTTP_BAD_REQUEST
         return send_json(req, rv, cls=ObjectEncoder)
     elif rv is None:
@@ -317,8 +325,11 @@ def articles_comment_xhr(req, arg):
 # enddef
 
 
+@app.route('/a')
 @app.route('/articles')
+@app.route('/<locale:word>/a')
 @app.route('/<locale:word>/articles')
+@app.route('/<locale:word>/a/t/<tag:tag>')
 @app.route('/<locale:word>/articles/t/<tag:tag>')
 def articles_list_full(req, locale=None, tag=None):
     pager = Pager(limit=5, sort='desc', order='create_date')
@@ -343,6 +354,7 @@ def articles_rss(req):
                          webmaster=req.server_admin)
 
 
+@app.route('/a/t')
 @app.route('/articles/t')
 @app.route('/articles/tag')
 def articles_tags_list(req):
@@ -352,6 +364,7 @@ def articles_tags_list(req):
     return generate_page(req, "articles_tags.html", tags=tags)
 
 
+@app.route('/a/t/<tag:tag>')
 @app.route('/articles/t/<tag:tag>')
 @app.route('/articles/tag/<tag:tag>')
 def articles_list(req, tag=None):
