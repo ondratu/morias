@@ -20,11 +20,11 @@
     </div>
   </div>
 {% endfor %}
-{% if not error %}
-  {% set comment_author = login.email.split('@')[0] if login else '' %}
-{% else %}
-  {% set comment_author = error.comment.author %}
-{% endif %}
+{% if not error -%}
+  {% set comment_author = login.email.split('@')[0] if login else '' -%}
+{% else -%}
+  {% set comment_author = error.comment.author -%}
+{%- endif %}
   <h5 id="new_comment">{{ _('Your comment') }}:</h5>
   <form role="form" method="post" action="{{ discussion_comment_link }}" class="clearfix">
     <input type="hidden" name="article_id" value="{{ discussion_object_id }}">

@@ -6,7 +6,7 @@ from re import sub
 
 import json
 
-from discussion import Comment
+from morias.lib.discussion import Comment
 
 # errors
 EMPTY_TITLE = 1
@@ -23,7 +23,7 @@ def driver(req):
     if req.db.driver not in _drivers:
         raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
     m = "articles_" + req.db.driver
-    return __import__("lib." + m).__getattribute__(m)
+    return __import__("morias.lib." + m).lib.__getattribute__(m)
 
 
 class ArticleComment(Comment, Object):

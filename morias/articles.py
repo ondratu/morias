@@ -7,7 +7,7 @@ from random import randint
 from time import tzname
 
 from morias.core.login import check_login, check_referer, match_right, rights,\
-    do_check_right, check_token, create_token
+    do_check_right, check_token, create_token, do_match_right
 from morias.core.render import generate_page
 from morias.core.lang import get_lang
 from morias.core.errors import ErrorValue
@@ -29,7 +29,7 @@ _check_conf = (
     ('articles', 'is_root',  bool, False)
 )
 
-app.set_filter('tag', r'[\w\ ]+', uni)
+app.set_filter('tag', r'[\w\ \&\.]+', uni)
 
 
 def _call_conf(cfg, parser):
@@ -233,6 +233,15 @@ def articles_detail(req, arg):
     if id and not article.get(req):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
 
+    if article.public_date.year == 1970:
+        if req.login is None:
+            raise SERVER_RETURN(state.HTTP_FORBIDDEN)
+        if not do_match_right(req, module_rights):
+            raise SERVER_RETURN(state.HTTP_FORBIDDEN)
+        if (not do_check_right(req, right_editor)
+                and article.author_id != req.login.id):
+            raise SERVER_RETURN(state.HTTP_FORBIDDEN)
+
     return articles_detail_internal(req, article)
 # enddef
 
@@ -337,6 +346,9 @@ def articles_list_full(req, locale=None, tag=None):
 
     kwargs = {'locale': (locale, '')} if locale else {}
     items = Article.list(req, pager, perex=True, public=1, tag=tag, **kwargs)
+    for it in items:
+        if it.format == FORMAT_RST:
+            it.perex = rst2html(it.perex)
 
     lang = locale if locale else get_lang(req)
     return generate_page(req, "articles_list.html", pager=pager, items=items,
@@ -348,6 +360,9 @@ def articles_list_full(req, locale=None, tag=None):
 def articles_rss(req):
     pager = Pager(limit=5, sort='desc', order='create_date')
     items = Article.list(req, pager, perex=True, public=1)
+    for it in items:
+        if it.format == FORMAT_RST:
+            it.perex = rst2html(it.perex)
     return generate_page(req, "articles_rss.xml",
                          content_type="application/xml", pager=pager,
                          items=items, lang=get_lang(req), tzname=tzname,

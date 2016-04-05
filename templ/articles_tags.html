@@ -6,8 +6,8 @@
       <div class="row">
     {% for tag in tags %}
         <div class="col-md-4"><div class="well item">
-          <a href="/a/t/{{ tag.value }}">
-            <h3>{{ tag.value }}</h3>
+          <a href="/a/t/{{ tag.value|e }}">
+            <h3>{{ tag.value|e }}</h3>
           </a>
         </div></div>
     {% endfor %}

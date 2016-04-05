@@ -1,5 +1,15 @@
-{% set title = _('Articles') -%}
-{% include "_header.html" -%}
+{% include "_header_html.html" -%}
+    <title>{{ _('Articles') }} | {{ site.name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ site.description }}"/>
+    <meta name="keywords" content="{{ ' '.join(site.keywords) }}">
+    <meta name="author" content="Ondřej Tůma, {{ site.author }}"/>
+    <meta name="copyright" content="&copy; {{ site.copyright }}"/>
+    <meta name="robots" content="index, follow, all" />
+    <meta name="generator" content="Python, Jinja2, Morias"/>
+
+    <link rel="canonical" href="{{ site.scheme }}://{{ site.domain }}/a" />
+{% include "_header_body.html" -%}
 {% include "user/_menu.html" -%}
 
     <div class="container">

@@ -5,7 +5,7 @@ from sqlite3 import IntegrityError
 
 from json import dumps, loads
 
-from lib.articles import Article, Tag
+from morias.lib.articles import Article, Tag
 
 
 def test(req):
@@ -48,7 +48,6 @@ def get(self, req, key='article_id'):
         WHERE a.article_id = %s
         """, self.id)
     for row in c:
-        req.log_debug(repr(row))
         self.tags.append(Tag(row[0], row[1]))
 
     tran.commit()
@@ -188,7 +187,7 @@ def tags_list(req, id):
 
 
 def item_list(req, pager, perex=False, **kwargs):
-    perex = ', perex ' if perex else ''
+    perex = ', perex, format ' if perex else ''
     join = ''
 
     public = kwargs.pop('public', False)
