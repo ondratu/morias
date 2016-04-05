@@ -121,8 +121,8 @@ class Config:
             m._call_conf(self, p)
     # enddef
 
-    def log_error(self, message, level=state.LOG_INFO):
-        """ application logger with default state.LOG_INFO log level """
+    def log_error(self, message, level=state.LOG_ERR):
+        """ application logger with default state.LOG_ERR log level """
         app.log_error(message, level)
 
     @property
@@ -135,10 +135,9 @@ class Config:
         """ baypass property for db operations at load modules """
         return self.morias_db
 
-    @property
-    def log_info(self):
+    def log_info(self, message):
         """ baypass property for db operations at load modules """
-        return self.log_error
+        return app.log_error(message, level=state.LOG_INFO)
 # endclass
 
 

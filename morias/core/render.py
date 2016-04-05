@@ -179,7 +179,7 @@ def morias_template(req, template, **kwargs):
     kwargs['site'].styles = req.cfg.site_styles + kwargs.pop('styles', ())
     kwargs['site'].this = req.uri
     kwargs['site'].scheme = req.scheme
-    kwargs['site'].domain = req.server_hostname
+    kwargs['site'].domain = req.hostname
 
     kwargs['site'].modules = req.cfg.modules
     kwargs['site'].footers = req.cfg.footers
