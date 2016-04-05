@@ -1,7 +1,7 @@
 
 from falias.util import islistable
 
-from options import Option
+from morias.options import Option
 
 
 def get(self, req):

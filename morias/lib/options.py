@@ -13,7 +13,7 @@ from poorwsgi import state
 from falias.parser import smart_get
 from falias.util import islistable
 
-from timestamp import write_timestamp
+from morias.lib.timestamp import write_timestamp
 
 # errors
 EMPTY_SECTION = 0
@@ -35,7 +35,7 @@ def driver(req):
     if req.db.driver not in _drivers:
         raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
     m = "options_" + req.db.driver
-    return __import__("lib." + m).__getattribute__(m)
+    return __import__("morias.lib." + m).lib.__getattribute__(m)
 
 
 class Option:
@@ -120,8 +120,8 @@ class Option:
                 item.cls = None
                 item.defaults = set()
                 item.value = req.cfg.__dict__.get(
-                                "%s_%s" % (sec,opt),    # fallback for core options
-                                req.cfg.__dict__.get("%s" % (opt), None))
+                    "%s_%s" % (sec, opt),    # fallback for core options
+                    req.cfg.__dict__.get("%s" % (opt), None))
                 item.doc = ''
                 if islistable(item.value):
                     item.value = ','.join((str(it) for it in item.value))

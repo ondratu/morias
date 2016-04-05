@@ -5,16 +5,16 @@ from falias.sql import Sql
 
 import json
 
-from core.login import rights, check_login, check_right, do_create_token, \
-    check_token
-from core.render import generate_page
+from morias.core.login import rights, check_login, check_right, \
+    do_create_token, check_token
+from morias.core.render import generate_page
 
-from lib.pager import Pager
-from lib.menu import Item
-from lib.timestamp import check_timestamp
-from lib.page_menu import MenuItem
+from morias.lib.pager import Pager
+from morias.lib.menu import Item
+from morias.lib.timestamp import check_timestamp
+from morias.lib.page_menu import MenuItem
 
-from admin import content_menu
+from morias.admin import content_menu
 
 _check_conf = (
     ('morias', 'db', Sql),                      # database configuration

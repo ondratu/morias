@@ -3,7 +3,7 @@ from falias.util import islistable
 
 import json
 
-from lib.attachments import Attachment
+from morias.lib.attachments import Attachment
 
 
 def get(self, req):

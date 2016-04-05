@@ -8,20 +8,19 @@ from datetime import datetime
 
 import json
 
-from core.render import generate_page
-from core.login import rights, check_login, check_right, match_right, \
+from morias.core.render import generate_page
+from morias.core.login import rights, check_login, check_right, match_right, \
     check_referer, check_origin
 
-from lib.menu import Item
-from lib.pager import Pager
-from lib.jobs import run_job, Job
-from lib.attachments import Attachment
+from morias.lib.menu import Item
+from morias.lib.pager import Pager
+from morias.lib.jobs import run_job, Job
+from morias.lib.attachments import Attachment
 
-from admin import system_menu
+from morias.admin import system_menu
 
 # required
-import login
-import jobs
+from morias import login, jobs
 
 __requires = (login, jobs)
 

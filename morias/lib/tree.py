@@ -12,7 +12,7 @@ def driver(req):
     if req.db.driver not in _drivers:
         raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
     m = "tree_" + req.db.driver
-    return __import__("lib." + m).__getattribute__(m)
+    return __import__("morias.lib." + m).lib.__getattribute__(m)
 
 
 class Item(object):

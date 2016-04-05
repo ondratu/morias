@@ -5,7 +5,7 @@ from time import time
 from datetime import datetime
 
 from morias.core.errors import ErrorValue
-from wotree import WoItem
+from morias.lib.wotree import WoItem
 
 
 class EmptyTitle(ErrorValue):

@@ -6,7 +6,7 @@ from hashlib import md5
 
 import json
 
-from lib.login import Login, OK, LOGIN_EXIST, LOGIN_NOT_EXIST
+from morias.lib.login import Login, OK, LOGIN_EXIST, LOGIN_NOT_EXIST
 
 
 def _transaction(req):  # static methos

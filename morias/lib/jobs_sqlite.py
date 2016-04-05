@@ -6,7 +6,7 @@ from datetime import datetime
 
 import json
 
-from lib.jobs import Job
+from morias.lib.jobs import Job
 
 
 def get(self, req):

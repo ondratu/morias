@@ -1,4 +1,4 @@
-from .. core.login import do_match_right
+from morias.core.login import do_match_right
 
 
 class Item(object):

@@ -4,8 +4,8 @@ from hashlib import md5
 
 import json
 
-from lib.tree import Item
-from lib.timestamp import write_timestamp
+from morias.lib.tree import Item
+from morias.lib.timestamp import write_timestamp
 
 # fucknig name space for isinstance in correct_menu
 from morias.lib import menu

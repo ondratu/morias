@@ -4,15 +4,15 @@ from falias.util import nuni, uni
 
 import json
 
-from core.render import generate_page
-from core.login import check_login, check_right
+from morias.core.render import generate_page
+from morias.core.login import check_login, check_right
 
-from lib.menu import Item
-from lib.pager import Pager
-from lib.timestamp import check_timestamp
-from lib.options import Option, load_options, option_errors
+from morias.lib.menu import Item
+from morias.lib.pager import Pager
+from morias.lib.timestamp import check_timestamp
+from morias.lib.options import Option, load_options, option_errors
 
-from admin import system_menu
+from morias.admin import system_menu
 
 _check_conf = (
     # morias common block

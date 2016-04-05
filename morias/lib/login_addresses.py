@@ -1,6 +1,6 @@
 from falias.util import islistable
 
-from login import Login
+from morias.lib.login import Login
 
 address_items = ('type', 'name', 'address1', 'address2', 'city', 'region',
                  'zip', 'country')
