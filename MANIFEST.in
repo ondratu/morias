@@ -1,0 +1,14 @@
+include *.py
+include MANIFEST.in
+include README.rst
+graft css
+graft js
+graft fonts
+graft templ
+graft locales
+graft sql
+global-exclude *~
+global-exclude *.swp
+global-exclude *.bak
+global-exclude *.mo
+global-exclude morias.pot

@@ -1,0 +1,6 @@
+/morias.egg-info
+/dist
+/build
+/locales/morias.pot
+/locales/cs/
+*.bak
