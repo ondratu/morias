@@ -40,20 +40,23 @@
             <th>{{ orderby(_('Locale'), 'locale', 'asc') }}</th>
             <th>{{ _('Last modify') }}</th>
             <th>{{ _('Action' )}}</th></tr>
-        {% for page in rows %}
-        <tr><td><a href="/{{page.name}}">{{ page.name }}</a></td>
+        {% for page in rows -%}
+        <tr {{ 'class="disabled"' if not page.found else '' }}>
+            <td>{% if page.found %}<a href="/{{page.name}}">{{ page.name }}</a>{% else %}{{ page.name }}{% endif %}</td>
             <td>{{ page.title }}</td>
             <td>{{ page.locale }}</td>
             <td>{{ page.modify.strftime("%H:%M %d.%m.%Y") }}</td>
             <td>
+          {%- if page.found -%}
             {% if check_right('pages_modify') or (check_right('pages_author') and page.author_id == login.id) or (length(page.rights) and match_right(page.rights)) -%}
               <a href="/admin/pages/{{ page.id }}">{{ _('Edit') }}</a>
             {% endif -%}
-            {% if check_right('pages_modify') or (check_right('pages_author') and page.author_id == login.id) %}
+            {% if check_right('pages_modify') or (check_right('pages_author') and page.author_id == login.id) -%}
               / <a href="#" delete="/admin/pages/{{ page.id }}/delete" name="{{ page.name }}">{{ _('Delete') }}</a>
             {% endif -%}
+          {% endif -%}
             </td></tr>
-        {% endfor %}
+        {% endfor -%}
       </table>
 {% include "_pager.html" %}
 

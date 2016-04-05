@@ -2,9 +2,6 @@ from sqlite3 import IntegrityError
 from falias.util import islistable
 from falias.sqlite import DictCursor
 
-from os.path import getmtime
-from datetime import datetime
-
 import json
 
 from morias.lib.page_file import Page, PAGE_EXIST, PAGE_NOT_EXIST
@@ -150,8 +147,7 @@ def item_list(req, pager, **kwargs):
     for row in iter(c.fetchone, None):
         page = Page()
         page.from_row(row)
-        page.modify = datetime.fromtimestamp(   # timestamp of last modify
-            getmtime(req.cfg.pages_source + '/' + page.name))
+        page.get_modify(req)
         items.append(page)
     # endfow
 

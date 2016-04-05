@@ -2,7 +2,7 @@ from falias.util import uni, nint
 from poorwsgi import state
 
 from os import rename, remove, access, R_OK, W_OK
-from os.path import exists, isdir
+from os.path import exists, isdir, getmtime
 from datetime import datetime
 from shutil import copyfile
 
@@ -33,7 +33,7 @@ def driver(req):
     if req.db.driver not in _drivers:
         raise RuntimeError("Uknow Data Source Name `%s`" % req.db.driver)
     m = "page_file_" + req.db.driver
-    return __import__("lib." + m).__getattribute__(m)
+    return __import__("morias.lib." + m).lib.__getattribute__(m)
 
 
 class Page():
@@ -50,6 +50,14 @@ class Page():
             else:
                 setattr(self, key, val)
     # enddef
+
+    def get_modify(self, req):
+        page_file_name = req.cfg.pages_source + '/' + self.name
+        if exists(page_file_name):
+            self.modify = datetime.fromtimestamp(getmtime(page_file_name))
+            self.found = True
+        else:
+            self.found = False
 
     def get(self, req):
         m = driver(req)

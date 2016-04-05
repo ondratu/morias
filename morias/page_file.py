@@ -29,7 +29,7 @@ _check_conf = (
               "If pages have rights settings visible in editation."),
     ('pages', 'rights', tuple, '', True,
               "User rights, which could be use for page editing."),
-    ('pages', 'index_is_root', bool, True),
+    ('pages', 'index_is_root', bool, False),            # False by default!
     ('pages', 'runtime', bool, False),
     ('pages', 'runtime_without_html', bool, False),     # danger !
     ('pages', 'timestamp', unicode, 'tmp/pages.timestamp'),
@@ -88,7 +88,10 @@ def refresh_page_files(req, cfg_timestamp, clear=True):
         if req.cfg.pages_index_is_root:
             app.set_route('/', runtime_file)                # / will be index
         if req.cfg.pages_runtime_without_html:
-            for it in Page.list(req.cfg, Pager(limit=-1)):
+            for it in Page.list(req, Pager(limit=-1)):
+                if not it.found:
+                    req.cfg.log_error("Page %s not found" % it.name)
+                    continue
                 name = it.name[:it.name.rfind('.')]
                 if name in ('admin', 'user', 'login', 'logout'):
                     req.cfg.log_error('Denied runtime file uri: %s' %
@@ -97,7 +100,11 @@ def refresh_page_files(req, cfg_timestamp, clear=True):
                 req.cfg.log_info("Adding /%s" % name)
                 app.set_route('/'+name, runtime_file)   # without .html
         else:
-            for it in Page.list(req.cfg, Pager(limit=-1)):
+            for it in Page.list(req, Pager(limit=-1)):
+                if not it.found:
+                    req.cfg.log_error("Page %s not found" % it.name)
+                    continue
+                req.cfg.log_info("Adding /%s" % name)
                 # rst not work
                 app.set_route('/'+it.name, runtime_file)
 
