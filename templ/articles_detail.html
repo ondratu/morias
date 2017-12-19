@@ -64,6 +64,7 @@
     {% if article.data.get('discussion', True) -%}
       {% set discussion_object_id = article.id -%}
       {% set discussion_comment_link = '/a/'+article.uri+'#new_comment' -%}
+      {% set discussion_admin_link = '/admin/articles/'+article.id+'/discussion' -%}
       {% include "_discussion.html" %}
     {% endif -%}
     </div>

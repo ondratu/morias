@@ -5,9 +5,11 @@ from falias.util import uni, ObjectEncoder
 
 from random import randint
 from time import tzname
+from json import dumps
 
 from morias.core.login import check_login, check_referer, match_right, rights,\
-    do_check_right, check_token, create_token, do_match_right
+    do_check_right, check_token, create_token, do_match_right,\
+    do_create_token, check_origin
 from morias.core.render import generate_page
 from morias.core.lang import get_lang
 from morias.core.errors import ErrorValue
@@ -21,6 +23,7 @@ from morias.lib.rst import check_rst, rst2html
 from morias.user import user_sections
 from morias.admin import content_menu
 from morias.codebooks import build_class
+from morias.discussion import right_moderator
 
 _check_conf = (
     # morias common block
@@ -38,10 +41,11 @@ def _call_conf(cfg, parser):
     if cfg.articles_is_root:
         app.set_route('/', articles_list_full)
 
+
 right_editor = 'articles_editor'
 right_author = 'articles_author'
 module_rights = (right_editor, right_author)
-rights.update(module_rights)
+rights.update(module_rights + (right_moderator,))
 
 content_menu.append(Item('/admin/articles', label="Articles",
                          symbol="articles", rights=module_rights))
@@ -197,6 +201,28 @@ def articles_remove_tag(req, id, tag_id):
     return '{}'
 
 
+@app.route('/admin/articles/<article_id:int>/discussion/'
+           '<comment_id:comment_id>/spam', state.METHOD_PUT)
+@app.route('/admin/articles/<article_id:int>/discussion/'
+           '<comment_id:comment_id>/ham', state.METHOD_PUT)
+def admin_comments_spam(req, article_id, comment_id):
+    check_login(req)
+    match_right(req, right_moderator)
+    check_origin(req)
+    check_token(req, req.json.get('token'), uri='/a/%d' % article_id)
+
+    comment = ArticleComment(id=comment_id)
+    comment.object_id = article_id
+    comment.get(req)                # full load comment and json
+    if 'spam' in comment.data:
+        comment.data.pop('spam')
+    else:
+        comment.data['spam'] = True
+    comment.mod(req, data=dumps(comment.data))
+    send_json(req, {'comment': comment}, cls=ObjectEncoder)
+# enddef
+
+
 def articles_detail_internal(req, article, **kwargs):
     if article.format == FORMAT_RST:
         article.perex = rst2html(article.perex)
@@ -206,6 +232,9 @@ def articles_detail_internal(req, article, **kwargs):
         discussion = ArticleComment.list(req, article.id, Pager(limit=-1))
     else:
         discussion = []
+
+    if req.login and do_check_right(req, right_moderator):
+        kwargs['token'] = do_create_token(req, '/a/%d' % article.id)
 
     qid = randint(0, len(robot_questions)-1)
     question, answer = robot_questions[qid]
@@ -258,6 +287,7 @@ def articles_comment_internal(req, uri=None, id=None):
         raise SERVER_RETURN(state.HTTP_NOT_FOUND)
 
     comment = ArticleComment()
+    comment.object_id = article.id  # not need to send in form
     comment.bind(req.form, user_agent=req.user_agent, ip=req.remote_addr)
 
     robot = True if req.form.getfirst("robot", "", str) else False

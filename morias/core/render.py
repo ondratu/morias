@@ -41,6 +41,9 @@ def ctx(context):
 
 @contextfunction
 def check_right(ctx, right):
+    if not ctx['login']:
+        return False
+
     if right in ctx['login'].rights or 'super' in ctx['login'].rights:
         return True
     return False
@@ -49,7 +52,13 @@ def check_right(ctx, right):
 
 @contextfunction
 def match_right(ctx, rights):
-    if not rights or 'super' in ctx['login'].rights:
+    if not rights:
+        return True
+
+    if not ctx['login']:
+        return False
+
+    if 'super' in ctx['login'].rights:
         return True                 # not rights means means login have right
 
     if not set(ctx['login'].rights).intersection(rights):
@@ -190,6 +199,7 @@ def morias_template(req, template, **kwargs):
                                localedir=req.cfg.locales,
                                languages=languages,
                                fallback=True)
+    print(req.cfg.templates)
 
     return jinja_template(template, req.cfg.templates, translations, **kwargs)
 # enddef

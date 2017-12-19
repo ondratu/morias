@@ -77,18 +77,20 @@ class Comment(WoItem):
         self.data = loads(self.data)
         return self
 
-    def mod(self, req):
-        kwargs = {self.OBJECT_ID: self.object_id,
-                  'author': self.author,
-                  'author_id': self.author_id,
-                  'title': self.title,
-                  'body': self.body,
-                  'data': dumps(self.data)}
+    def mod(self, req, **kwargs):
+        if not kwargs:
+            kwargs = {
+                'author': self.author,
+                'author_id': self.author_id,
+                'title': self.title,
+                'body': self.body,
+                'data': dumps(self.data)}
+        kwargs.update({'__cond__': {self.OBJECT_ID: self.object_id}})
         return super(Comment, self).mod(req, **kwargs)
 
     def bind(self, form, **kwargs):
         self.id = form.getfirst(self.ID, self.id, nint)
-        self.object_id = form.getfirst(self.OBJECT_ID, fce=int)
+        self.object_id = form.getfirst('object_id', self.object_id, fce=int)
         self.author = form.getfirst('author', '', uni).strip()
         self.author_id = form.getfirst('author_id', None, nint)
         self.title = form.getfirst('title', '', uni).strip()
@@ -101,6 +103,31 @@ class Comment(WoItem):
             pager.order = cls.ID
 
         kwargs.update({cls.OBJECT_ID: object_id})
+        rows = WoItem.list(req, cls, pager, **kwargs)
+
+        items = []
+        for row in rows:
+            item = cls()
+            for k, v in row.items():
+                if k == 'create_date':
+                    item.create_date = datetime.fromtimestamp(v)
+                elif k == 'data':
+                    item.data = loads(v)
+                elif k == cls.ID:
+                    item.id = v
+                else:
+                    setattr(item, k, v)
+            items.append(item)
+        return items
+    # enddef
+
+    @staticmethod
+    def list_all(req, cls, pager, **kwargs):
+        if pager.order not in (cls.ID, cls.OBJECT_ID, 'create_date', 'title',
+                               'author', 'article_id'):
+            pager.order = cls.ID
+
+        kwargs.update({'group_by': cls.OBJECT_ID})
         rows = WoItem.list(req, cls, pager, **kwargs)
 
         items = []

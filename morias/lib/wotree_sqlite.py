@@ -48,8 +48,7 @@ def get(self, req, **cond):
 
 
 def mod(self, req, **kwargs):
-    cond = kwargs.pop('__cond__', None)
-    cond = {cond: kwargs.pop(cond)} if cond else {}
+    cond = kwargs.pop('__cond__', {})
     cond.update({self.ID: self.id})
 
     tran = req.db.transaction(req.log_info)
@@ -73,14 +72,17 @@ def mod(self, req, **kwargs):
 
 
 def item_list(req, cls, pager, **kwargs):   # static method
+    group_by = kwargs.pop('group_by', '')
+    if group_by:
+        group_by = "GROUP BY %s" % group_by
     keys = list("%s %s %%s" % (k, 'in' if islistable(v) else '=')
                 for k, v in kwargs.items())
     cond = "WHERE " + ' AND '.join(keys) if keys else ''
 
     tran = req.db.transaction(req.log_info)
     c = tran.cursor(DictCursor)
-    c.execute("SELECT * FROM %s %s ORDER BY %s LIMIT %%d, %%d" %
-              (cls.TABLE, cond, pager.order),
+    c.execute("SELECT * FROM %s %s %s ORDER BY %s %s LIMIT %%d, %%d" %
+              (cls.TABLE, cond, group_by, pager.order, pager.sort),
               tuple(kwargs.values()) + (pager.offset, pager.limit))
     items = []
     for row in iter(c.fetchone, None):

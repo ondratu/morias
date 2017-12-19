@@ -3,15 +3,28 @@
 <div class="discussion clear" itemscope itemtype="http://schema.org/UserComments">
   <h4 id="discussion">{{ _('Discussion') }}</h4>
 {% for comment in discussion %}
-  <div class="panel panel-default" id="comment_{{ comment.id }}">
-    <div class="panel-heading"><h5 class="panel-title">{{ comment.title|e }}</h5></div>
-    <div class="panel-body" itemprop="commentText">
+  {% if not check_right('comments_moderator') and 'spam' in comment.data -%}{% continue %}{% endif -%}
+
+  <div class="panel panel-default" id="comment_{{ comment.id }}" idx="{{ comment.id }}">
+    <div class="panel-heading">
+      <h5 class="panel-title">{{ comment.title|e }}
+        {%- if check_right('comments_moderator') %}
+        <span class="pull-right">
+          {%- if 'spam' in comment.data %}
+          <button class="btn-link" put="{{ discussion_admin_link }}/{{ comment.id }}/ham" cid="{{ comment.id }}">{{ _('Ham') }}</button>
+          {% else -%}
+          <button class="btn-link" put="{{ discussion_admin_link }}/{{ comment.id }}/spam" cid="{{ comment.id }}">{{ _('Spam') }}</button>
+          {% endif -%}
+        </span>
+        {% endif -%}
+      </h5></div>
+    <div class="panel-body {{ 'hidden' if 'spam' in comment.data else '' }}" itemprop="commentText">
       {{ comment.body|e|replace('\n', '<br>\n') }}
     </div>
     <div class="panel-footer small">
       <div class="pull-left" itemprop="creator" itemscope itemtype="http://schema.org/Person">
         <span class="text-muted">{{ _('Author') }}:</span>
-        <span itemprop="name">{{ comment.author|e }}</span>
+        <span itemprop="name">{{ comment.author|e if 'spam' not in comment.data else comment.data.get('ip', _('Unknown')) }}</span>
       </div>
       <div class="pull-right text-muted" itemprop="commentTime">
         {{ _('Date') }}: {{ comment.create_date.strftime("%H:%M %d.%m.%Y") }}
@@ -27,7 +40,6 @@
 {%- endif %}
   <h5 id="new_comment">{{ _('Your comment') }}:</h5>
   <form role="form" method="post" action="{{ discussion_comment_link }}" class="clearfix">
-    <input type="hidden" name="article_id" value="{{ discussion_object_id }}">
     <div class="form-group col-sm-4 padding0 {{ 'has-error' if error is defined and error.reason == 'empty_author' }}">
       <input type="text" class="form-control" name="author" required="required" placeholder="{{ _('Your name') }}" value="{{ comment_author|e }}">
     </div>
@@ -69,6 +81,8 @@
     </div>
   </form>
 
+  <script src="/js/spinner.js"></script>
+  <script src="/js/i18n.js"></script>
   <script>
     function chr(o) {
       return String.fromCharCode(o);
@@ -77,6 +91,41 @@
     $(document).ready(function() {
       $('#input_answer')[0].value = '' {% for c in answer %}+chr({{ ord(c) }}){% endfor %};
       $('.shadow').hide();
+
+  {% if match_right('discussion_moderator') -%}
+
+      $('button[put]').click(function() {
+        var spinner = new M.Spinner();
+        var panel = $('[idx="'+$(this).attr('cid')+'"]');
+        $.ajax({url: $(this).attr('put'),
+                type: 'put',
+                accepts: {json: 'application/json', html: 'text/html'},
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify({'token': '{{ token }}'}),
+                context: this,
+                success: function(data){
+                  if ('spam' in data.comment.data){     // hide comment
+                    $(this).attr('put', $(this).attr('put').replace('/spam', '/ham'));
+                    $(this).text(M._('Ham'));
+                    $('div.panel-body', panel).addClass('hidden');
+                    $('span[itemprop=name]', panel).text(data.comment.data.ip || M._('Unknown'));
+                  } else {                              // show comment
+                    $(this).attr('put', $(this).attr('put').replace('/ham', '/spam'));
+                    $(this).text(M._('Spam'));
+                    $('div.panel-body', panel).removeClass('hidden');
+                    $('span[itemprop=name]', panel).text(data.comment.author);
+                  }
+                  delete spinner.stop();
+                },
+                error: function(xhr, status, http_status){
+                  alert(http_status);
+                  delete spinner.stop();
+                }
+        });
+      });
+
+  {% endif -%}
     });
   </script>
 </div>
