@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Morias 0.0.1\n"
 "Report-Msgid-Bugs-To: mcbig@zeropage.cz\n"
-"POT-Creation-Date: 2016-03-24 12:42+0100\n"
+"POT-Creation-Date: 2020-07-09 12:29+0200\n"
 "PO-Revision-Date: 2016-03-24 12:41+0100\n"
 "Last-Translator: Ondřej Tůma <mcbig@zeropage.cz>\n"
 "Language-Team: Blackmouse\n"
@@ -16,57 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.6.10\n"
-
-#: ../templ/_discussion.html:4
-msgid "Discussion"
-msgstr "Diskuze"
-
-#: ../templ/_discussion.html:14 ../templ/articles_detail.html:23
-#: ../templ/articles_list.html:11 ../templ/admin/articles.html:21
-#: ../templ/admin/attachments.html:18 ../templ/admin/news.html:21
-msgid "Author"
-msgstr "Autor"
-
-#: ../templ/_discussion.html:18 ../templ/articles_detail.html:9
-#: ../templ/articles_list.html:14
-msgid "Date"
-msgstr "Datum"
-
-#: ../templ/_discussion.html:30 ../templ/_discussion.html:41
-msgid "Your comment"
-msgstr "Váš komentář"
-
-#: ../templ/_discussion.html:34 ../templ/forms/contact-form.html:29
-msgid "Your name"
-msgstr "Vaše jméno"
-
-#: ../templ/_discussion.html:38 ../templ/admin/articles.html:20
-#: ../templ/admin/articles_mod.html:24 ../templ/admin/articles_mod.html:26
-#: ../templ/admin/news.html:20 ../templ/admin/news_mod.html:24
-#: ../templ/admin/news_mod.html:26 ../templ/admin/page_menu.html:33
-#: ../templ/admin/pages.html:39 ../templ/admin/pages_mod.html:81
-#: ../templ/admin/pages_mod.html:83
-msgid "Title"
-msgstr "Titulek"
-
-#: ../templ/_discussion.html:49 ../templ/forms/contact-form.html:46
-#: ../templ/login/forgotten_password.html:23 ../templ/login/login_mod.html:54
-msgid "Yes, I'm robot."
-msgstr "Ano, jsem robot."
-
-#: ../templ/_discussion.html:54 ../templ/forms/contact-form.html:12
-#: ../templ/login/forgotten_password.html:28 ../templ/login/login_mod.html:59
-msgid "Robots can't send the form."
-msgstr "Roboti nemohou odesílat formulář."
-
-#: ../templ/_discussion.html:65 ../templ/forms/contact-form.html:15
-#: ../templ/login/forgotten_password.html:39 ../templ/login/login_mod.html:70
-msgid "Your anser is not correct."
-msgstr "Vaše odpověď není správná."
-
-#: ../templ/_discussion.html:70
-msgid "Append comment"
-msgstr "Přidat komentář"
 
 #: ../templ/_editor.html:4
 msgid "Show source code"
@@ -195,11 +144,21 @@ msgstr ""
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: ../templ/articles_detail.html:13
+#: ../templ/articles_detail.html:33 ../templ/articles_list.html:24
+msgid "Date"
+msgstr "Datum"
+
+#: ../templ/articles_detail.html:36
 msgid "Tags"
 msgstr "Nálepky"
 
-#: ../templ/articles_list.html:1
+#: ../templ/admin/articles.html:21 ../templ/admin/attachments.html:18
+#: ../templ/admin/news.html:21 ../templ/articles_detail.html:52
+#: ../templ/articles_list.html:21
+msgid "Author"
+msgstr "Autor"
+
+#: ../templ/articles_list.html:2
 msgid "Articles"
 msgstr "Články"
 
@@ -224,8 +183,8 @@ msgstr "Přihlaste se prosím"
 msgid "Email address"
 msgstr "Emailová adresa"
 
-#: ../templ/login.html:15 ../templ/admin/logins_mod.html:79
-#: ../templ/admin/logins_mod.html:81 ../templ/login/login_mod.html:94
+#: ../templ/admin/logins_mod.html:79 ../templ/admin/logins_mod.html:81
+#: ../templ/login.html:15 ../templ/login/login_mod.html:94
 #: ../templ/login/login_mod.html:96
 msgid "Password"
 msgstr "Heslo"
@@ -262,9 +221,9 @@ msgstr "Registrovat"
 msgid "News"
 msgstr "Aktuality"
 
-#: ../templ/news_list.html:1 ../templ/news_list.html:7
 #: ../templ/admin/articles.html:7 ../templ/admin/news.html:7
-#: ../templ/admin/news_mod.html:19
+#: ../templ/admin/news_mod.html:19 ../templ/news_list.html:1
+#: ../templ/news_list.html:7
 msgid "News list"
 msgstr "Seznam aktualit"
 
@@ -331,7 +290,7 @@ msgstr "Stránka již existuje"
 msgid "Select the tag"
 msgstr "Vyberte nálepku"
 
-#: ../templ/admin/_tags.html:15 ../templ/admin/_tags.html:22
+#: ../templ/admin/_tags.html:15 ../templ/admin/_tags.html:23
 msgid "Remove tag"
 msgstr "Odstranit nálepku"
 
@@ -339,11 +298,10 @@ msgstr "Odstranit nálepku"
 msgid "articles"
 msgstr "články"
 
-#: ../templ/admin/articles.html:8 ../templ/admin/news.html:8
-#: ../templ/admin/options.html:10 ../templ/admin/options.html:18
-#: ../templ/admin/eshop/_store_actions.html:2
+#: ../templ/admin/articles.html:8 ../templ/admin/eshop/_store_actions.html:2
 #: ../templ/admin/eshop/orders.html:22 ../templ/admin/eshop/store.html:8
-#: ../templ/eshop/orders.html:18
+#: ../templ/admin/news.html:8 ../templ/admin/options.html:10
+#: ../templ/admin/options.html:18 ../templ/eshop/orders.html:18
 msgid "All"
 msgstr "Všechny"
 
@@ -359,6 +317,14 @@ msgstr "Návrh"
 #: ../templ/admin/articles_mod.html:14 ../templ/admin/articles_mod.html:17
 msgid "New article"
 msgstr "Nový článek"
+
+#: ../templ/admin/articles.html:20 ../templ/admin/articles_mod.html:24
+#: ../templ/admin/articles_mod.html:26 ../templ/admin/news.html:20
+#: ../templ/admin/news_mod.html:24 ../templ/admin/news_mod.html:26
+#: ../templ/admin/page_menu.html:33 ../templ/admin/pages.html:39
+#: ../templ/admin/pages_mod.html:81 ../templ/admin/pages_mod.html:83
+msgid "Title"
+msgstr "Titulek"
 
 #: ../templ/admin/articles.html:22 ../templ/admin/articles_mod.html:32
 #: ../templ/admin/articles_mod.html:34 ../templ/admin/news.html:22
@@ -377,11 +343,11 @@ msgid "Publicated"
 msgstr "Zveřejněno"
 
 #: ../templ/admin/articles.html:25 ../templ/admin/attachments.html:21
-#: ../templ/admin/codebook.html:29 ../templ/admin/jobs.html:16
-#: ../templ/admin/logins.html:21 ../templ/admin/news.html:25
-#: ../templ/admin/options.html:31 ../templ/admin/page_menu.html:36
-#: ../templ/admin/pages.html:42 ../templ/admin/redirects.html:32
-#: ../templ/admin/eshop/store.html:24 ../templ/eshop/shopping_cart.html:19
+#: ../templ/admin/codebook.html:29 ../templ/admin/eshop/store.html:24
+#: ../templ/admin/jobs.html:16 ../templ/admin/logins.html:21
+#: ../templ/admin/news.html:25 ../templ/admin/options.html:31
+#: ../templ/admin/page_menu.html:36 ../templ/admin/pages.html:42
+#: ../templ/admin/redirects.html:32 ../templ/eshop/shopping_cart.html:19
 msgid "Action"
 msgstr "Akce"
 
@@ -392,19 +358,19 @@ msgstr "Připraven ke zveřejnění"
 
 #: ../templ/admin/articles.html:43 ../templ/admin/attachments.html:35
 #: ../templ/admin/codebook.html:35 ../templ/admin/codebook.html:57
-#: ../templ/admin/logins.html:28 ../templ/admin/logins_addresses.html:104
-#: ../templ/admin/news.html:43 ../templ/admin/options.html:39
-#: ../templ/admin/options.html:52 ../templ/admin/page_menu.html:50
-#: ../templ/admin/page_menu.html:63 ../templ/admin/pages.html:50
-#: ../templ/admin/redirects.html:56 ../templ/admin/redirects.html:78
-#: ../templ/admin/eshop/store.html:41
+#: ../templ/admin/eshop/store.html:41 ../templ/admin/logins.html:28
+#: ../templ/admin/logins_addresses.html:104 ../templ/admin/news.html:43
+#: ../templ/admin/options.html:39 ../templ/admin/options.html:52
+#: ../templ/admin/page_menu.html:50 ../templ/admin/page_menu.html:63
+#: ../templ/admin/pages.html:52 ../templ/admin/redirects.html:56
+#: ../templ/admin/redirects.html:79
 msgid "Edit"
 msgstr "Upravit"
 
 #: ../templ/admin/articles.html:45 ../templ/admin/articles_mod.html:46
+#: ../templ/admin/eshop/item_mod.html:36 ../templ/admin/eshop/store.html:43
 #: ../templ/admin/logins.html:33 ../templ/admin/news.html:45
-#: ../templ/admin/news_mod.html:39 ../templ/admin/eshop/item_mod.html:36
-#: ../templ/admin/eshop/store.html:43
+#: ../templ/admin/news_mod.html:39
 msgid "Disable"
 msgstr "Zakázat"
 
@@ -437,9 +403,9 @@ msgstr ""
 msgid "Restructured Text"
 msgstr ""
 
-#: ../templ/admin/articles_mod.html:43 ../templ/admin/news_mod.html:36
-#: ../templ/admin/redirects.html:31 ../templ/admin/eshop/item_mod.html:33
+#: ../templ/admin/articles_mod.html:43 ../templ/admin/eshop/item_mod.html:33
 #: ../templ/admin/eshop/orders.html:37 ../templ/admin/eshop/store.html:23
+#: ../templ/admin/news_mod.html:36 ../templ/admin/redirects.html:31
 #: ../templ/eshop/orders.html:32
 msgid "State"
 msgstr "Stav"
@@ -457,12 +423,13 @@ msgid "Not Public"
 msgstr "Nezveřejněno"
 
 #: ../templ/admin/articles_mod.html:57 ../templ/admin/articles_mod.html:84
-#: ../templ/admin/codebook.html:39 ../templ/admin/logins_addresses.html:90
-#: ../templ/admin/logins_mod.html:100 ../templ/admin/news_mod.html:50
-#: ../templ/admin/news_mod.html:67 ../templ/admin/options.html:53
-#: ../templ/admin/pages_mod.html:87 ../templ/admin/pages_mod.html:98
-#: ../templ/admin/redirects.html:60 ../templ/admin/eshop/item_mod.html:61
-#: ../templ/admin/eshop/item_mod.html:73 ../templ/login/login_mod.html:168
+#: ../templ/admin/codebook.html:39 ../templ/admin/eshop/item_mod.html:61
+#: ../templ/admin/eshop/item_mod.html:73
+#: ../templ/admin/logins_addresses.html:90 ../templ/admin/logins_mod.html:100
+#: ../templ/admin/news_mod.html:50 ../templ/admin/news_mod.html:67
+#: ../templ/admin/options.html:53 ../templ/admin/pages_mod.html:87
+#: ../templ/admin/pages_mod.html:98 ../templ/admin/redirects.html:60
+#: ../templ/login/login_mod.html:168
 msgid "Save"
 msgstr "Uložit"
 
@@ -512,8 +479,8 @@ msgstr "Stáhnout"
 #: ../templ/admin/codebook.html:58 ../templ/admin/jobs.html:24
 #: ../templ/admin/logins_addresses.html:105 ../templ/admin/page_menu.html:22
 #: ../templ/admin/page_menu.html:51 ../templ/admin/page_menu.html:64
-#: ../templ/admin/pages.html:30 ../templ/admin/pages.html:53
-#: ../templ/admin/redirects.html:57 ../templ/admin/redirects.html:79
+#: ../templ/admin/pages.html:30 ../templ/admin/pages.html:55
+#: ../templ/admin/redirects.html:57 ../templ/admin/redirects.html:80
 msgid "Delete"
 msgstr "Smazat"
 
@@ -526,13 +493,13 @@ msgid "Tags list"
 msgstr "Seznam nálepek"
 
 #: ../templ/admin/codebook.html:11 ../templ/admin/codebook.html:28
-#: ../templ/admin/options.html:29 ../templ/admin/redirects.html:13
-#: ../templ/admin/eshop/_store_actions.html:14
+#: ../templ/admin/eshop/_store_actions.html:14 ../templ/admin/options.html:29
+#: ../templ/admin/redirects.html:13
 msgid "Value"
 msgstr "Hodnota"
 
-#: ../templ/admin/codebook.html:14 ../templ/admin/redirects.html:16
-#: ../templ/admin/eshop/orders.html:28 ../templ/eshop/orders.html:24
+#: ../templ/admin/codebook.html:14 ../templ/admin/eshop/orders.html:28
+#: ../templ/admin/redirects.html:16 ../templ/eshop/orders.html:24
 msgid "Search"
 msgstr "Hledat"
 
@@ -540,12 +507,12 @@ msgstr "Hledat"
 msgid "New Item"
 msgstr "Nová položka"
 
-#: ../templ/admin/codebook.html:21 ../templ/admin/redirects.html:46
-#: ../templ/admin/eshop/_store_actions.html:22
+#: ../templ/admin/codebook.html:21 ../templ/admin/eshop/_store_actions.html:22
+#: ../templ/admin/redirects.html:46
 msgid "Add"
 msgstr "Přidat"
 
-#: ../templ/admin/codebook.html:59 ../templ/admin/redirects.html:80
+#: ../templ/admin/codebook.html:59 ../templ/admin/redirects.html:81
 #, python-format
 msgid "Are you sure to delete `%s' item ?"
 msgstr "Opravdu chcete smazat položku %s ?"
@@ -558,9 +525,8 @@ msgstr "Prázdná hodnota"
 msgid "Value exist yet"
 msgstr "Hodnota už existuje"
 
-#: ../templ/admin/codebook.html:62 ../templ/admin/page_menu.html:68
-#: ../templ/admin/redirects.html:85
-#: ../templ/admin/eshop/_store_actions.html:45
+#: ../templ/admin/codebook.html:62 ../templ/admin/eshop/_store_actions.html:45
+#: ../templ/admin/page_menu.html:68 ../templ/admin/redirects.html:86
 msgid "This operation is not possible."
 msgstr "Tato operace není možná"
 
@@ -602,19 +568,18 @@ msgstr "Nový účet"
 msgid "Access denied"
 msgstr "Přístup odepřen"
 
-#: ../templ/admin/logins.html:19 ../templ/admin/logins_mod.html:38
-#: ../templ/admin/logins_mod.html:40 ../templ/admin/eshop/orders.html:34
+#: ../templ/admin/eshop/orders.html:34 ../templ/admin/logins.html:19
+#: ../templ/admin/logins_mod.html:38 ../templ/admin/logins_mod.html:40
 #: ../templ/eshop/orders.html:29 ../templ/eshop/shopping_address.html:207
 #: ../templ/login/login_mod.html:30 ../templ/login/login_mod.html:32
 msgid "Email"
 msgstr "Email"
 
-#: ../templ/admin/logins.html:20 ../templ/admin/logins_addresses.html:37
-#: ../templ/admin/logins_mod.html:47 ../templ/admin/logins_mod.html:49
 #: ../templ/admin/eshop/item_mod.html:25 ../templ/admin/eshop/item_mod.html:27
 #: ../templ/admin/eshop/orders_mod.html:69 ../templ/admin/eshop/store.html:19
-#: ../templ/eshop/orders_detail.html:70
-#: ../templ/eshop/shopping_address.html:63
+#: ../templ/admin/logins.html:20 ../templ/admin/logins_addresses.html:37
+#: ../templ/admin/logins_mod.html:47 ../templ/admin/logins_mod.html:49
+#: ../templ/eshop/orders_detail.html:70 ../templ/eshop/shopping_address.html:63
 #: ../templ/eshop/shopping_address.html:147
 #: ../templ/eshop/shopping_cart.html:15
 #: ../templ/eshop/shopping_recapitulation.html:62
@@ -629,7 +594,7 @@ msgid "Addresses"
 msgstr "Adresa"
 
 #: ../templ/admin/logins.html:35 ../templ/admin/redirects.html:43
-#: ../templ/admin/redirects.html:53 ../templ/admin/redirects.html:88
+#: ../templ/admin/redirects.html:53 ../templ/admin/redirects.html:89
 msgid "Enabled"
 msgstr "Povoleno"
 
@@ -778,7 +743,7 @@ msgstr "Vyplň, pouze pokud chceš měnit."
 msgid "Password again"
 msgstr "Znovu heslo"
 
-#: ../templ/admin/logins_mod.html:105 ../templ/admin/eshop/orders_mod.html:111
+#: ../templ/admin/eshop/orders_mod.html:111 ../templ/admin/logins_mod.html:105
 #: ../templ/eshop/orders_detail.html:112
 msgid "History"
 msgstr "Historie"
@@ -876,7 +841,7 @@ msgstr "Operace byla úspěšná"
 msgid "Last modify"
 msgstr "Poslední změna"
 
-#: ../templ/admin/pages.html:64
+#: ../templ/admin/pages.html:67
 #, python-format
 msgid "Are you sure to delete %s page ?"
 msgstr "Opravdu chceš smazat stránku %s ?"
@@ -898,12 +863,12 @@ msgid "Redirects list"
 msgstr "Seznam přesměrování"
 
 #: ../templ/admin/redirects.html:20 ../templ/admin/redirects.html:37
-#: ../templ/admin/redirects.html:86
+#: ../templ/admin/redirects.html:87
 msgid "301 Moved Permanently"
 msgstr "301 Trvale přesunuto"
 
 #: ../templ/admin/redirects.html:21 ../templ/admin/redirects.html:38
-#: ../templ/admin/redirects.html:87
+#: ../templ/admin/redirects.html:88
 msgid "302 Moved Temporarily"
 msgstr "302 Dočasně přesunuto"
 
@@ -923,24 +888,24 @@ msgstr "Zdrojová url"
 msgid "Destination url"
 msgstr "Cílová url"
 
-#: ../templ/admin/redirects.html:53 ../templ/admin/redirects.html:89
-#: ../templ/admin/eshop/item_mod.html:47
+#: ../templ/admin/eshop/item_mod.html:47 ../templ/admin/redirects.html:53
+#: ../templ/admin/redirects.html:90
 msgid "Disabled"
 msgstr "Zakázáno"
 
-#: ../templ/admin/redirects.html:81
+#: ../templ/admin/redirects.html:82
 msgid "Empty source"
 msgstr "Prázdný zdroj"
 
-#: ../templ/admin/redirects.html:82
+#: ../templ/admin/redirects.html:83
 msgid "Bad source"
 msgstr "Špatný zdroj"
 
-#: ../templ/admin/redirects.html:83
+#: ../templ/admin/redirects.html:84
 msgid "Source exist yet"
 msgstr "Zdroj již existuje"
 
-#: ../templ/admin/redirects.html:84
+#: ../templ/admin/redirects.html:85
 msgid "Empty destination"
 msgstr "Prázdný cíl"
 
@@ -1085,35 +1050,30 @@ msgstr "Klient"
 msgid "Create Date"
 msgstr "Čas vytvoření"
 
-#: ../templ/admin/eshop/orders_mod.html:16
-#: ../templ/eshop/orders_detail.html:16
+#: ../templ/admin/eshop/orders_mod.html:16 ../templ/eshop/orders_detail.html:16
 #: ../templ/mail/eshop/order_subject.jinja:9
 msgid "Order"
 msgstr "Objednávka"
 
-#: ../templ/admin/eshop/orders_mod.html:17
-#: ../templ/eshop/orders_detail.html:18
+#: ../templ/admin/eshop/orders_mod.html:17 ../templ/eshop/orders_detail.html:18
 msgid "Orders list"
 msgstr "Seznam objednávek"
 
-#: ../templ/admin/eshop/orders_mod.html:22
-#: ../templ/eshop/orders_detail.html:24
+#: ../templ/admin/eshop/orders_mod.html:22 ../templ/eshop/orders_detail.html:24
 #: ../templ/eshop/shopping_address.html:41
 #: ../templ/eshop/shopping_recapitulation.html:16
 #: ../templ/mail/eshop/order.html:48 ../templ/mail/eshop/order.jinja:19
 msgid "Billing Address"
 msgstr "Fakturační adresa"
 
-#: ../templ/admin/eshop/orders_mod.html:38
-#: ../templ/eshop/orders_detail.html:40
+#: ../templ/admin/eshop/orders_mod.html:38 ../templ/eshop/orders_detail.html:40
 #: ../templ/eshop/shopping_address.html:117
 #: ../templ/eshop/shopping_recapitulation.html:32
 #: ../templ/mail/eshop/order.html:64 ../templ/mail/eshop/order.jinja:19
 msgid "Shipping Address"
 msgstr "Adresa doručení"
 
-#: ../templ/admin/eshop/orders_mod.html:56
-#: ../templ/eshop/orders_detail.html:58
+#: ../templ/admin/eshop/orders_mod.html:56 ../templ/eshop/orders_detail.html:58
 #: ../templ/eshop/shopping_address.html:204
 #: ../templ/eshop/shopping_recapitulation.html:50
 msgid "Send order status to"
@@ -1123,17 +1083,16 @@ msgstr "Poslat stav objednávky na"
 msgid "Send email to client"
 msgstr "Poslat email klientovi"
 
-#: ../templ/admin/eshop/orders_mod.html:66
-#: ../templ/eshop/orders_detail.html:67
+#: ../templ/admin/eshop/orders_mod.html:66 ../templ/eshop/orders_detail.html:67
 #: ../templ/eshop/shopping_recapitulation.html:59
 #: ../templ/mail/eshop/order.html:84
 msgid "Ordered items"
 msgstr "Objednané zboží"
 
 #: ../templ/admin/eshop/orders_mod.html:72
-#: ../templ/admin/eshop/orders_mod.html:83
-#: ../templ/eshop/orders_detail.html:73 ../templ/eshop/orders_detail.html:84
-#: ../templ/eshop/shopping_cart.html:18 ../templ/eshop/shopping_cart.html:34
+#: ../templ/admin/eshop/orders_mod.html:83 ../templ/eshop/orders_detail.html:73
+#: ../templ/eshop/orders_detail.html:84 ../templ/eshop/shopping_cart.html:18
+#: ../templ/eshop/shopping_cart.html:34
 #: ../templ/eshop/shopping_recapitulation.html:65
 #: ../templ/eshop/shopping_recapitulation.html:76
 #: ../templ/mail/eshop/order.html:90 ../templ/mail/eshop/order.html:101
@@ -1420,8 +1379,8 @@ msgid "Shipping address"
 msgstr "Doručovací adresa"
 
 #: ../templ/eshop/shopping_address.html:10
-#: ../templ/eshop/shopping_address.html:342
-#: ../templ/eshop/shopping_cart.html:9 ../templ/eshop/shopping_cart.html:24
+#: ../templ/eshop/shopping_address.html:342 ../templ/eshop/shopping_cart.html:9
+#: ../templ/eshop/shopping_cart.html:24
 msgid "Continue in Order"
 msgstr ""
 
@@ -1557,6 +1516,16 @@ msgstr "Kontaktní formulář"
 msgid "Some valid values are require."
 msgstr "Některé hodnoty jsou vyžadovány validní."
 
+#: ../templ/forms/contact-form.html:12
+#: ../templ/login/forgotten_password.html:28 ../templ/login/login_mod.html:59
+msgid "Robots can't send the form."
+msgstr "Roboti nemohou odesílat formulář."
+
+#: ../templ/forms/contact-form.html:15
+#: ../templ/login/forgotten_password.html:39 ../templ/login/login_mod.html:70
+msgid "Your anser is not correct."
+msgstr "Vaše odpověď není správná."
+
 #: ../templ/forms/contact-form.html:19
 msgid "Your form was send successful"
 msgstr "Váš formulář byl odeslán úspěšně."
@@ -1565,6 +1534,10 @@ msgstr "Váš formulář byl odeslán úspěšně."
 msgid "Sorry, there was error when sendig."
 msgstr "Omlouváme se, při odesílání formuláře došlo k chybě."
 
+#: ../templ/forms/contact-form.html:29
+msgid "Your name"
+msgstr "Vaše jméno"
+
 #: ../templ/forms/contact-form.html:34
 msgid "Your email"
 msgstr "Váš email"
@@ -1572,6 +1545,11 @@ msgstr "Váš email"
 #: ../templ/forms/contact-form.html:39
 msgid "Your message"
 msgstr "Vaše zpráva"
+
+#: ../templ/forms/contact-form.html:46
+#: ../templ/login/forgotten_password.html:23 ../templ/login/login_mod.html:54
+msgid "Yes, I'm robot."
+msgstr "Ano, jsem robot."
 
 #: ../templ/forms/contact-form.html:58
 msgid "Valid value is require."
@@ -2048,6 +2026,15 @@ msgid ""
 "\n"
 "Email verifing from %(scheme)s://%(domain)s"
 msgstr ""
+
+#~ msgid "Discussion"
+#~ msgstr "Diskuze"
+
+#~ msgid "Your comment"
+#~ msgstr "Váš komentář"
+
+#~ msgid "Append comment"
+#~ msgstr "Přidat komentář"
 
 #~ msgid "Not found"
 #~ msgstr "Nebylo nalezeno"

@@ -37,3 +37,11 @@ code.param {
 .citations td:first-child {
     white-space: nowrap;
 }
+
+td > p {
+    margin: 0.2em 0.5em;
+}
+
+table.field_list {
+    margin-bottom: 0.5em;
+}
